@@ -14,7 +14,7 @@ export type User = {
   firstName: string;
   lastName: string;
   graduationYear: number;
-  lastLogin: Date;
+  lastActive: Date;
   industry: string;
 };
 
@@ -47,8 +47,8 @@ const UserSchema = new Schema({
     type: Number,
     required: true
   },
-  // The date the user joined
-  lastLogin: {
+  // The date that the last user activity was recorded
+  lastActive: {
     type: Date,
     required: true
   },

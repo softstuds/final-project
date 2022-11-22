@@ -18,14 +18,14 @@ class UserCollection {
    * @param {string} password - The password of the user
    * @return {Promise<HydratedDocument<User>>} - The newly created user
    */
-  static async addOne(firstName: string, lastName: string, password: string, graduationYear: string): Promise<HydratedDocument<User>> {
+  static async addOne(username: string, name: string, password: string, graduationYear: string): Promise<HydratedDocument<User>> {
     const lastLogin = new Date();
-    const username = firstName.toLowerCase() + lastName.toLowerCase() + graduationYear;
+    const nameArray = name.split(' ');
     const user = new UserModel({
       username,
       password,
-      firstName,
-      lastName,
+      firstName: nameArray[0],
+      lastName: nameArray[-1],
       graduationYear: parseInt(graduationYear, 10),
       lastLogin
     });

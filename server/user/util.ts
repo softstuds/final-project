@@ -9,7 +9,7 @@ export type UserResponse = {
   firstName: string;
   lastName: string;
   graduationYear: number;
-  lastLogin: string;
+  lastActive: string;
   industry: string;
 };
 
@@ -39,7 +39,7 @@ const constructUserResponse = (user: HydratedDocument<User>): UserResponse => {
   return {
     ...userCopy,
     _id: userCopy._id.toString(),
-    lastLogin: formatDate(user.lastLogin)
+    lastActive: formatDate(user.lastActive)
   };
 };
 
