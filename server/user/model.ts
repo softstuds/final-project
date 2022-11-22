@@ -55,7 +55,7 @@ const UserSchema = new Schema({
   // The industry the user is in
   industry: {
     type: String,
-    required: true
+    required: false
   }
 });
 
