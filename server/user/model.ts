@@ -9,7 +9,7 @@ import {Schema, model} from 'mongoose';
 // Type definition for User on the backend
 export type User = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
-  username: string;
+  email: string;
   password: string;
   firstName: string;
   lastName: string;
@@ -23,7 +23,7 @@ export type User = {
 // type given by the type property, inside MongoDB
 const UserSchema = new Schema({
   // The user's username
-  username: {
+  email: {
     type: String,
     required: true
   },

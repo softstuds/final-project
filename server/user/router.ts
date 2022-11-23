@@ -33,11 +33,11 @@ router.get(
  *
  * @name POST /api/users/session
  *
- * @param {string} username - The user's username
+ * @param {string} email - The user's email
  * @param {string} password - The user's password
  * @return {UserResponse} - An object with user's details
  * @throws {403} - If user is already signed in
- * @throws {400} - If username or password is  not in the correct format,
+ * @throws {400} - If email or password is  not in the correct format,
  *                 or missing in the req
  * @throws {401} - If the user login credentials are invalid
  *
@@ -46,13 +46,14 @@ router.post(
   '/session',
   [
     userValidator.isUserLoggedOut,
-    userValidator.isValidUsername,
+    userValidator.isValidName,
+    userValidator.isValidEmail,
     userValidator.isValidPassword,
     userValidator.isAccountExists
   ],
   async (req: Request, res: Response) => {
-    const user = await UserCollection.findOneByUsernameAndPassword(
-      req.body.username, req.body.password
+    const user = await UserCollection.findOneByEmailAndPassword(
+      req.body.email, req.body.password
     );
     req.session.userId = user._id.toString();
     res.status(201).json({
@@ -89,24 +90,24 @@ router.delete(
  *
  * @name POST /api/users
  *
- * @param {string} username - username of user
+ * @param {string} email - email of user
  * @param {string} password - user's password
  * @return {UserResponse} - The created user
  * @throws {403} - If there is a user already logged in
- * @throws {409} - If username is already taken
- * @throws {400} - If password or username is not in correct format
+ * @throws {409} - If email is already taken
+ * @throws {400} - If password or email is not in correct format
  *
  */
 router.post(
   '/',
   [
     userValidator.isUserLoggedOut,
-    userValidator.isValidUsername,
-    userValidator.isUsernameNotAlreadyInUse,
+    userValidator.isValidEmail,
+    userValidator.isEmailNotAlreadyInUse,
     userValidator.isValidPassword
   ],
   async (req: Request, res: Response) => {
-    const user = await UserCollection.addOne(req.body.username, req.body.name, req.body.password, req.body.graduationYear);
+    const user = await UserCollection.addOne(req.body.email, req.body.name, req.body.password, req.body.graduationYear);
     req.session.userId = user._id.toString();
     res.status(201).json({
       message: `Your account was created successfully. You have been logged in as ${user.firstName} ${user.lastName}`,
@@ -120,19 +121,19 @@ router.post(
  *
  * @name PATCH /api/users
  *
- * @param {string} username - The user's new username
+ * @param {string} email - The user's new email
  * @param {string} password - The user's new password
  * @return {UserResponse} - The updated user
  * @throws {403} - If user is not logged in
- * @throws {409} - If username already taken
- * @throws {400} - If username or password are not of the correct format
+ * @throws {409} - If email already taken
+ * @throws {400} - If email or password are not of the correct format
  */
 router.patch(
   '/',
   [
     userValidator.isUserLoggedIn,
-    userValidator.isValidUsername,
-    userValidator.isUsernameNotAlreadyInUse,
+    userValidator.isValidEmail,
+    userValidator.isEmailNotAlreadyInUse,
     userValidator.isValidPassword
   ],
   async (req: Request, res: Response) => {

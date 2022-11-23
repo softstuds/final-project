@@ -5,7 +5,7 @@ import type {User} from './model';
 // Update this if you add a property to the User type!
 export type UserResponse = {
   _id: string;
-  username: string;
+  email: string;
   firstName: string;
   lastName: string;
   graduationYear: number;
