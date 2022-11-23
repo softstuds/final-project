@@ -12,6 +12,10 @@ const store = new Vuex.Store({
     filter: null, // Username to filter shown freets by (null = show all)
     freets: [], // All freets created in the app
     username: null, // Username of the logged in user
+    gradYear: null, // Graduation year of the logged in user
+    name: null, // Name of the logged in user
+    lastActive: null, // Last active time of logged in user
+    industry: null, // Industry of the logged in user
     alerts: {} // global success/error messages encountered during submissions to non-visible forms
   },
   mutations: {
@@ -30,6 +34,34 @@ const store = new Vuex.Store({
        * @param username - new username to set
        */
       state.username = username;
+    },
+    setName(state, name) {
+      /**
+       * Update the stored name to the specified one.
+       * @param name - new name to set
+       */
+      state.name = name;
+    },
+    setGradYear(state, gradYear) {
+      /**
+       * Update the stored graduation year to the specified one.
+       * @param gradYear - new grad year to set
+       */
+      state.gradYear = gradYear;
+    },
+    setLastActive(state, lastActive) {
+      /**
+       * Update the stored last active time to the specified one.
+       * @param lastActive - new last active time to set
+       */
+      state.lastActive = lastActive;
+    },
+    setIndustry(state, industry) {
+      /**
+       * Update the stored industry to the specified one.
+       * @param industry - new industry to set
+       */
+      state.industry = industry;
     },
     updateFilter(state, filter) {
       /**

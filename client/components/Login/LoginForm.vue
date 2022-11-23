@@ -11,7 +11,7 @@ export default {
       url: '/api/users/session',
       method: 'POST',
       hasBody: true,
-      setUsername: true,
+      setUser: true,
       fields: [
         {id: 'username', label: 'Username', value: ''},
         {id: 'password', label: 'Password', value: ''}

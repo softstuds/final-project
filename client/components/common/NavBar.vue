@@ -21,6 +21,12 @@
         Account
       </router-link>
       <router-link
+        v-if="$store.state.username"
+        to="/profile"
+      >
+        Profiles
+      </router-link>
+      <router-link
         v-else
         to="/login"
       >
