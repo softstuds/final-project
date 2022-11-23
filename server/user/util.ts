@@ -3,10 +3,14 @@ import moment from 'moment';
 import type {User} from './model';
 
 // Update this if you add a property to the User type!
-type UserResponse = {
+export type UserResponse = {
   _id: string;
-  username: string;
-  dateJoined: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  graduationYear: number;
+  lastActive: string;
+  industry: string;
 };
 
 /**
@@ -35,7 +39,7 @@ const constructUserResponse = (user: HydratedDocument<User>): UserResponse => {
   return {
     ...userCopy,
     _id: userCopy._id.toString(),
-    dateJoined: formatDate(user.dateJoined)
+    lastActive: formatDate(user.lastActive)
   };
 };
 
