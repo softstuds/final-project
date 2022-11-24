@@ -19,7 +19,6 @@ export default {
       credentials: 'same-origin' // Sends express-session credentials with request
     }).then(res => res.json()).then(res => {
       const user = res.user;
-      console.log(user);
       this.$store.commit('setUsername', user ? user.email : null);
     });
 

@@ -106,9 +106,9 @@ router.post(
     userValidator.isUserLoggedOut,
     userValidator.isValidEmail,
     userValidator.isEmailNotAlreadyInUse,
-    // userValidator.isValidName,
-    // userValidator.isValidPassword,
-    // userValidator.isValidGraduationYear
+    userValidator.isValidName,
+    userValidator.isValidPassword,
+    userValidator.isValidGraduationYear
   ],
   async (req: Request, res: Response) => {
     const user = await UserCollection.addOne(req.body.email, req.body.name, req.body.password, req.body.graduationYear);

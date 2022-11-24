@@ -4,9 +4,8 @@
   <main>
     <section v-if="$store.state.username">
       <header>
-        <h2>Welcome @{{ $store.state.username }}</h2>
+        <h2>Welcome {{ $store.state.name }}</h2>
       </header>
-      <CreateFreetForm />
     </section>
     <section v-else>
       <header>
@@ -23,24 +22,24 @@
     </section>
     <section>
       <header>
-        <div class="left">
+        <!-- <div class="left">
           <h2>
             Viewing all freets
             <span v-if="$store.state.filter">
               by @{{ $store.state.filter }}
             </span>
           </h2>
-        </div>
-        <div class="right">
+        </div> -->
+        <!-- <div class="right">
           <GetFreetsForm
             ref="getFreetsForm"
             value="author"
             placeholder="🔍 Filter by author (optional)"
             button="🔄 Get freets"
           />
-        </div>
+        </div> -->
       </header>
-      <section
+      <!-- <section
         v-if="$store.state.freets.length"
       >
         <FreetComponent
@@ -53,7 +52,7 @@
         v-else
       >
         <h3>No freets found.</h3>
-      </article>
+      </article> -->
     </section>
   </main>
 </template>
@@ -66,9 +65,6 @@ import GetFreetsForm from '@/components/Freet/GetFreetsForm.vue';
 export default {
   name: 'FreetPage',
   components: {FreetComponent, GetFreetsForm, CreateFreetForm},
-  mounted() {
-    this.$refs.getFreetsForm.submit();
-  }
 };
 </script>
 

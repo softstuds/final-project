@@ -105,10 +105,11 @@ export default {
         if (this.setUser) {
           const text = await r.text();
           const res = text ? JSON.parse(text) : {user: null};
-          this.$store.commit('setUsername', res.user ? res.user.username : null);
+          const currentTime = new Date();
+          this.$store.commit('setUsername', res.user ? res.user.email : null);
           this.$store.commit('setName', res.user ? `${res.user.firstName} ${res.user.lastName}` : null);
-          this.$store.commit('setGradYear', res.user ? res.user.gradYear : null);
-          this.$store.commit('setLastActive', moment(new Date()).format('MMMM Do YYYY'));
+          this.$store.commit('setGradYear', res.user ? res.user.graduationYear : null);
+          this.$store.commit('setLastActive', currentTime.toLocaleString().split(',')[0]);
           this.$store.commit('setIndustry', res.user.industry ? res.user.industry : null);
         }
 
