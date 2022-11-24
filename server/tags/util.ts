@@ -5,12 +5,12 @@ import type { Tags } from './model';
 type TagsResponse = {
     _id: string; // MongoDB automatically generates ID
     userId: string;
-    coffeeChat: string;
-    refer: string;
-    helpInterview: string;
-    resumeReview: string;
-    mentor: string;
-    email: string;
+    coffeeChat: Boolean;
+    refer: Boolean;
+    helpInterview: Boolean;
+    resumeReview: Boolean;
+    mentor: Boolean;
+    email: Boolean;
 };
 
 /**
@@ -27,12 +27,12 @@ type TagsResponse = {
         ...tagsCopy,
         _id: tagsCopy._id.toString(),
         userId: tagsCopy.userId.toString(),
-        coffeeChat: tagsCopy.coffeeChat.toString(),
-        refer: tagsCopy.refer.toString(),
-        helpInterview: tagsCopy.helpInterview.toString(),
-        resumeReview: tagsCopy.resumeReview.toString(),
-        mentor: tagsCopy.mentor.toString(),
-        email: tagsCopy.email.toString()
+        coffeeChat: tagsCopy.coffeeChat,
+        refer: tagsCopy.refer,
+        helpInterview: tagsCopy.helpInterview,
+        resumeReview: tagsCopy.resumeReview,
+        mentor: tagsCopy.mentor,
+        email: tagsCopy.email
     };
 };
 
