@@ -10,14 +10,14 @@
     </section>
     <section v-else>
       <header>
-        <h2>Welcome to Fritter!</h2>
+        <h2>Welcome to Alumni Connector!</h2>
       </header>
       <article>
         <h3>
           <router-link to="/login">
             Sign in
           </router-link>
-          to create, edit, and delete freets.
+          to access Alumni Connector.
         </h3>
       </article>
     </section>

@@ -5,9 +5,9 @@
 <template>
   <nav>
     <div class="left">
-      <img src="../../public/logo.svg">
+      <img src="../../public/favicon.png">
       <h1 class="title">
-        Fritter
+        Alumni Connector
       </h1>
     </div>
     <div class="right">
