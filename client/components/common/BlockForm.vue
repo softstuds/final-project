@@ -19,6 +19,15 @@
           @input="field.value = $event.target.value"
         />
         <input
+          v-if="field.id === 'graduationYear'"
+          :name="field.id"
+          :value="field.value"
+          type="number"
+          min="1920"
+          step="1"
+          @input="field.value = $event.target.value"
+        />
+        <input
           v-else
           :type="field.id === 'password' ? 'password' : 'text'"
           :name="field.id"
@@ -59,7 +68,7 @@ export default {
       url: '', // Url to submit form to
       method: 'GET', // Form request method
       hasBody: false, // Whether or not form request has a body
-      setUsername: false, // Whether or not stored username should be updated after form submission
+      setUser: false, // Whether or not stored username should be updated after form submission
       refreshFreets: false, // Whether or not stored freets should be updated after form submission
       alerts: {}, // Displays success/error messages encountered during form submission
       callback: null // Function to run after successful form submission
@@ -93,10 +102,15 @@ export default {
           throw new Error(res.error);
         }
 
-        if (this.setUsername) {
+        if (this.setUser) {
           const text = await r.text();
           const res = text ? JSON.parse(text) : {user: null};
-          this.$store.commit('setUsername', res.user ? res.user.username : null);
+          const currentTime = new Date();
+          this.$store.commit('setUsername', res.user ? res.user.email : null);
+          this.$store.commit('setName', res.user ? `${res.user.firstName} ${res.user.lastName}` : null);
+          this.$store.commit('setGradYear', res.user ? res.user.graduationYear : null);
+          this.$store.commit('setLastActive', currentTime.toLocaleString().split(',')[0]);
+          this.$store.commit('setIndustry', res.user.industry ? res.user.industry : null);
         }
 
         if (this.refreshFreets) {

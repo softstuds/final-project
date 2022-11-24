@@ -5,7 +5,7 @@
   <main>
     <section>
       <header>
-        <h2>Account settings for @{{ $store.state.username }}</h2>
+        <h2>Account settings for @{{ $store.state.name }}</h2>
       </header>
       <ChangeUsernameForm />
       <ChangePasswordForm />

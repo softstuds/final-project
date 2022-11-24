@@ -46,7 +46,7 @@ router.post(
   '/session',
   [
     userValidator.isUserLoggedOut,
-    userValidator.isValidName,
+    // userValidator.isValidName,
     userValidator.isValidEmail,
     userValidator.isValidPassword,
     userValidator.isAccountExists
@@ -92,6 +92,8 @@ router.delete(
  *
  * @param {string} email - email of user
  * @param {string} password - user's password
+ * @param {string} name - user's name
+ * @param {number} graduationYear - user's graduation year
  * @return {UserResponse} - The created user
  * @throws {403} - If there is a user already logged in
  * @throws {409} - If email is already taken
@@ -104,10 +106,13 @@ router.post(
     userValidator.isUserLoggedOut,
     userValidator.isValidEmail,
     userValidator.isEmailNotAlreadyInUse,
-    userValidator.isValidPassword
+    userValidator.isValidName,
+    userValidator.isValidPassword,
+    userValidator.isValidGraduationYear
   ],
   async (req: Request, res: Response) => {
     const user = await UserCollection.addOne(req.body.email, req.body.name, req.body.password, req.body.graduationYear);
+    console.log(user);
     req.session.userId = user._id.toString();
     res.status(201).json({
       message: `Your account was created successfully. You have been logged in as ${user.firstName} ${user.lastName}`,

@@ -18,15 +18,15 @@ class UserCollection {
    * @param {string} password - The password of the user
    * @return {Promise<HydratedDocument<User>>} - The newly created user
    */
-  static async addOne(email: string, name: string, password: string, graduationYear: string): Promise<HydratedDocument<User>> {
+  static async addOne(username: string, name: string, password: string, graduationYear: number): Promise<HydratedDocument<User>> {
     const lastActive = new Date();
     const nameArray = name.split(' ');
     const user = new UserModel({
-      email,
+      email: username,
       password,
       firstName: nameArray[0],
-      lastName: nameArray[-1],
-      graduationYear: parseInt(graduationYear, 10),
+      lastName: nameArray[nameArray.length-1],
+      graduationYear: graduationYear,
       lastActive
     });
     await user.save(); // Saves user to MongoDB
