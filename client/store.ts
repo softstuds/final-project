@@ -34,6 +34,8 @@ const store = new Vuex.Store({
        * @param username - new username to set
        */
       state.username = username;
+      console.log('username');
+      console.log(state.username);
     },
     setName(state, name) {
       /**

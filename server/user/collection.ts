@@ -22,7 +22,7 @@ class UserCollection {
     const lastActive = new Date();
     const nameArray = name.split(' ');
     const user = new UserModel({
-      username,
+      email: username,
       password,
       firstName: nameArray[0],
       lastName: nameArray[nameArray.length-1],

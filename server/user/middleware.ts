@@ -56,14 +56,14 @@ const isValidPassword = (req: Request, res: Response, next: NextFunction) => {
  * Checks if a email in req.body is valid
  */
 const isValidEmail = (req: Request, res: Response, next: NextFunction) => {
-  const emailRegex = /\w+@\w+\.\w+$/;
+  const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   if (!emailRegex.test(req.body.email)) {
     res.status(400).json({
       error: 'Email must be example@domain (ex. hello@gmail.com).'
     });
     return;
   }
-
+  console.log('completed');
   next();
 };
 
@@ -108,19 +108,19 @@ const isAccountExists = async (req: Request, res: Response, next: NextFunction) 
  * Checks if a username in req.body is already in use
  */
 const isEmailNotAlreadyInUse = async (req: Request, res: Response, next: NextFunction) => {
+  console.log(req.body.email);
   if (req.body.email !== undefined) { // If email is not being changed, skip this check
     const user = await UserCollection.findOneByEmail(req.body.email);
 
     // If the current session user wants to change their username to one which matches
     // the current one irrespective of the case, we should allow them to do so
-    if (user && (user?._id.toString() !== req.session.userId)) {
+    if (user) {
       res.status(409).json({
         error: 'An account with this username already exists.'
       });
       return;
     }
   }
-
   next();
 };
 
