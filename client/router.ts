@@ -11,7 +11,7 @@ Vue.use(VueRouter);
 const routes = [
   {path: '/', name: 'Home', component: SearchPage},
   {path: '/account', name: 'Account', component: AccountPage},
-  {path: '/profile', name: 'Profiles', component: ProfilePage},
+  {path: '/profile/:userId', name: 'Profiles', component: ProfilePage},
   {path: '/login', name: 'Login', component: LoginPage},
   {path: '*', name: 'Not Found', component: NotFound}
 ];

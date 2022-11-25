@@ -86,6 +86,27 @@ router.delete(
 );
 
 /**
+ * Get a users
+ *
+ * @name GET /api/users/:userId
+ *
+ * @return - specified user
+ */
+router.get(
+  '/:userId',
+  [
+    userValidator.isUserExists
+  ],
+  async (req: Request, res: Response) => {
+    const user = await UserCollection.findOneByUserId(req.params.userId);
+    res.status(200).json({
+      message: `Found user ${user.firstName}`,
+      user: util.constructUserResponse(user)
+    });
+  }
+);
+
+/**
  * Get all users
  *
  * @name GET /api/users
@@ -129,7 +150,6 @@ router.post(
   ],
   async (req: Request, res: Response) => {
     const user = await UserCollection.addOne(req.body.email, req.body.name, req.body.password, req.body.graduationYear);
-    console.log(user);
     req.session.userId = user._id.toString();
     res.status(201).json({
       message: `Your account was created successfully. You have been logged in as ${user.firstName} ${user.lastName}`,

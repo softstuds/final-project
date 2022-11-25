@@ -2,17 +2,28 @@
 
 <template>
   <div>
+    <header>
+      <h2>{{ user.firstName }}</h2>
+    </header>
     <section class="info">
       <section>
         <i class="flatText">
-          Last Active: {{ $store.state.lastActive }}
+          Last Active: {{ user.lastActive }}
         </i>
-        <p>Class of {{ $store.state.gradYear }}</p>
-        <p><b>Industry: </b>{{ $store.state.industry }}</p>
+        <p>Class of {{ user.graduationYear }}</p>
+        <p><b>Industry: {{ user.industry !== undefined ? user.industry : "None" }}</b></p>
       </section>
     </section>
     <section class="availability">
-      <h3>Availability</h3>
+      <section class="availabilityHeader">
+        <h3><b>Availability</b></h3>
+        <button 
+          v-if="user._id === $store.state.userId"
+          class="editButton"
+        >
+          Edit My Availabilities
+        </button>
+      </section>
       <section class="calendar">
         <section
           v-for="(date, index) in availabilities"
@@ -33,7 +44,9 @@
                   block.getHours() + "am"
             }}
             <div>
-              <button>Claim</button>
+              <button v-if="user._id !== $store.state.userId">
+                Claim
+              </button>
             </div>
           </section>
         </section>
@@ -45,15 +58,37 @@
 <script>
 export default {
   name: 'PersonalInfoComponent',
+  props: {
+    userId: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
-        availabilities: []
+      user: {
+        firstName: "",
+        lastName: "",
+        lastActive: "",
+        gradYear: "",
+        industry: ""
+      },
+      availabilities: []
     }
   },
   mounted() {
+    this.getUser();
     this.getAvailibilities();
   },
   methods: {
+    async getUser() {
+      const r = await fetch("api/users/" + this.userId);
+      const res = await r.json();
+      if (!r.ok) {
+        throw new Error(res.error);
+      }
+      this.user = res.user;
+    },
     getAvailibilities() {
         const availabilities = [
             [new Date('24 Nov 2022 13:00')],
@@ -76,6 +111,16 @@ export default {
 }
 .availability {
     border-top: 1px solid black;
+}
+
+.availabilityHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.editButton {
+  height: 25px
 }
 .calendar {
     display: flex;

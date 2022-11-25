@@ -107,6 +107,7 @@ export default {
           const res = text ? JSON.parse(text) : {user: null};
           const currentTime = new Date();
           this.$store.commit('setUsername', res.user ? res.user.email : null);
+          this.$store.commit('userId', res.user ? res.user._id.toString() : null);
           this.$store.commit('setName', res.user ? `${res.user.firstName} ${res.user.lastName}` : null);
           this.$store.commit('setGradYear', res.user ? res.user.graduationYear : null);
           this.$store.commit('setLastActive', currentTime.toLocaleString().split(',')[0]);

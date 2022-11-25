@@ -108,7 +108,6 @@ const isAccountExists = async (req: Request, res: Response, next: NextFunction) 
  * Checks if a username in req.body is already in use
  */
 const isEmailNotAlreadyInUse = async (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.body.email);
   if (req.body.email !== undefined) { // If email is not being changed, skip this check
     const user = await UserCollection.findOneByEmail(req.body.email);
 
@@ -156,6 +155,21 @@ const isUserLoggedOut = (req: Request, res: Response, next: NextFunction) => {
 /**
  * Checks if a user with userId as author id in req.query exists
  */
+const isUserExists = async (req: Request, res: Response, next: NextFunction) => {
+  const user = await UserCollection.findOneByUserId(req.params.userId);
+  if (!user) {
+    res.status(404).json({
+      error: `A user with userId ${req.params.userId} does not exist.`
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if a user with userId as author id in req.query exists
+ */
 const isAuthorExists = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.query.author) {
     res.status(400).json({
@@ -185,5 +199,6 @@ export {
   isValidName,
   isValidPassword,
   isValidEmail,
-  isValidGraduationYear
+  isValidGraduationYear,
+  isUserExists
 };

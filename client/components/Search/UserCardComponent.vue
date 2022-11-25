@@ -1,6 +1,10 @@
 <template>
   <section class="card">
-    <b class="name">{{ user.firstName }} {{ user.lastName }}</b>
+    <router-link 
+      :to="'/profile/'+ user._id"
+    >
+      <b class="name">{{ user.firstName }} {{ user.lastName }}</b>
+    </router-link>
     <div class="otherInfo">
       <i>Class of {{ user.graduationYear }}</i>
       <p><b>Industry: {{ user.industry !== undefined ? user.industry : "None" }}</b></p>
