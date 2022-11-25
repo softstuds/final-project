@@ -5,9 +5,10 @@
   <main>
     <section>
       <header>
-        <h2>Account settings for @{{ $store.state.name }}</h2>
+        <h2>Account settings for {{ $store.state.name }}</h2>
       </header>
-      <ChangeUsernameForm />
+      <ChangeIndustryForm />
+      <ChangeEmailForm />
       <ChangePasswordForm />
     </section>
     <section>
@@ -21,16 +22,18 @@
 </template>
 
 <script>
-import ChangeUsernameForm from '@/components/Account/ChangeUsernameForm.vue';
+import ChangeEmailForm from '@/components/Account/ChangeEmailForm.vue';
 import ChangePasswordForm from '@/components/Account/ChangePasswordForm.vue';
+import ChangeIndustryForm from '@/components/Account/ChangeIndustryForm.vue'
 import DeleteAccountForm from '@/components/Account/DeleteAccountForm.vue';
 import LogoutForm from '@/components/Account/LogoutForm.vue';
 
 export default {
   name: 'AccountPage',
   components: {
-    ChangeUsernameForm,
+    ChangeEmailForm,
     ChangePasswordForm,
+    ChangeIndustryForm,
     DeleteAccountForm,
     LogoutForm
   }

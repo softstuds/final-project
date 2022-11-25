@@ -56,14 +56,14 @@ const isValidPassword = (req: Request, res: Response, next: NextFunction) => {
  * Checks if a email in req.body is valid
  */
 const isValidEmail = (req: Request, res: Response, next: NextFunction) => {
-  const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const emailRegex = /^\S+@\S+\.\S+$/;
   if (!emailRegex.test(req.body.email)) {
     res.status(400).json({
       error: 'Email must be example@domain (ex. hello@gmail.com).'
     });
     return;
   }
-  console.log('completed');
+
   next();
 };
 
@@ -121,6 +121,7 @@ const isEmailNotAlreadyInUse = async (req: Request, res: Response, next: NextFun
       return;
     }
   }
+
   next();
 };
 

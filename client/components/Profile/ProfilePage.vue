@@ -5,7 +5,7 @@
     <main>
       <section>
         <header>
-          <h2>{{ $store.state.name }}'s Profile</h2>
+          <h2>{{ $store.state.name }}</h2>
         </header>
         <PersonalInfoComponent />
       </section>
