@@ -59,8 +59,7 @@ router.get(
  *
  * @return {TimeBlockResponse[]} - A list of all the time blocks for the user 
  *                      to mark as occurred, sorted in descending order by start
- * @throws {404} - If the user is not logged in
- * @throws {404} - If the userId is not a valid one
+ * @throws {404} - If the user is not logged in or the userId is not a valid one
  */
  router.get(
     '/unclaimed/:userId?',
@@ -77,7 +76,7 @@ router.get(
   );
 
 /**
- * Create a new freet.
+ * Create a new time block.
  *
  * @name PUT /api/timeblock
  *
