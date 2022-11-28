@@ -8,7 +8,6 @@ type TimeBlockResponse = {
   owner: string;
   requester: string;
   start: string;
-  claimed: boolean;
   accepted: boolean;
   occurred: boolean;
 };
@@ -37,14 +36,12 @@ const constructTimeBlockResponse = (timeBlock: HydratedDocument<TimeBlock>): Tim
   const owner = timeBlockCopy.owner.username;
   delete timeBlockCopy.owner;
   const requester = (timeBlockCopy.requester) ? timeBlockCopy.requester.username : null;
-  const occurred = (timeBlockCopy.occurred) ? timeBlockCopy.occurred : null;
   return {
     ...timeBlockCopy,
     _id: timeBlockCopy._id.toString(),
     owner: owner,
     requester: requester,
-    start: formatDate(timeBlock.start),
-    occurred: occurred,
+    start: formatDate(timeBlockCopy.start),
   };
 };
 

@@ -13,7 +13,6 @@ export type TimeBlock = {
   owner: Types.ObjectId;
   requester: Types.ObjectId;
   start: Date;
-  claimed: boolean;
   accepted: boolean;
   occurred: boolean;
 };
@@ -23,7 +22,6 @@ export type PopulatedTimeBlock = {
   owner: User;
   requester: User;
   start: Date;
-  claimed: boolean;
   accepted: boolean;
   occurred: boolean;
 };
@@ -43,26 +41,25 @@ const TimeBlockSchema = new Schema<TimeBlock>({
   requester: {
     // Use Types.ObjectId outside of the schema
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true,
+    default: null,
   },
   // The start time of the 1hr-long time block
   start: {
     type: Date,
     required: true
   },
-  // Whether the time block has been claimed by a requester
-  claimed: {
-    type: Boolean,
-    required: true
-  },
   // Whether the time block has been accepted by the owner
   accepted: {
     type: Boolean,
-    required: true
+    required: true,
+    default: false,
   },
   // Whether the accepted meeting has occurred
   occurred: {
     type: Boolean,
+    default: null,
   },
 });
 
