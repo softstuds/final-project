@@ -9,7 +9,7 @@ import {Schema, model} from 'mongoose';
 export type Industry = {
     _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
     userId: Types.ObjectId;
-    industryType: String; 
+    industryType: string; 
 }
 
 // Mongoose schema definition
