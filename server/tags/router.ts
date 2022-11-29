@@ -103,4 +103,6 @@ router.get(
     }
 );
 
+export {router as tagsRouter};
+
 
