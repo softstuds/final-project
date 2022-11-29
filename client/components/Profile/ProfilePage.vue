@@ -4,10 +4,9 @@
 <template>
     <main>
       <section>
-        <header>
-          <h2>{{ $store.state.name }}'s Profile</h2>
-        </header>
-        <PersonalInfoComponent />
+        <PersonalInfoComponent 
+          :userId="userId"
+        />
       </section>
     </main>
   </template>
@@ -17,8 +16,11 @@
   
   export default {
     name: 'AccountPage',
-    components: {
-      PersonalInfoComponent,
+    components: {PersonalInfoComponent},
+    data() {
+      return {
+        userId: this.$route.params.userId
+      }
     }
   };
   </script>
