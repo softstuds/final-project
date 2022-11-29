@@ -9,9 +9,13 @@ import {Schema, model} from 'mongoose';
 // Type definition for User on the backend
 export type User = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
-  username: string;
+  email: string;
   password: string;
-  dateJoined: Date;
+  firstName: string;
+  lastName: string;
+  graduationYear: number;
+  lastActive: Date;
+  industry: string;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -19,7 +23,7 @@ export type User = {
 // type given by the type property, inside MongoDB
 const UserSchema = new Schema({
   // The user's username
-  username: {
+  email: {
     type: String,
     required: true
   },
@@ -28,10 +32,30 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  // The date the user joined
-  dateJoined: {
+  // The user's first name
+  firstName: {
+    type: String,
+    required: true
+  },
+  // The user's last name
+  lastName: {
+    type: String,
+    required: true
+  },
+  // The user's graduation year
+  graduationYear: {
+    type: Number,
+    required: true
+  },
+  // The date that the last user activity was recorded
+  lastActive: {
     type: Date,
     required: true
+  },
+  // The industry the user is in
+  industry: {
+    type: String,
+    required: false
   }
 });
 

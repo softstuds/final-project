@@ -11,10 +11,12 @@ export default {
       url: '/api/users',
       method: 'POST',
       hasBody: true,
-      setUsername: true,
+      setUser: true,
       fields: [
-        {id: 'username', label: 'Username', value: ''},
-        {id: 'password', label: 'Password', value: ''}
+        {id: 'email', label: 'Email', value: ''},
+        {id: 'password', label: 'Password', value: ''},
+        {id: 'name', label: 'Name', value: ''},
+        {id: 'graduationYear', label: 'Graduation Year (YYYY)', value: 2022},
       ],
       title: 'Create account',
       callback: () => {

@@ -5,9 +5,9 @@
 <template>
   <nav>
     <div class="left">
-      <img src="../../public/logo.svg">
+      <img src="../../public/favicon.png">
       <h1 class="title">
-        Fritter
+        Alumni Connector
       </h1>
     </div>
     <div class="right">
@@ -19,6 +19,12 @@
         to="/account"
       >
         Account
+      </router-link>
+      <router-link
+        v-if="$store.state.username"
+        to="/profile"
+      >
+        Profiles
       </router-link>
       <router-link
         v-else

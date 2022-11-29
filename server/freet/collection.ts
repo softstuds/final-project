@@ -2,6 +2,8 @@ import type {HydratedDocument, Types} from 'mongoose';
 import type {Freet} from './model';
 import FreetModel from './model';
 import UserCollection from '../user/collection';
+import moment from 'moment';
+
 
 /**
  * This files contains a class that has the functionality to explore freets
@@ -54,11 +56,11 @@ class FreetCollection {
   /**
    * Get all the freets in by given author
    *
-   * @param {string} username - The username of author of the freets
+   * @param {string} email - The username (email) of author of the freets
    * @return {Promise<HydratedDocument<Freet>[]>} - An array of all of the freets
    */
-  static async findAllByUsername(username: string): Promise<Array<HydratedDocument<Freet>>> {
-    const author = await UserCollection.findOneByUsername(username);
+  static async findAllByUsername(email: string): Promise<Array<HydratedDocument<Freet>>> {
+    const author = await UserCollection.findOneByEmail(email);
     return FreetModel.find({authorId: author._id}).sort({dateModified: -1}).populate('authorId');
   }
 
