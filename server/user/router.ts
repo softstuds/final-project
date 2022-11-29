@@ -86,7 +86,7 @@ router.delete(
 );
 
 /**
- * Get a users
+ * Get a user
  *
  * @name GET /api/users/:userId
  *

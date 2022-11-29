@@ -195,6 +195,7 @@ export {
   isUserLoggedOut,
   isEmailNotAlreadyInUse,
   isAccountExists,
+  isUserExists,
   isAuthorExists,
   isValidName,
   isValidPassword,
