@@ -107,6 +107,23 @@ router.get(
 );
 
 /**
+ * Get all users
+ *
+ * @name GET /api/users
+ *
+ * @return - all users
+ */
+router.get(
+  '/',
+  [],
+  async (req: Request, res: Response) => {
+    const users = await UserCollection.findAll();
+    const response = users.map(util.constructUserResponse);
+    res.status(200).json(response);
+  }
+);
+
+/**
  * Create a user account.
  *
  * @name POST /api/users

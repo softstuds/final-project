@@ -44,7 +44,8 @@ body {
 }
 
 main {
-  padding: 0 5em 5em;
+  padding: 40px;
+  padding-top: 20px;
 }
 
 .alerts {
