@@ -14,20 +14,20 @@ class UserCollection {
   /**
    * Add a new user
    *
-   * @param {string} username - The username of the user
+   * @param {string} email - The email of the user
    * @param {string} password - The password of the user
    * @return {Promise<HydratedDocument<User>>} - The newly created user
    */
-  static async addOne(firstName: string, lastName: string, password: string, graduationYear: string): Promise<HydratedDocument<User>> {
-    const lastLogin = new Date();
-    const username = firstName.toLowerCase() + lastName.toLowerCase() + graduationYear;
+  static async addOne(username: string, name: string, password: string, graduationYear: number): Promise<HydratedDocument<User>> {
+    const lastActive = new Date();
+    const nameArray = name.split(' ');
     const user = new UserModel({
-      username,
+      email: username,
       password,
-      firstName,
-      lastName,
-      graduationYear: parseInt(graduationYear, 10),
-      lastLogin
+      firstName: nameArray[0],
+      lastName: nameArray[nameArray.length-1],
+      graduationYear: graduationYear,
+      lastActive
     });
     await user.save(); // Saves user to MongoDB
     return user;
@@ -37,32 +37,32 @@ class UserCollection {
    * Find a user by userId.
    *
    * @param {string} userId - The userId of the user to find
-   * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given username, if any
+   * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given email, if any
    */
   static async findOneByUserId(userId: Types.ObjectId | string): Promise<HydratedDocument<User>> {
     return UserModel.findOne({_id: userId});
   }
 
   /**
-   * Find a user by username (case insensitive).
+   * Find a user by email (case insensitive).
    *
-   * @param {string} username - The username of the user to find
-   * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given username, if any
+   * @param {string} email - The email of the user to find
+   * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given email, if any
    */
-  static async findOneByUsername(username: string): Promise<HydratedDocument<User>> {
-    return UserModel.findOne({username: new RegExp(`^${username.trim()}$`, 'i')});
+  static async findOneByEmail(email: string): Promise<HydratedDocument<User>> {
+    return UserModel.findOne({email: new RegExp(`^${email.trim()}$`, 'i')});
   }
 
   /**
-   * Find a user by username (case insensitive).
+   * Find a user by email (case insensitive).
    *
-   * @param {string} username - The username of the user to find
+   * @param {string} email - The email of the user to find
    * @param {string} password - The password of the user to find
-   * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given username, if any
+   * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given email, if any
    */
-  static async findOneByUsernameAndPassword(username: string, password: string): Promise<HydratedDocument<User>> {
+  static async findOneByEmailAndPassword(email: string, password: string): Promise<HydratedDocument<User>> {
     return UserModel.findOne({
-      username: new RegExp(`^${username.trim()}$`, 'i'),
+      email: new RegExp(`^${email.trim()}$`, 'i'),
       password
     });
   }
@@ -74,14 +74,14 @@ class UserCollection {
    * @param {Object} userDetails - An object with the user's updated credentials
    * @return {Promise<HydratedDocument<User>>} - The updated user
    */
-  static async updateOne(userId: Types.ObjectId | string, userDetails: {password?: string; username?: string}): Promise<HydratedDocument<User>> {
+  static async updateOne(userId: Types.ObjectId | string, userDetails: {password?: string; email?: string}): Promise<HydratedDocument<User>> {
     const user = await UserModel.findOne({_id: userId});
     if (userDetails.password) {
       user.password = userDetails.password;
     }
 
-    if (userDetails.username) {
-      user.username = userDetails.username;
+    if (userDetails.email) {
+      user.email = userDetails.email;
     }
 
     await user.save();
