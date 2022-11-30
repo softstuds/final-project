@@ -30,7 +30,10 @@
         v-if="$store.state.username"
         to="/profile"
       >
-        Profile
+        <!-- Profile
+        :to="'/profile/' + $store.state.userId"
+      > -->
+        My Profile
       </router-link>
       <router-link
         v-else
