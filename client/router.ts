@@ -35,22 +35,14 @@ router.beforeEach((to, from, next) => {
       return;
     }
 
-<<<<<<< HEAD
 
     if (to.name === 'Meetings' && !router.app.$store.state.username) {
-=======
-    if (to.name === 'Meetings' && !router.app.$store.state.userId) {
->>>>>>> fdecbc915ac8b46c52eda8cc4093b1ad5b9ec75d
       next({name: 'Login'}); // Go to Login page if user navigates to Meetings and is not signed in
       return;
     }
 
-<<<<<<< HEAD
-    if (to.name === 'Profiles' && !router.app.$store.state.username) {
 
-=======
-    if (to.name === 'Profiles' && !router.app.$store.state.userId) {
->>>>>>> fdecbc915ac8b46c52eda8cc4093b1ad5b9ec75d
+    if (to.name === 'Profiles' && !router.app.$store.state.username) {
       next({name: 'Login'}); // Go to Login page if user navigates to Profiles and are not signed in
       return;
     }
