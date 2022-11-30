@@ -10,6 +10,7 @@ export default {
     return {
       url: '/api/users/password',
       method: 'PATCH',
+      refreshUser: true,
       hasBody: true,
       fields: [
         {id: 'password', label: 'Password', value: ''}

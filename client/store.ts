@@ -11,7 +11,7 @@ const store = new Vuex.Store({
   state: {
     filter: null, // Username to filter shown freets by (null = show all)
     freets: [], // All freets created in the app
-    email: null, // Email of the logged in user
+    user: null, // logged in user
     userId: null, // User ID of logged in user
     alerts: {} // global success/error messages encountered during submissions to non-visible forms
   },
@@ -25,19 +25,19 @@ const store = new Vuex.Store({
         Vue.delete(state.alerts, payload.message);
       }, 3000);
     },
-    setEmail(state, email) {
-      /**
-       * Update the stored username to the specified one.
-       * @param username - new username to set
-       */
-      state.email = email;
-    },
     setUserId(state, userId) {
       /**
        * Update the stored userId to the specified one.
        * @param userId - new userId to set
        */
       state.userId = userId;
+    },
+    setUser(state, user) {
+      /**
+       * Update the stored userId to the specified one.
+       * @param userId - new userId to set
+       */
+      state.user = user;
     },
     updateFilter(state, filter) {
       /**
@@ -52,6 +52,14 @@ const store = new Vuex.Store({
        * @param freets - Freets to store
        */
       state.freets = freets;
+    },
+    async refreshUser(state) {
+      const r = await fetch("api/users/" + this.$store.state.userId);
+      const res = await r.json();
+      if (!r.ok) {
+        throw new Error(res.error);
+      }
+      state.user = res.user;
     },
     async refreshFreets(state) {
       /**

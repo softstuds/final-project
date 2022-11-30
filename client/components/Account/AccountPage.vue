@@ -3,13 +3,13 @@
 
 <template>
   <main>
-    <section>
+    <section v-if="$store.state.user !== null">
       <header>
-        <h2>Account settings for {{ $store.state.name }}</h2>
+        <h2>Account settings for {{ $store.state.user.firstName + ' ' + $store.state.user.lastName }}</h2>
       </header>
-      <ChangeIndustryForm />
-      <ChangeGradYearForm />
-      <ChangeEmailForm />
+      <ChangeIndustryForm :originalValue="$store.state.user.industry ?? ''"/>
+      <ChangeGradYearForm :originalValue="$store.state.user.graduationYear ?? 2022"/>
+      <ChangeEmailForm :originalValue="$store.state.user.email"/>
       <ChangePasswordForm />
     </section>
     <section>

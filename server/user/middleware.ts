@@ -71,8 +71,14 @@ const isValidEmail = (req: Request, res: Response, next: NextFunction) => {
  * Checks if a email in req.body is valid
  */
 const isValidGraduationYear = (req: Request, res: Response, next: NextFunction) => {
-  const gradYear = parseInt(req.body.graduationYear, 10);
-  if (gradYear < 1860 && gradYear > 2026) {
+  if (!Number.isInteger(req.body.graduationYear)) {
+    res.status(400).json({
+      error: 'Graduation Year must be number.'
+    });
+    return;
+  }
+
+  if (req.body.graduationYear < 1860 && req.body.graduationYear > 2026) {
     res.status(400).json({
       error: 'Invalid graduation year.'
     });
