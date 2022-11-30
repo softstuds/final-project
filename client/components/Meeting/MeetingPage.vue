@@ -4,7 +4,6 @@
 <template>
     <main>
       <section>
-        <!-- <h1>{{ $store.state.name }}'s Meetings</h1> -->
         <div class="row">
             <div class="column">
                 <h2>Past Meetings</h2>
@@ -30,25 +29,10 @@
             </div>
             <div class="column">
                 <h2>Incoming Requests</h2>
-                <!-- <section
-                v-for="block in this.IncomingRequests"
-                class="meeting"
-                >
-                <MeetingComponent
-                :meeting="block"
-                 />
-                </section> -->
+
             </div>
             <div class="column">
                 <h2>Outgoing Requests</h2>
-                <!-- <section
-                v-for="block in this.OutgoingRequests"
-                class="meeting"
-                >
-                <MeetingComponent
-                :meeting="block"
-                 />
-                </section> -->
             </div>
         </div>
       </section>
@@ -99,7 +83,6 @@
                 method: 'GET',
                 url: '/api/timeblock/checkoccurred',
             }
-            
             
             this.upcomingMeetings = this.request(params);
 
@@ -180,11 +163,6 @@ h2, h2 > * {
     justify-content: center;
 }
 
-/* header, header > * {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-} */
 
 .row {
   display: flex;

@@ -62,6 +62,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     position: relative;
+    text-decoration: none;
 }
 
 .title {
@@ -88,6 +89,7 @@ img {
 
 .right a {
     margin-left: 5px;
+    text-decoration: none;
 }
 
 .alerts {

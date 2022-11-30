@@ -41,6 +41,7 @@ body {
   padding: 0;
   margin: 0;
   font-size: 1.2em;
+  font-family: Montserrat;
 }
 
 main {
@@ -75,5 +76,11 @@ main {
 
 .alerts .success {
     background-color: rgb(45, 135, 87);
+}
+
+/* montserrat-regular - latin */
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/public/montserrat-v25-latin-regular.woff'); /* IE9 Compat Modes */
 }
 </style>
