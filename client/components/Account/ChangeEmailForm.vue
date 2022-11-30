@@ -6,14 +6,20 @@ import BlockForm from '@/components/common/BlockForm.vue';
 export default {
   name: 'ChangeEmailForm',
   mixins: [BlockForm],
+  props: {
+    originalValue: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       url: '/api/users/email',
       method: 'PATCH',
       hasBody: true,
-      setUser: true,
+      refreshUser: true,
       fields: [
-        {id: 'email', label: 'Email', value: ''}
+        {id: 'email', label: 'Email', value: this.originalValue}
       ],
       title: 'Change Email',
       callback: () => {

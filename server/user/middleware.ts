@@ -3,7 +3,6 @@ import UserCollection from '../user/collection';
 
 /**
  * Checks if the current session user (if any) still exists in the database, for instance,
- * a user may try to post a freet in some browser while the account has been deleted in another or
  * when a user tries to modify an account in some browser while it has been deleted in another
  */
 const isCurrentSessionUserExists = async (req: Request, res: Response, next: NextFunction) => {
@@ -71,8 +70,14 @@ const isValidEmail = (req: Request, res: Response, next: NextFunction) => {
  * Checks if a email in req.body is valid
  */
 const isValidGraduationYear = (req: Request, res: Response, next: NextFunction) => {
-  const gradYear = parseInt(req.body.graduationYear, 10);
-  if (gradYear < 1860 && gradYear > 2026) {
+  if (!Number.isInteger(req.body.graduationYear)) {
+    res.status(400).json({
+      error: 'Graduation Year must be number.'
+    });
+    return;
+  }
+
+  if (req.body.graduationYear < 1860 && req.body.graduationYear > 2026) {
     res.status(400).json({
       error: 'Invalid graduation year.'
     });

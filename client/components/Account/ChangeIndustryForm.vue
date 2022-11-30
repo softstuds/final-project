@@ -6,14 +6,20 @@ import BlockForm from '@/components/common/BlockForm.vue';
 export default {
   name: 'ChangeIndustryForm',
   mixins: [BlockForm],
+  props: {
+    originalValue: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       url: '/api/users/industry',
       method: 'PATCH',
-      setUser: true,
+      refreshUser: true,
       hasBody: true,
       fields: [
-        {id: 'industry', label: 'Industry', value: ''}
+        {id: 'industry', label: 'Industry', value: this.originalValue}
       ],
       title: 'Change Industry',
       callback: () => {
