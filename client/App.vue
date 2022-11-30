@@ -20,6 +20,7 @@ export default {
     }).then(res => res.json()).then(res => {
       const user = res.user;
       this.$store.commit('setUsername', user ? user.email : null);
+      this.$store.commit('setUserId', user ? user._id : null);
     });
 
     // Clear alerts on page refresh
@@ -43,7 +44,8 @@ body {
 }
 
 main {
-  padding: 0 5em 5em;
+  padding: 40px;
+  padding-top: 20px;
 }
 
 .alerts {
