@@ -1,7 +1,9 @@
 <!-- Component for viewing a person's information (name, username, graduation year, last active, industry -->
 
 <template>
-  <div>
+  <div
+    v-if="user !== null"
+  >
     <header>
       <h2>{{ user.firstName }}</h2>
     </header>
@@ -34,15 +36,8 @@ export default {
   },
   data() {
     return {
-      user: {
-        firstName: "",
-        lastName: "",
-        lastActive: "",
-        gradYear: "",
-        industry: ""
-      },
-      timeBlocks: [],
-      calendarDays: []
+      user: null,
+      availabilities: []
     }
   },
   mounted() {
