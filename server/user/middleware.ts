@@ -121,6 +121,7 @@ const isEmailNotAlreadyInUse = async (req: Request, res: Response, next: NextFun
       return;
     }
   }
+
   next();
 };
 
@@ -145,6 +146,21 @@ const isUserLoggedOut = (req: Request, res: Response, next: NextFunction) => {
   if (req.session.userId) {
     res.status(403).json({
       error: 'You are already signed in.'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
+ * Checks if a user with userId as author id in req.query exists
+ */
+const isUserExists = async (req: Request, res: Response, next: NextFunction) => {
+  const user = await UserCollection.findOneByUserId(req.params.userId);
+  if (!user) {
+    res.status(404).json({
+      error: `A user with userId ${req.params.userId} does not exist.`
     });
     return;
   }
@@ -180,6 +196,7 @@ export {
   isUserLoggedOut,
   isEmailNotAlreadyInUse,
   isAccountExists,
+  isUserExists,
   isAuthorExists,
   isValidName,
   isValidPassword,

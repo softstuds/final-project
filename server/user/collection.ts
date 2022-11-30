@@ -25,8 +25,8 @@ class UserCollection {
       email: username,
       password,
       firstName: nameArray[0],
-      lastName: nameArray[nameArray.length-1],
-      graduationYear: graduationYear,
+      lastName: nameArray[nameArray.length - 1],
+      graduationYear,
       lastActive
     });
     await user.save(); // Saves user to MongoDB
