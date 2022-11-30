@@ -34,8 +34,6 @@ export default {
     ChangeEmailForm,
     ChangePasswordForm,
     ChangeInfoForm,
-    // ChangeIndustryForm,
-    // ChangeGradYearForm,
     DeleteAccountForm,
     LogoutForm
   }
