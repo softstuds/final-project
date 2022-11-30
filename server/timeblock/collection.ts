@@ -9,7 +9,7 @@ import UserCollection from '../user/collection';
  * Feel free to add additional operations in this file.
  *
  * Note: HydratedDocument<TimeBlock> is the output of the TimeBlockModel() constructor,
- * and contains all the information in Freet. https://mongoosejs.com/docs/typescript.html
+ * and contains all the information in TimeBlock. https://mongoosejs.com/docs/typescript.html
  */
 class TimeBlockCollection {
   /**

@@ -71,7 +71,6 @@ export default {
       setUser: false, // Whether or not stored username should be updated after form submission
       refreshUser: false, // Whether or not to refresh user info
       deleteUser: false, // If the user info has been deleted
-      refreshFreets: false, // Whether or not stored freets should be updated after form submission
       alerts: {}, // Displays success/error messages encountered during form submission
       callback: null // Function to run after successful form submission
     };
@@ -133,10 +132,6 @@ export default {
 
         if (this.refreshUser) {
           this.$store.commit('refreshUser');
-        }
-
-        if (this.refreshFreets) {
-          this.$store.commit('refreshFreets');
         }
 
         if (this.callback) {
