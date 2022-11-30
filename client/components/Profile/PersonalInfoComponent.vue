@@ -14,7 +14,8 @@
         </i>
         <p>Class of {{ user.graduationYear }}</p>
         <p><b>Industry: {{ user.industry !== undefined ? user.industry : "None" }}</b></p>
-        <WillingTosSelect 
+
+        <WillingTosSelect v-if="user._id === $store.state.userId"
           :userId="userId"
         />
       </section>
