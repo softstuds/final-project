@@ -11,6 +11,8 @@ export type UserResponse = {
   graduationYear: number;
   lastActive: string;
   industry: string;
+  bio: string;
+  meetingLink: string;
 };
 
 /**
