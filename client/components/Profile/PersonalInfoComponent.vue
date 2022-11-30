@@ -14,6 +14,9 @@
         </i>
         <p>Class of {{ user.graduationYear }}</p>
         <p><b>Industry: {{ user.industry !== undefined ? user.industry : "None" }}</b></p>
+        <WillingTosSelect 
+          :userId="userId"
+        />
       </section>
     </section>
     <section class="availability">
@@ -58,8 +61,11 @@
 </template>
 
 <script>
+import WillingTosSelect from '@/components/Tags/WillingTosSelect.vue';
+
 export default {
   name: 'PersonalInfoComponent',
+  components: {WillingTosSelect},
   props: {
     userId: {
       type: String,
