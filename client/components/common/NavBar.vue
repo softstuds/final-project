@@ -15,12 +15,13 @@
         Home
       </router-link>
       <router-link
-        v-if="$store.state.username"
-        to="/account"
+        v-if="$store.state.userId"
+        :to="'/profile/' + $store.state.userId"
       >
-        Account
+        My Profile
       </router-link>
       <router-link
+<<<<<<< HEAD
         v-if="$store.state.username"
         to="/meeting"
       >
@@ -34,6 +35,12 @@
         :to="'/profile/' + $store.state.userId"
       > -->
         My Profile
+=======
+        v-if="$store.state.userId"
+        to="/account"
+      >
+        Account
+>>>>>>> 8eeffeb86f09cfb8faeeebc23b42e49dce022a00
       </router-link>
       <router-link
         v-else

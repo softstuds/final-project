@@ -1,7 +1,9 @@
 <!-- Component for viewing a person's information (name, username, graduation year, last active, industry -->
 
 <template>
-  <div>
+  <div
+    v-if="user !== null"
+  >
     <header>
       <h2>{{ user.firstName }}</h2>
     </header>
@@ -12,52 +14,21 @@
         </i>
         <p>Class of {{ user.graduationYear }}</p>
         <p><b>Industry: {{ user.industry !== undefined ? user.industry : "None" }}</b></p>
+        <p>Bio: {{ user.bio ?? '' }}</p>
       </section>
     </section>
-    <section class="availability">
-      <section class="availabilityHeader">
-        <h3><b>Availability</b></h3>
-        <button 
-          v-if="user._id === $store.state.userId"
-          class="editButton"
-        >
-          Edit My Availabilities
-        </button>
-      </section>
-      <section class="calendar">
-        <section
-          v-for="(date, index) in availabilities"
-          :key="index"
-          class="day"
-        >
-          <section 
-            v-for="block in date"
-            :key="block.getHours()"
-            class="timeBlock"
-          >
-            {{ block.getHours() == 12 ?
-              12 + "pm" :
-              block.getHours() == 0 ?
-                12 + "am" :
-                block.getHours() > 12 ?
-                  block.getHours() - 12 + "pm" : 
-                  block.getHours() + "am"
-            }}
-            <div>
-              <button v-if="user._id !== $store.state.userId">
-                Claim
-              </button>
-            </div>
-          </section>
-        </section>
-      </section>
-    </section>
+    <CalendarComponent 
+      :userId="userId"
+    />
   </div>
 </template>
 
 <script>
+import CalendarComponent from '@/components/Profile/CalendarComponent.vue';
+
 export default {
   name: 'PersonalInfoComponent',
+  components: {CalendarComponent},
   props: {
     userId: {
       type: String,
@@ -66,19 +37,12 @@ export default {
   },
   data() {
     return {
-      user: {
-        firstName: "",
-        lastName: "",
-        lastActive: "",
-        gradYear: "",
-        industry: ""
-      },
+      user: null,
       availabilities: []
     }
   },
   mounted() {
     this.getUser();
-    this.getAvailibilities();
   },
   methods: {
     async getUser() {
@@ -89,18 +53,6 @@ export default {
       }
       this.user = res.user;
     },
-    getAvailibilities() {
-        const availabilities = [
-            [new Date('24 Nov 2022 13:00')],
-            [new Date('25 Nov 2022 15:00')],
-            [new Date('26 Nov 2022 11:00'), new Date('26 Nov 2022 13:00')],
-            [],
-            [new Date('28 Nov 2022 9:00')],
-            [new Date('29 Nov 2022 10:00')],
-            [new Date('30 Nov 2022 14:00')]
-        ];
-        this.availabilities = availabilities;
-    }
   }
 };
 </script>
@@ -109,31 +61,5 @@ export default {
 .flatText {
     color: gray
 }
-.availability {
-    border-top: 1px solid black;
-}
 
-.availabilityHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.editButton {
-  height: 25px
-}
-.calendar {
-    display: flex;
-}
-
-.day {
-    width: 100%;
-    border: 1px solid black;
-    padding: 1%
-}
-
-.timeBlock {
-    border: 1px solid black;
-    padding: 10%
-}
 </style>
