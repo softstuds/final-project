@@ -2,7 +2,6 @@
 
 <template>
     <main>
-        
         <span>{{this.$store.state.timeblocks}}</span>
     </main>
 </template>
