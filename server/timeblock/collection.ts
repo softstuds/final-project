@@ -8,7 +8,7 @@ import TimeBlockModel from './model';
  * Feel free to add additional operations in this file.
  *
  * Note: HydratedDocument<TimeBlock> is the output of the TimeBlockModel() constructor,
- * and contains all the information in Freet. https://mongoosejs.com/docs/typescript.html
+ * and contains all the information in TimeBlock. https://mongoosejs.com/docs/typescript.html
  */
 class TimeBlockCollection {
   /**
@@ -22,7 +22,7 @@ class TimeBlockCollection {
     const time = new Date(start);
     const timeBlock = new TimeBlockModel({
       owner: ownerId,
-      start: time,
+      start: time
     });
     await timeBlock.save(); // Saves time block to MongoDB
     return timeBlock.populate('owner');
@@ -38,17 +38,17 @@ class TimeBlockCollection {
     return TimeBlockModel.findOne({_id: timeBlockId}).populate('owner requester');
   }
 
-/**
+  /**
    * Get all the time blocks in the database with a given user as owner or requester
    * in order of most to least recent start time
    *
    * @param {string} ownerId - The id of the owner
    * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the time blocks for a given owner
    */
-     static async findAllByOwner(ownerId: Types.ObjectId | string): Promise<Array<HydratedDocument<TimeBlock>>> {
-        // Retrieves time blocks and sorts them from latest to earliest time
-        return TimeBlockModel.find({owner: ownerId}).sort({start: -1}).populate('owner requester');
-    }
+  static async findAllByOwner(ownerId: Types.ObjectId | string): Promise<Array<HydratedDocument<TimeBlock>>> {
+    // Retrieves time blocks and sorts them from latest to earliest time
+    return TimeBlockModel.find({owner: ownerId}).sort({start: -1}).populate('owner requester');
+  }
 
   /**
    * Get all the time blocks in the database with a given user as owner or requester
@@ -132,10 +132,10 @@ class TimeBlockCollection {
    * @return {Promise<HydratedDocument<TimeBlock>>} - The newly updated time block
    */
   static async updateOneAccepted(timeBlockId: Types.ObjectId | string): Promise<HydratedDocument<TimeBlock>> {
-        const timeBlock = await TimeBlockModel.findOne({_id: timeBlockId});
-        timeBlock.accepted = true;
-        await timeBlock.save();
-        return timeBlock.populate('owner requester');
+    const timeBlock = await TimeBlockModel.findOne({_id: timeBlockId});
+    timeBlock.accepted = true;
+    await timeBlock.save();
+    return timeBlock.populate('owner requester');
   }
 
   /**
