@@ -61,7 +61,7 @@ class TimeBlockCollection {
   }
 
   /**
-   * Get all the time blocks in the database with a given user as owner or requester that's occurred and unmarked
+   * Get all the time blocks in the database with a given user as owner or requester that's passed and unmarked
    *
    * @param {string} userId - The id of the user
    * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the time blocks for a given owner
@@ -69,7 +69,7 @@ class TimeBlockCollection {
    static async findAllByUserOccurred(userId: Types.ObjectId | string): Promise<Array<HydratedDocument<TimeBlock>>> {
     // Retrieves time blocks and sorts them from latest to earliest time
     const now = new Date();
-    return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}]},{start: {$lte: now}, accepted: true, occurred: null}).sort({start: -1}).populate('owner requester');
+    return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}]},{start: {$lte: now}, accepted: true, met: null}).sort({start: -1}).populate('owner requester');
   }
 
   /**
@@ -112,15 +112,15 @@ class TimeBlockCollection {
   }
 
   /**
-   * Update a time block with an occurred
+   * Update a time block with met
    *
    * @param {string} timeBlockId - The id of the time block to be updated
-   * @param {boolean} occurred - Whether the meeting should be marked as occurred or not
+   * @param {boolean} met - Whether the meeting should be marked as met or not
    * @return {Promise<HydratedDocument<TimeBlock>>} - The newly updated time block
    */
-     static async updateOneOccurred(timeBlockId: Types.ObjectId | string, occurred: boolean): Promise<HydratedDocument<TimeBlock>> {
+     static async updateOneMet(timeBlockId: Types.ObjectId | string, met: boolean): Promise<HydratedDocument<TimeBlock>> {
         const timeBlock = await TimeBlockModel.findOne({_id: timeBlockId});
-        timeBlock.occurred = occurred;
+        timeBlock.met = met;
         await timeBlock.save();
         return timeBlock.populate('owner requester');
   }

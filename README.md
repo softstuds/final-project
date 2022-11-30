@@ -41,11 +41,11 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `404` if user is not logged in
 
-#### `GET /api/timeblock/met/check` - Get all the time blocks that a user needs to mark as occurred/not
+#### `GET /api/timeblock/met/check` - Get all the time blocks that a user needs to mark as met/not
 
 **Returns**
 
-- A list of all the time blocks for the user to mark as occurred, sorted in descending order by start
+- A list of all the time blocks for the user to mark as met, sorted in descending order by start
 
 **Throws**
 
@@ -55,7 +55,7 @@ This renders the `index.html` file that will be used to interact with the backen
 
 **Returns**
 
-- A list of all the time blocks for the user to mark as occurred, sorted in descending order by start
+- A list of all the time blocks for the user to mark as met, sorted in descending order by start
 
 **Throws**
 
@@ -119,7 +119,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in or is not the owner of the time block
 - `404` if either the time block with given ID does not exist or the input is not valid
 
-#### `PATCH /api/timeblock/occurred/:timeBlockId` - Modify a time block by marking a meeting as occurred or not
+#### `PATCH /api/timeblock/met/:timeBlockId` - Modify a time block by marking a meeting as met or not
 
 **Body**
 

@@ -30,12 +30,12 @@ router.get(
 );
 
 /**
- * Get all the time blocks that a user needs to mark as occurred/not
+ * Get all the time blocks that a user needs to mark as met/not
  *
  * @name GET /api/timeblock/met/check
  *
  * @return {TimeBlockResponse[]} - A list of all the time blocks for the user 
- *                      to mark as occurred, sorted in descending order by start
+ *                      to mark as met, sorted in descending order by start
  * @throws {404} - If the user is not logged in
  */
  router.get(
@@ -58,7 +58,7 @@ router.get(
  * @name GET /api/timeblock/unclaimed/:userId
  *
  * @return {TimeBlockResponse[]} - A list of all the time blocks for the user 
- *                      to mark as occurred, sorted in descending order by start
+ *                      to mark as met, sorted in descending order by start
  * @throws {404} - If the user is not logged in or the userId is not a valid one
  */
  router.get(
@@ -196,9 +196,9 @@ router.patch(
   );
 
 /**
- * Modify a time block by marking a meeting as occurred or not
+ * Modify a time block by marking a meeting as met or not
  *
- * @name PATCH /api/timeblock/occurred/:id
+ * @name PATCH /api/timeblock/met/:id
  *
  * @param {boolean} input - the response of the owner or requester
  * @return {TimeBlockResponse} - the updated time block
@@ -207,7 +207,7 @@ router.patch(
  * @throws {409} - If the time block start has not passed yet or is not an accepted meeting
  */
 router.patch(
-    '/occurred/:timeBlockId?',
+    '/met/:timeBlockId?',
     [
       userValidator.isUserLoggedIn,
       timeBlockValidator.isBlockExistent,
@@ -217,7 +217,7 @@ router.patch(
       timeBlockValidator.isValidInput,
     ],
     async (req: Request, res: Response) => {
-      const timeBlock = await TimeBlockCollection.updateOneOccurred(req.params.timeBlockId, req.body.input);
+      const timeBlock = await TimeBlockCollection.updateOneMet(req.params.timeBlockId, req.body.input);
       res.status(200).json({
         message: 'Your meeting status was updated successfully.',
         timeBlock: util.constructTimeBlockResponse(timeBlock),
