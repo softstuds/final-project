@@ -4,20 +4,26 @@
 import BlockForm from '@/components/common/BlockForm.vue';
 
 export default {
-  name: 'ChangePasswordForm',
+  name: 'ChangeGradYearForm',
   mixins: [BlockForm],
+  props: {
+    originalValue: {
+      type: Number,
+      required: true
+    }
+  },
   data() {
     return {
-      url: '/api/users/password',
+      url: '/api/users/graduationYear',
       method: 'PATCH',
       refreshUser: true,
       hasBody: true,
       fields: [
-        {id: 'password', label: 'Password', value: ''}
+        {id: 'graduationYear', label: 'Graduation Year', value: this.originalValue}
       ],
-      title: 'Change Password',
+      title: 'Change Graduation Year',
       callback: () => {
-        const message = 'Successfully changed password!';
+        const message = 'Successfully changed graduation year!';
         this.$set(this.alerts, message, 'success');
         setTimeout(() => this.$delete(this.alerts, message), 3000);
       }

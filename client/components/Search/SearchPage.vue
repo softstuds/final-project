@@ -2,7 +2,7 @@
 
 <template>
   <main>
-    <section v-if="$store.state.username">
+    <section v-if="$store.state.user">
       <header>
         <h2>Viewing Users</h2>
       </header>

@@ -39,9 +39,9 @@ const constructTimeBlockResponse = (timeBlock: HydratedDocument<TimeBlock>): Tim
   return {
     ...timeBlockCopy,
     _id: timeBlockCopy._id.toString(),
-    owner: owner,
-    requester: requester,
-    start: formatDate(timeBlockCopy.start),
+    owner,
+    requester,
+    start: formatDate(timeBlockCopy.start)
   };
 };
 

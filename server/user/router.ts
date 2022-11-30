@@ -150,7 +150,6 @@ router.post(
   ],
   async (req: Request, res: Response) => {
     const user = await UserCollection.addOne(req.body.email, req.body.name, req.body.password, req.body.graduationYear);
-    console.log(user);
     req.session.userId = user._id.toString();
     res.status(201).json({
       message: `Your account was created successfully. You have been logged in as ${user.firstName} ${user.lastName}`,
@@ -162,22 +161,95 @@ router.post(
 /**
  * Update a user's profile.
  *
- * @name PATCH /api/users
+ * @name PATCH /api/users/email
  *
  * @param {string} email - The user's new email
- * @param {string} password - The user's new password
  * @return {UserResponse} - The updated user
  * @throws {403} - If user is not logged in
  * @throws {409} - If email already taken
- * @throws {400} - If email or password are not of the correct format
+ * @throws {400} - If email is not of the correct format
  */
 router.patch(
-  '/',
+  '/email',
   [
     userValidator.isUserLoggedIn,
     userValidator.isValidEmail,
-    userValidator.isEmailNotAlreadyInUse,
+    userValidator.isEmailNotAlreadyInUse
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const user = await UserCollection.updateOne(userId, req.body);
+    res.status(200).json({
+      message: 'Your profile was updated successfully.',
+      user: util.constructUserResponse(user)
+    });
+  }
+);
+
+/**
+ * Update a user's profile.
+ *
+ * @name PATCH /api/users/password
+ *
+ * @param {string} password - The user's new password
+ * @return {UserResponse} - The updated user
+ * @throws {403} - If user is not logged in
+ * @throws {400} - If password is not of the correct format
+ */
+router.patch(
+  '/password',
+  [
+    userValidator.isUserLoggedIn,
     userValidator.isValidPassword
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const user = await UserCollection.updateOne(userId, req.body);
+    res.status(200).json({
+      message: 'Your profile was updated successfully.',
+      user: util.constructUserResponse(user)
+    });
+  }
+);
+
+/**
+ * Update a user's industry.
+ *
+ * @name PATCH /api/users/industry
+ *
+ * @param {string} industry - The user's new industry
+ * @return {UserResponse} - The updated user
+ * @throws {403} - If user is not logged in
+ */
+router.patch(
+  '/industry',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const user = await UserCollection.updateOne(userId, req.body);
+    res.status(200).json({
+      message: 'Your profile was updated successfully.',
+      user: util.constructUserResponse(user)
+    });
+  }
+);
+
+/**
+ * Update a user's graduation year.
+ *
+ * @name PATCH /api/users/gradYear
+ *
+ * @param {string} gradYear - The user's new gradYear
+ * @return {UserResponse} - The updated user
+ * @throws {403} - If user is not logged in
+ */
+router.patch(
+  '/graduationYear',
+  [
+    userValidator.isUserLoggedIn,
+    userValidator.isValidGraduationYear
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn

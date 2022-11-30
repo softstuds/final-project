@@ -167,9 +167,9 @@ Working in Vue means working with Vue components. The starter code organizes com
 ### Template
 Every component takes advantage of an [HTML-based template syntax](https://v2.vuejs.org/v2/guide/syntax.html), which is HTML code that binds the rendered DOM to the component data. Inside the template is where we can display specific form components like `<CreateFreetForm />`. We also take advantage of [conditional rendering](https://v2.vuejs.org/v2/guide/conditional.html) here to display different things to different users (such as signed in vs. signed out). For example, in `client/components/Freet/Freets.vue` in lines 5-23, we have:
 ```
-<section v-if="$store.state.username">
+<section v-if="$store.state.userId">
   <header>
-    <h2>Welcome @{{ $store.state.username }}</h2>
+    <h2>Welcome @{{ $store.state.user.firstName }}</h2>
   </header>
   <CreateFreetForm />
 </section>
@@ -187,7 +187,7 @@ Every component takes advantage of an [HTML-based template syntax](https://v2.vu
   </article>
 </section>
 ```
-Here, if `store.state.username` exists, we say `Welcome @username`. Otherwise, we say `Welcome to Fritter!` and give them a link to the login page. This is just one example of conditional rendering.
+Here, if `store.state.userId` exists, we say `Welcome user.firstName`. Otherwise, we say `Welcome to Fritter!` and give them a link to the login page. This is just one example of conditional rendering.
 
 ### Components
 Each `.vue` file also has script tag, which is where you can export the actual component.
