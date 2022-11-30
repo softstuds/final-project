@@ -15,13 +15,13 @@
         Home
       </router-link>
       <router-link
-        v-if="$store.state.email"
+        v-if="$store.state.userId"
         :to="'/profile/' + $store.state.userId"
       >
         My Profile
       </router-link>
       <router-link
-        v-if="$store.state.email"
+        v-if="$store.state.userId"
         to="/account"
       >
         Account

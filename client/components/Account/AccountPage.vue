@@ -3,7 +3,7 @@
 
 <template>
   <main>
-    <section v-if="$store.state.user !== null">
+    <section v-if="$store.state.user">
       <header>
         <h2>Account settings for {{ $store.state.user.firstName + ' ' + $store.state.user.lastName }}</h2>
       </header>
