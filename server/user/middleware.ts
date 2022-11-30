@@ -63,7 +63,7 @@ const isValidEmail = (req: Request, res: Response, next: NextFunction) => {
     });
     return;
   }
-  console.log('completed');
+
   next();
 };
 
