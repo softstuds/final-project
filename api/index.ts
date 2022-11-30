@@ -11,7 +11,7 @@ import {userRouter} from '../server/user/router';
 import {freetRouter} from '../server/freet/router';
 import { industryRouter } from '../server/industry/router';
 import { tagsRouter } from '../server/tags/router';
-import { timeBlockRouter } from 'server/timeblock/router';
+import { timeBlockRouter } from '../server/timeblock/router';
 import MongoStore from 'connect-mongo';
 
 // Load environmental variables
