@@ -27,7 +27,10 @@
                   block.start.getHours() + "am"
             }}
             <div>
-              <button v-if="userId !== $store.state.userId">
+              <button 
+                v-if="userId !== $store.state.userId"
+                @click="requestTimeBlock(block._id)"
+              >
                 Request
               </button>
               <button 
@@ -252,6 +255,26 @@ export default {
             }
             this.getAvailibilities();
         },
+        async requestTimeBlock(blockId) {            
+            const options = {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'same-origin',
+                body: JSON.stringify({userId: this.$store.state.userId})
+            };
+
+            try {
+                const r = await fetch('api/timeblock/request/' + blockId, options);
+                const res = await r.json();
+                if (!r.ok) {
+                    throw new Error(res.error);
+                }
+            } catch (e) {
+                this.$set(this.alerts, e, 'error');
+                setTimeout(() => this.$delete(this.alerts, e), 3000);
+            }
+            this.getAvailibilities();
+        },
         async deleteTimeBlock(blockId) {            
             const options = {
                 method: 'DELETE',
@@ -270,7 +293,7 @@ export default {
                 setTimeout(() => this.$delete(this.alerts, e), 3000);
             }
             this.getAvailibilities();
-        },
+        }
     }
 };
 </script>
