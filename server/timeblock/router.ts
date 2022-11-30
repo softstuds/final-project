@@ -32,14 +32,14 @@ router.get(
 /**
  * Get all the time blocks that a user needs to mark as occurred/not
  *
- * @name GET /api/timeblock/checkoccurred
+ * @name GET /api/timeblock/met/check
  *
  * @return {TimeBlockResponse[]} - A list of all the time blocks for the user 
  *                      to mark as occurred, sorted in descending order by start
  * @throws {404} - If the user is not logged in
  */
  router.get(
-    '/checkoccurred',
+    '/met/check',
     [
       userValidator.isUserLoggedIn,
     ],
