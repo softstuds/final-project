@@ -88,7 +88,8 @@ router.put(
   '/',
   [
     userValidator.isUserLoggedIn,
-    timeBlockValidator.isBlockNonexistent
+    timeBlockValidator.isBlockNonexistent,
+    timeBlockValidator.isBlockInNextSeven
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn

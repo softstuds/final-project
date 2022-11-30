@@ -60,7 +60,6 @@
           </button>
         </section>
       </section>
-      
       <section 
         id="selectDate"
         class="dateSelector"
@@ -123,6 +122,15 @@
         </section>
       </section>
     </section>
+    <section class="alerts">
+      <article
+        v-for="(status, alert, index) in alerts"
+        :key="index"
+        :class="status"
+      >
+        <p>{{ alert }}</p>
+      </article>
+    </section>
   </div>
 </template>
 
@@ -139,7 +147,8 @@ export default {
         return {
             editing: false,
             timeBlocks: [],
-            calendarDays: []
+            calendarDays: [],
+            alerts: {}
         }
     },
     mounted() {
