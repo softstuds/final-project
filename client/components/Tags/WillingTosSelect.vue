@@ -26,19 +26,6 @@ export default {
             required: true
         }
     },
-    created() {
-        // set options based on user's categories
-        // for (let category of this.$store.state.categories) {
-        //     const tag = {name: category.name};
-        //     this.options.push(tag);
-        // }
-        
-        // // pre-set values of categories already selected for a freet
-        // for (let category of this.freet.categories) {
-        //     const tag = {name: category.name};
-        //     this.value.push(tag);
-        // }
-    },
     data() {
         return {
             alerts: {},
