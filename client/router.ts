@@ -13,8 +13,7 @@ const routes = [
   {path: '/', name: 'Home', component: SearchPage},
   {path: '/account', name: 'Account', component: AccountPage},
   {path: '/meeting', name: 'Meetings', component: MeetingPage},
-  {path: '/profile', name: 'Profiles', component: ProfilePage},
-  {path: '/profile/:userId', name: 'Profiles', component: ProfilePage},
+  {path: '/profile/:userId', name: 'My Profile', component: ProfilePage},
   {path: '/login', name: 'Login', component: LoginPage},
   {path: '*', name: 'Not Found', component: NotFound}
 ];
@@ -36,12 +35,12 @@ router.beforeEach((to, from, next) => {
       return;
     }
 
-    if (to.name === 'Meetings' && !router.app.$store.state.username) {
+    if (to.name === 'Meetings' && !router.app.$store.state.userId) {
       next({name: 'Login'}); // Go to Login page if user navigates to Meetings and is not signed in
       return;
     }
 
-    if (to.name === 'Profiles' && !router.app.$store.state.username) {
+    if (to.name === 'Profiles' && !router.app.$store.state.userId) {
       next({name: 'Login'}); // Go to Login page if user navigates to Profiles and are not signed in
       return;
     }

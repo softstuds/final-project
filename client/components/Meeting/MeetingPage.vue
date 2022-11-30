@@ -99,7 +99,7 @@
         //     method: 'GET',
         //     url: '/api/timeblock/checkoccurred',
         // }
-        fetch("/api/timeblock/checkoccured")
+        fetch("/api/timeblock/checkoccurred")
             .then(async response => {
             const data = await response.json();
 
