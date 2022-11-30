@@ -9,11 +9,8 @@ import dotenv from 'dotenv';
 import * as userValidator from '../server/user/middleware';
 import {userRouter} from '../server/user/router';
 import {freetRouter} from '../server/freet/router';
-<<<<<<< HEAD
 import { industryRouter } from '../server/industry/router';
-=======
 import { tagsRouter } from '../server/tags/router';
->>>>>>> 6220773277fd853d147048c33ede7505624564ab
 import { timeBlockRouter } from 'server/timeblock/router';
 import MongoStore from 'connect-mongo';
 
@@ -76,11 +73,8 @@ app.use(userValidator.isCurrentSessionUserExists);
 // Add routers from routes folder
 app.use('/api/users', userRouter);
 app.use('/api/freets', freetRouter);
-<<<<<<< HEAD
 app.use('/api/industry', industryRouter);
-=======
 app.use('/api/tags', tagsRouter);
->>>>>>> 6220773277fd853d147048c33ede7505624564ab
 app.use('/api/timeblock', timeBlockRouter);
 
 // Catch all the other routes and display error message
