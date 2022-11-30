@@ -200,6 +200,5 @@ export {
   isValidName,
   isValidPassword,
   isValidEmail,
-  isValidGraduationYear,
-  isUserExists
+  isValidGraduationYear
 };

@@ -15,7 +15,7 @@ export default {
       fields: [
         {id: 'email', label: 'Email', value: ''}
       ],
-      title: 'Change email',
+      title: 'Change Email',
       callback: () => {
         const message = 'Successfully changed email!';
         this.$set(this.alerts, message, 'success');

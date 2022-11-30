@@ -14,7 +14,7 @@ export default {
       fields: [
         {id: 'password', label: 'Password', value: ''}
       ],
-      title: 'Change password',
+      title: 'Change Password',
       callback: () => {
         const message = 'Successfully changed password!';
         this.$set(this.alerts, message, 'success');

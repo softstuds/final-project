@@ -8,6 +8,7 @@
         <h2>Account settings for {{ $store.state.name }}</h2>
       </header>
       <ChangeIndustryForm />
+      <ChangeGradYearForm />
       <ChangeEmailForm />
       <ChangePasswordForm />
     </section>
@@ -24,7 +25,8 @@
 <script>
 import ChangeEmailForm from '@/components/Account/ChangeEmailForm.vue';
 import ChangePasswordForm from '@/components/Account/ChangePasswordForm.vue';
-import ChangeIndustryForm from '@/components/Account/ChangeIndustryForm.vue'
+import ChangeIndustryForm from '@/components/Account/ChangeIndustryForm.vue';
+import ChangeGradYearForm from '@/components/Account/ChangeGradYearForm.vue';
 import DeleteAccountForm from '@/components/Account/DeleteAccountForm.vue';
 import LogoutForm from '@/components/Account/LogoutForm.vue';
 
@@ -34,6 +36,7 @@ export default {
     ChangeEmailForm,
     ChangePasswordForm,
     ChangeIndustryForm,
+    ChangeGradYearForm,
     DeleteAccountForm,
     LogoutForm
   }

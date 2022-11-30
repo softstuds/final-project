@@ -4,20 +4,20 @@
 import BlockForm from '@/components/common/BlockForm.vue';
 
 export default {
-  name: 'ChangeIndustryForm',
+  name: 'ChangeGradYearForm',
   mixins: [BlockForm],
   data() {
     return {
-      url: '/api/users/industry',
+      url: '/api/users/graduationYear',
       method: 'PATCH',
       setUser: true,
       hasBody: true,
       fields: [
-        {id: 'industry', label: 'Industry', value: ''}
+        {id: 'graduationYear', label: 'Graduation Year', value: ''}
       ],
-      title: 'Change Industry',
+      title: 'Change Graduation Year',
       callback: () => {
-        const message = 'Successfully changed industry!';
+        const message = 'Successfully changed graduation year!';
         this.$set(this.alerts, message, 'success');
         setTimeout(() => this.$delete(this.alerts, message), 3000);
       }
