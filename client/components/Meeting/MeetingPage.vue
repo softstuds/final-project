@@ -75,10 +75,10 @@
         this.user = res.user;
         },
         getPastMeetings() {
-            const upcomingMeetings = [
-                    [new Date('24 Nov 2022 13:00')],
-                    [new Date('25 Nov 2022 15:00')]
-                ];
+            // const upcomingMeetings = [
+            //         [new Date('24 Nov 2022 13:00')],
+            //         [new Date('25 Nov 2022 15:00')]
+            //     ];
             const params = {
                 method: 'GET',
                 url: '/api/timeblock/checkoccurred',
