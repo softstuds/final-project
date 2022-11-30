@@ -64,6 +64,23 @@ import UserCollection from '../user/collection';
   };
 
 /**
+ * Checks if the start time given in req.body is in the future
+ */
+ const isValidStart = async (req: Request, res: Response, next: NextFunction) => {
+  const now = new Date();
+  const start = new Date(req.body.start);
+  if (start < now) {
+      res.status(409).json({
+          error: `Start time ${start} has already passed.`
+      });
+      return;
+  }
+
+
+  next();
+};
+
+/**
  * Checks if a block with a given start time in req.body already exists with the user
  */
  const isBlockNonexistent = async (req: Request, res: Response, next: NextFunction) => {
@@ -203,6 +220,7 @@ export {
     isValidUserParam,
     isValidUserBody,
     isValidInput,
+    isValidStart,
     isBlockNonexistent,
     isBlockExistent,
     isBlockOwner,

@@ -83,13 +83,15 @@ router.get(
  * @param {string} start - The start time of the time block
  * @return {TimeBlockResponse} - The created time block
  * @throws {403} - If the user is not logged in
- * @throws {409} - If the user already has a time block with the given start time
+ * @throws {409} - If the user already has a time block with the given start time 
+ *                or if the start time has already passed
  */
 router.put(
   '/',
   [
     userValidator.isUserLoggedIn,
     timeBlockValidator.isBlockNonexistent,
+    timeBlockValidator.isValidStart,
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
