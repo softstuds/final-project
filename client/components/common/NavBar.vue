@@ -36,6 +36,12 @@
         My Profile
       </router-link>
       <router-link
+        v-if="$store.state.userId"
+        to="/account"
+      >
+        Account
+      </router-link>
+      <router-link
         v-else
         to="/login"
       >

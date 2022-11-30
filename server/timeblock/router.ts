@@ -12,14 +12,14 @@ const router = express.Router();
  *
  * @name GET /api/timeblock
  *
- * @return {TimeBlockResponse[]} - A list of all the time blocks for the user 
+ * @return {TimeBlockResponse[]} - A list of all the time blocks for the user
  *                      sorted in descending order by start
  * @throws {404} - If the user is not logged in
  */
 router.get(
   '/',
   [
-    userValidator.isUserLoggedIn,
+    userValidator.isUserLoggedIn
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? '';
@@ -34,47 +34,45 @@ router.get(
  *
  * @name GET /api/timeblock/checkoccurred
  *
- * @return {TimeBlockResponse[]} - A list of all the time blocks for the user 
+ * @return {TimeBlockResponse[]} - A list of all the time blocks for the user
  *                      to mark as occurred, sorted in descending order by start
  * @throws {404} - If the user is not logged in
  */
- router.get(
-    '/checkoccurred',
-    [
-      userValidator.isUserLoggedIn,
-    ],
-    async (req: Request, res: Response) => {
-      console.log('hi');
-      const userId = (req.session.userId as string) ?? '';
-      const occurredTimeBlocks = await TimeBlockCollection.findAllByUserOccurred(userId);
-      const response = occurredTimeBlocks.map(util.constructTimeBlockResponse);
-      res.status(200).json(response);
-    }
-  );
-
+router.get(
+  '/checkoccurred',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? '';
+    const occurredTimeBlocks = await TimeBlockCollection.findAllByUserOccurred(userId);
+    const response = occurredTimeBlocks.map(util.constructTimeBlockResponse);
+    res.status(200).json(response);
+  }
+);
 
 /**
  * Get all the time blocks that a given user has unclaimed
  *
  * @name GET /api/timeblock/unclaimed/:userId
  *
- * @return {TimeBlockResponse[]} - A list of all the time blocks for the user 
+ * @return {TimeBlockResponse[]} - A list of all the time blocks for the user
  *                      to mark as occurred, sorted in descending order by start
  * @throws {404} - If the user is not logged in or the userId is not a valid one
  */
- router.get(
-    '/unclaimed/:userId?',
-    [
-      userValidator.isUserLoggedIn,
-      timeBlockValidator.isValidUserParam,
-    ],
-    async (req: Request, res: Response) => {
-      const userId = (req.params.userId as string);
-      const unclaimedTimeBlocks = await TimeBlockCollection.findAllByOwnerUnclaimed(userId);
-      const response = unclaimedTimeBlocks.map(util.constructTimeBlockResponse);
-      res.status(200).json(response);
-    }
-  );
+router.get(
+  '/unclaimed/:userId?',
+  [
+    userValidator.isUserLoggedIn,
+    timeBlockValidator.isValidUserParam
+  ],
+  async (req: Request, res: Response) => {
+    const {userId} = req.params;
+    const unclaimedTimeBlocks = await TimeBlockCollection.findAllByOwnerUnclaimed(userId);
+    const response = unclaimedTimeBlocks.map(util.constructTimeBlockResponse);
+    res.status(200).json(response);
+  }
+);
 
 /**
  * Create a new time block.
@@ -91,6 +89,7 @@ router.put(
   [
     userValidator.isUserLoggedIn,
     timeBlockValidator.isBlockNonexistent,
+    timeBlockValidator.isBlockInNextSeven
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
@@ -117,7 +116,7 @@ router.delete(
   [
     userValidator.isUserLoggedIn,
     timeBlockValidator.isBlockExistent,
-    timeBlockValidator.isBlockOwner,
+    timeBlockValidator.isBlockOwner
   ],
   async (req: Request, res: Response) => {
     const deleted = await TimeBlockCollection.deleteOne(req.params.timeBlockId);
@@ -147,7 +146,7 @@ router.patch(
     timeBlockValidator.isValidUserBody,
     timeBlockValidator.isBlockExistent,
     timeBlockValidator.isBlockInFuture,
-    timeBlockValidator.isBlockNotOwner,
+    timeBlockValidator.isBlockNotOwner
   ],
   async (req: Request, res: Response) => {
     const timeBlock = await TimeBlockCollection.updateOneRequest(req.params.timeBlockId, req.body.userId);
@@ -168,31 +167,31 @@ router.patch(
  * @throws {403} - if the user is not logged in or user is not block owner
  * @throws {404} - If either the time block with given ID does not exist or the input is not valid
  */
- router.patch(
-    '/accepted/:timeBlockId?',
-    [
-      userValidator.isUserLoggedIn,
-      timeBlockValidator.isBlockExistent,
-      timeBlockValidator.isBlockOwner,
-      timeBlockValidator.isValidInput,
-    ],
-    async (req: Request, res: Response) => {
-      if (req.body.input) {
-        const timeBlock = await TimeBlockCollection.updateOneAccepted(req.params.timeBlockId);
-        res.status(200).json({
-          message: 'The request was accepted successfully.',
-          timeBlock: util.constructTimeBlockResponse(timeBlock),
-        });
-      } else {
-        // keep accepted false, change claimed to false and requester to null
-        const timeBlock = await TimeBlockCollection.updateOneRequest(req.params.timeBlockId, null);
-        res.status(200).json({
-            message: 'The request was rejected successfully.',
-            timeBlock: util.constructTimeBlockResponse(timeBlock),
-        });
-      }
+router.patch(
+  '/accepted/:timeBlockId?',
+  [
+    userValidator.isUserLoggedIn,
+    timeBlockValidator.isBlockExistent,
+    timeBlockValidator.isBlockOwner,
+    timeBlockValidator.isValidInput
+  ],
+  async (req: Request, res: Response) => {
+    if (req.body.input) {
+      const timeBlock = await TimeBlockCollection.updateOneAccepted(req.params.timeBlockId);
+      res.status(200).json({
+        message: 'The request was accepted successfully.',
+        timeBlock: util.constructTimeBlockResponse(timeBlock)
+      });
+    } else {
+      // Keep accepted false, change claimed to false and requester to null
+      const timeBlock = await TimeBlockCollection.updateOneRequest(req.params.timeBlockId, null);
+      res.status(200).json({
+        message: 'The request was rejected successfully.',
+        timeBlock: util.constructTimeBlockResponse(timeBlock)
+      });
     }
-  );
+  }
+);
 
 /**
  * Modify a time block by marking a meeting as occurred or not
@@ -206,22 +205,22 @@ router.patch(
  * @throws {409} - If the time block start has not passed yet or is not an accepted meeting
  */
 router.patch(
-    '/occurred/:timeBlockId?',
-    [
-      userValidator.isUserLoggedIn,
-      timeBlockValidator.isBlockExistent,
-      timeBlockValidator.isBlockAccepted,
-      timeBlockValidator.isBlockOwnerOrRequester,
-      timeBlockValidator.isBlockInPast,
-      timeBlockValidator.isValidInput,
-    ],
-    async (req: Request, res: Response) => {
-      const timeBlock = await TimeBlockCollection.updateOneOccurred(req.params.timeBlockId, req.body.input);
-      res.status(200).json({
-        message: 'Your meeting status was updated successfully.',
-        timeBlock: util.constructTimeBlockResponse(timeBlock),
-      });
-    }
-  );
+  '/occurred/:timeBlockId?',
+  [
+    userValidator.isUserLoggedIn,
+    timeBlockValidator.isBlockExistent,
+    timeBlockValidator.isBlockAccepted,
+    timeBlockValidator.isBlockOwnerOrRequester,
+    timeBlockValidator.isBlockInPast,
+    timeBlockValidator.isValidInput
+  ],
+  async (req: Request, res: Response) => {
+    const timeBlock = await TimeBlockCollection.updateOneOccurred(req.params.timeBlockId, req.body.input);
+    res.status(200).json({
+      message: 'Your meeting status was updated successfully.',
+      timeBlock: util.constructTimeBlockResponse(timeBlock)
+    });
+  }
+);
 
 export {router as timeBlockRouter};

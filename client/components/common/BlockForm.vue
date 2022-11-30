@@ -69,7 +69,8 @@ export default {
       method: 'GET', // Form request method
       hasBody: false, // Whether or not form request has a body
       setUser: false, // Whether or not stored username should be updated after form submission
-      refreshFreets: false, // Whether or not stored freets should be updated after form submission
+      refreshUser: false, // Whether or not to refresh user info
+      clearFields: true,
       alerts: {}, // Displays success/error messages encountered during form submission
       callback: null // Function to run after successful form submission
     };
@@ -88,7 +89,9 @@ export default {
         options.body = JSON.stringify(Object.fromEntries(
           this.fields.map(field => {
             const {id, value} = field;
-            field.value = '';
+            if (this.clearFields) {
+              field.value = '';
+            }
             return [id, value];
           })
         ));
@@ -105,12 +108,13 @@ export default {
         if (this.setUser) {
           const text = await r.text();
           const res = text ? JSON.parse(text) : {user: null};
-          this.$store.commit('setUsername', res.user ? res.user.email : null);
+          this.$store.commit('setUser', res.user ? res.user : null);
           this.$store.commit('setUserId', res.user ? res.user._id.toString() : null);
         }
 
-        if (this.refreshFreets) {
-          this.$store.commit('refreshFreets');
+        if (this.refreshUser) {
+          this.$store.commit('refreshUser');
+          this.$store.commit('updateLastActive');
         }
 
         if (this.callback) {

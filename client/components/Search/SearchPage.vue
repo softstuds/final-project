@@ -1,8 +1,8 @@
-<!-- Default page that also displays freets -->
+<!-- Default page -->
 
 <template>
   <main>
-    <section v-if="$store.state.username">
+    <section v-if="$store.state.user">
       <header>
         <h2>Viewing Users</h2>
       </header>
@@ -20,7 +20,7 @@
         </h3>
       </article>
     </section>
-    <section>
+    <section v-if="$store.state.email">
       <section
         v-if="users.length"
       >

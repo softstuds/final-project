@@ -8,13 +8,14 @@ export default {
   mixins: [BlockForm],
   data() {
     return {
-      url: '/api/users',
+      url: '/api/users/password',
       method: 'PATCH',
+      refreshUser: true,
       hasBody: true,
       fields: [
         {id: 'password', label: 'Password', value: ''}
       ],
-      title: 'Change password',
+      title: 'Change Password',
       callback: () => {
         const message = 'Successfully changed password!';
         this.$set(this.alerts, message, 'success');

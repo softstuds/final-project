@@ -3,11 +3,12 @@
 
 <template>
   <main>
-    <section>
+    <section v-if="$store.state.user">
       <header>
-        <h2>Account settings for @{{ $store.state.name }}</h2>
+        <h2>Account settings for {{ $store.state.user.firstName + ' ' + $store.state.user.lastName }}</h2>
       </header>
-      <ChangeUsernameForm />
+      <ChangeInfoForm :user="$store.state.user" />
+      <ChangeEmailForm :originalValue="$store.state.user.email"/>
       <ChangePasswordForm />
     </section>
     <section>
@@ -21,16 +22,18 @@
 </template>
 
 <script>
-import ChangeUsernameForm from '@/components/Account/ChangeUsernameForm.vue';
+import ChangeEmailForm from '@/components/Account/ChangeEmailForm.vue';
 import ChangePasswordForm from '@/components/Account/ChangePasswordForm.vue';
+import ChangeInfoForm from '@/components/Account/ChangeInfoForm.vue';
 import DeleteAccountForm from '@/components/Account/DeleteAccountForm.vue';
 import LogoutForm from '@/components/Account/LogoutForm.vue';
 
 export default {
   name: 'AccountPage',
   components: {
-    ChangeUsernameForm,
+    ChangeEmailForm,
     ChangePasswordForm,
+    ChangeInfoForm,
     DeleteAccountForm,
     LogoutForm
   }

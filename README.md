@@ -16,9 +16,10 @@ The project is structured as follows:
   - `main.ts` is the entry point of your application, which initializes Vue
   - `components/` contains the components of the frontend
     - `Account/` contains the account settings page and the related forms
-    - `Profiles/` contains the profiles and components related to Users' information
+    - `Profile/` contains the profiles and components related to Users' information
     - `Login/` contains the login/register page and the related forms
-    - `Common/` contains general form components that can be reused across different concepts
+    - `Search/` contains the default page shown and how to search for other Users
+    - `common/` contains general form components that can be reused across different concepts
   - `public/` contains base HTML files and static assets (like the default Alumni Connector logo)
   - `router.ts` contains the Vue router
   - `store.ts` contains the Vuex store, which stores application state and persistent data
@@ -167,9 +168,9 @@ Working in Vue means working with Vue components. The starter code organizes com
 ### Template
 Every component takes advantage of an [HTML-based template syntax](https://v2.vuejs.org/v2/guide/syntax.html), which is HTML code that binds the rendered DOM to the component data. Inside the template is where we can display specific form components like `<CreateFreetForm />`. We also take advantage of [conditional rendering](https://v2.vuejs.org/v2/guide/conditional.html) here to display different things to different users (such as signed in vs. signed out). For example, in `client/components/Freet/Freets.vue` in lines 5-23, we have:
 ```
-<section v-if="$store.state.username">
+<section v-if="$store.state.userId">
   <header>
-    <h2>Welcome @{{ $store.state.username }}</h2>
+    <h2>Welcome @{{ $store.state.user.firstName }}</h2>
   </header>
   <CreateFreetForm />
 </section>
@@ -187,7 +188,7 @@ Every component takes advantage of an [HTML-based template syntax](https://v2.vu
   </article>
 </section>
 ```
-Here, if `store.state.username` exists, we say `Welcome @username`. Otherwise, we say `Welcome to Fritter!` and give them a link to the login page. This is just one example of conditional rendering.
+Here, if `store.state.userId` exists, we say `Welcome user.firstName`. Otherwise, we say `Welcome to Fritter!` and give them a link to the login page. This is just one example of conditional rendering.
 
 ### Components
 Each `.vue` file also has script tag, which is where you can export the actual component.
