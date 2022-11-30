@@ -212,29 +212,54 @@ router.patch(
   }
 );
 
-/**
- * Update a user's industry.
- *
- * @name PATCH /api/users/industry
- *
- * @param {string} industry - The user's new industry
- * @return {UserResponse} - The updated user
- * @throws {403} - If user is not logged in
- */
-router.patch(
-  '/industry',
-  [
-    userValidator.isUserLoggedIn
-  ],
-  async (req: Request, res: Response) => {
-    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const user = await UserCollection.updateOne(userId, req.body);
-    res.status(200).json({
-      message: 'Your profile was updated successfully.',
-      user: util.constructUserResponse(user)
-    });
-  }
-);
+// /**
+//  * Update a user's industry.
+//  *
+//  * @name PATCH /api/users/industry
+//  *
+//  * @param {string} industry - The user's new industry
+//  * @return {UserResponse} - The updated user
+//  * @throws {403} - If user is not logged in
+//  */
+// router.patch(
+//   '/industry',
+//   [
+//     userValidator.isUserLoggedIn
+//   ],
+//   async (req: Request, res: Response) => {
+//     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+//     const user = await UserCollection.updateOne(userId, req.body);
+//     res.status(200).json({
+//       message: 'Your profile was updated successfully.',
+//       user: util.constructUserResponse(user)
+//     });
+//   }
+// );
+
+// /**
+//  * Update a user's graduation year.
+//  *
+//  * @name PATCH /api/users/gradYear
+//  *
+//  * @param {string} gradYear - The user's new gradYear
+//  * @return {UserResponse} - The updated user
+//  * @throws {403} - If user is not logged in
+//  */
+// router.patch(
+//   '/graduationYear',
+//   [
+//     userValidator.isUserLoggedIn,
+//     userValidator.isValidGraduationYear
+//   ],
+//   async (req: Request, res: Response) => {
+//     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+//     const user = await UserCollection.updateOne(userId, req.body);
+//     res.status(200).json({
+//       message: 'Your profile was updated successfully.',
+//       user: util.constructUserResponse(user)
+//     });
+//   }
+// );
 
 /**
  * Update a user's graduation year.
@@ -246,7 +271,7 @@ router.patch(
  * @throws {403} - If user is not logged in
  */
 router.patch(
-  '/graduationYear',
+  '/info',
   [
     userValidator.isUserLoggedIn,
     userValidator.isValidGraduationYear

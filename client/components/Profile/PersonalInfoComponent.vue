@@ -14,6 +14,7 @@
         </i>
         <p>Class of {{ user.graduationYear }}</p>
         <p><b>Industry: {{ user.industry !== undefined ? user.industry : "None" }}</b></p>
+        <p>Bio: {{ user.bio ?? '' }}</p>
       </section>
     </section>
     <CalendarComponent 
