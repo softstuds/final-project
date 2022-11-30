@@ -61,6 +61,14 @@ const store = new Vuex.Store({
       }
       state.user = res.user;
     },
+    async updateLastActive(state) {
+      const r = await fetch("api/users/lastActive" + this.$store.state.userId, {method: "PATCH"});
+      const res = await r.json();
+      if (!r.ok) {
+        throw new Error(res.error);
+      }
+      state.user = res.user;
+    },
     async refreshFreets(state) {
       /**
        * Request the server for the currently available freets.

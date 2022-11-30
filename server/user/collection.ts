@@ -114,6 +114,19 @@ class UserCollection {
   }
 
   /**
+   * Update last active
+   *
+   * @return {Promise<HydratedDocument<User>>} - The newly created user
+   */
+  static async updateLastActive(userId: Types.ObjectId | string): Promise<HydratedDocument<User>> {
+    const user = await UserModel.findOne({_id: userId});
+    const lastActive = new Date();
+    user.lastActive = lastActive;
+    await user.save(); // Saves user to MongoDB
+    return user;
+  }
+
+  /**
    * Delete a user from the collection.
    *
    * @param {string} userId - The userId of user to delete

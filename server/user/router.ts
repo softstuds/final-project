@@ -238,6 +238,29 @@ router.patch(
 );
 
 /**
+ * Update a user's last active time
+ *
+ * @name PATCH /api/users/lastActive
+ *
+ * @return {UserResponse} - The updated user
+ * @throws {403} - If user is not logged in
+ */
+router.patch(
+  '/lastActive',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const user = await UserCollection.updateLastActive(userId);
+    res.status(200).json({
+      message: 'Last active time updated.',
+      user: util.constructUserResponse(user)
+    });
+  }
+);
+
+/**
  * Delete a user.
  *
  * @name DELETE /api/users
