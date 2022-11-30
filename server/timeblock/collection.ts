@@ -61,15 +61,20 @@ class TimeBlockCollection {
   }
 
   /**
-   * Get all the time blocks in the database with a given user as owner or requester that's passed and unmarked
+   * Get all the time blocks in the database with a given user as owner or requester that's passed
    *
    * @param {string} userId - The id of the user
+   * @param {boolean} getUnmarked - Whether we want only unmarked past meetings or all
    * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the time blocks for a given owner
    */
-   static async findAllByUserOccurred(userId: Types.ObjectId | string): Promise<Array<HydratedDocument<TimeBlock>>> {
+   static async findAllByUserOccurred(userId: Types.ObjectId | string, getUnmarked: boolean): Promise<Array<HydratedDocument<TimeBlock>>> {
     // Retrieves time blocks and sorts them from latest to earliest time
     const now = new Date();
-    return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}]},{start: {$lte: now}, accepted: true, met: null}).sort({start: -1}).populate('owner requester');
+    if (getUnmarked) {
+      return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}]},{start: {$lte: now}, accepted: true, met: null}).sort({start: -1}).populate('owner requester');
+    } else {
+      return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}]},{start: {$lte: now}, accepted: true}).sort({start: -1}).populate('owner requester');
+    }
   }
 
   /**

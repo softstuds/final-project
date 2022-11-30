@@ -30,6 +30,28 @@ router.get(
 );
 
 /**
+ * Get all the meetings a user has had
+ *
+ * @name GET /api/timeblock/occurred
+ *
+ * @return {TimeBlockResponse[]} - A list of all the meetings a user has had,
+ *                                sorting in descending order by start
+ * @throws {404} - If the user is not logged in
+ */
+ router.get(
+  '/occurred',
+  [
+    userValidator.isUserLoggedIn,
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? '';
+    const occurredTimeBlocks = await TimeBlockCollection.findAllByUserOccurred(userId, false);
+    const response = occurredTimeBlocks.map(util.constructTimeBlockResponse);
+    res.status(200).json(response);
+  }
+);
+
+/**
  * Get all the time blocks that a user needs to mark as met/not
  *
  * @name GET /api/timeblock/met/check
@@ -45,8 +67,8 @@ router.get(
     ],
     async (req: Request, res: Response) => {
       const userId = (req.session.userId as string) ?? '';
-      const occurredTimeBlocks = await TimeBlockCollection.findAllByUserOccurred(userId);
-      const response = occurredTimeBlocks.map(util.constructTimeBlockResponse);
+      const unMarkedTimeBlocks = await TimeBlockCollection.findAllByUserOccurred(userId, true);
+      const response = unMarkedTimeBlocks.map(util.constructTimeBlockResponse);
       res.status(200).json(response);
     }
   );

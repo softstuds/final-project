@@ -41,6 +41,16 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `404` if user is not logged in
 
+#### `GET /api/timeblock/occurred` - Get all the meetings a user has had
+
+**Returns**
+
+- A list of all the meetings a user has had sorting in descending order by start
+
+**Throws**
+
+- `404` if user is not logged in
+
 #### `GET /api/timeblock/met/check` - Get all the time blocks that a user needs to mark as met/not
 
 **Returns**
@@ -74,7 +84,7 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `409` If the user already has a time block with the given start time
+- `409` If the user already has a time block with the given start time or if the start time has already passed
 
 #### `DELETE /api/timeblock/:timeBlockId` - Delete a time block
 
