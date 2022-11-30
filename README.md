@@ -39,7 +39,7 @@ This renders the `index.html` file that will be used to interact with the backen
 
 **Throws**
 
-- `404` if user is not logged in
+- `403` if user is not logged in
 
 #### `GET /api/timeblock/occurred` - Get all the meetings a user has had
 
@@ -49,7 +49,7 @@ This renders the `index.html` file that will be used to interact with the backen
 
 **Throws**
 
-- `404` if user is not logged in
+- `403` if user is not logged in
 
 #### `GET /api/timeblock/met/check` - Get all the time blocks that a user needs to mark as met/not
 
@@ -59,7 +59,7 @@ This renders the `index.html` file that will be used to interact with the backen
 
 **Throws**
 
-- `404` if user is not logged in
+- `403` if user is not logged in
 
 #### `GET /api/timeblock/unclaimed/:userId` - Get all the time blocks that a given user has unclaimed
 
@@ -69,7 +69,28 @@ This renders the `index.html` file that will be used to interact with the backen
 
 **Throws**
 
-- `404` if user is not logged in or the userId is not a valid one
+- `403` if user is not logged in
+- `404` if the userId is not a valid one
+
+#### `GET /api/timeblock/requests/sent` - Get all the unanswered meeting requests that a user has sent
+
+**Returns**
+
+- A list of all the time blocks that the user is a requester for but are unanswered, sorted in ascending order by start
+
+**Throws**
+
+- `403` if user is not logged in
+
+#### `GET /api/timeblock/requests/received` - Get all the unanswered meeting requests that a user has received
+
+**Returns**
+
+- A list of all the requested time blocks that the user is as owner for but are unanswered, sorted in ascending order by start
+
+**Throws**
+
+- `403` if user is not logged in
 
 #### `PUT /api/timeblock` - Create a new time block.
 

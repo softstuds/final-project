@@ -14,7 +14,7 @@ const router = express.Router();
  *
  * @return {TimeBlockResponse[]} - A list of all the time blocks for the user 
  *                      sorted in descending order by start
- * @throws {404} - If the user is not logged in
+ * @throws {403} - If the user is not logged in
  */
 router.get(
   '/',
@@ -36,7 +36,7 @@ router.get(
  *
  * @return {TimeBlockResponse[]} - A list of all the meetings a user has had,
  *                                sorting in descending order by start
- * @throws {404} - If the user is not logged in
+ * @throws {403} - If the user is not logged in
  */
  router.get(
   '/occurred',
@@ -58,7 +58,7 @@ router.get(
  *
  * @return {TimeBlockResponse[]} - A list of all the time blocks for the user 
  *                      to mark as met, sorted in descending order by start
- * @throws {404} - If the user is not logged in
+ * @throws {403} - If the user is not logged in
  */
  router.get(
     '/met/check',
@@ -73,7 +73,6 @@ router.get(
     }
   );
 
-
 /**
  * Get all the time blocks that a given user has unclaimed
  *
@@ -81,7 +80,8 @@ router.get(
  *
  * @return {TimeBlockResponse[]} - A list of all the time blocks for the user 
  *                      to mark as met, sorted in descending order by start
- * @throws {404} - If the user is not logged in or the userId is not a valid one
+ * @throws {403} - If the user is not logged in
+ * @throws {404} - If the userId is not a valid one
  */
  router.get(
     '/unclaimed/:userId?',
@@ -96,6 +96,50 @@ router.get(
       res.status(200).json(response);
     }
   );
+
+/**
+ * Get all the unanswered meeting requests that a user has sent
+ *
+ * @name GET /api/timeblock/requests/sent
+ *
+ * @return {TimeBlockResponse[]} - A list of all the time blocks that the user is a
+ *                        requester for but are unanswered, sorted in ascending order by start
+ * @throws {403} - If the user is not logged in
+ */
+ router.get(
+  '/requests/sent',
+  [
+    userValidator.isUserLoggedIn,
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.params.userId as string);
+    const requestedTimeBlocks = await TimeBlockCollection.findAllRequests(userId, true);
+    const response = requestedTimeBlocks.map(util.constructTimeBlockResponse);
+    res.status(200).json(response);
+  }
+);
+
+/**
+ * Get all the unanswered meeting requests that a user has received
+ *
+ * @name GET /api/timeblock/requests/received
+ *
+ * @return {TimeBlockResponse[]} - A list of all the requested time blocks that the user is as
+ *                        owner for but are unanswered, sorted in ascending order by start
+ * @throws {403} - If the user is not logged in
+ */
+ router.get(
+  '/requests/received',
+  [
+    userValidator.isUserLoggedIn,
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.params.userId as string);
+    const requestedTimeBlocks = await TimeBlockCollection.findAllRequests(userId, false);
+    const response = requestedTimeBlocks.map(util.constructTimeBlockResponse);
+    res.status(200).json(response);
+  }
+);
 
 /**
  * Create a new time block.
