@@ -89,53 +89,37 @@
             throw new Error(res.error);
         }
         this.user = res.user;
-    },
-    getPastMeetings() {
-        // const upcomingMeetings = [
-        //         [new Date('24 Nov 2022 13:00')],
-        //         [new Date('25 Nov 2022 15:00')]
-        //     ];
-        // const params = {
-        //     method: 'GET',
-        //     url: '/api/timeblock/checkoccurred',
-        // }
-        fetch("/api/timeblock/checkoccured")
-            .then(async response => {
-            const data = await response.json();
-
-            // check for error response
-            if (!response.ok) {
-                // get error message from body or default to response statusText
-                const error = (data && data.message) || response.statusText;
-                return Promise.reject(error);
+        },
+        getPastMeetings() {
+            const upcomingMeetings = [
+                    [new Date('24 Nov 2022 13:00')],
+                    [new Date('25 Nov 2022 15:00')]
+                ];
+            const params = {
+                method: 'GET',
+                url: '/api/timeblock/checkoccurred',
             }
-
-            this.pastMeetings = data.total;
-        })
-        .catch(error => {
-        this.errorMessage = error;
-        console.error("There was an error!", error);
-        });
-        
-        // this.upcomingMeetings = this.request(params);
-
-    },
-    getUpcomingMeetings()  {
-            // const upcomingMeetings = [
-            //     [new Date('24 Nov 2022 13:00')],
-            //     [new Date('25 Nov 2022 15:00')]
-            // ];
-            // const params = {
-            //     method: 'GET',
-            //     url: '/api/timeblock/checkoccurred',
-            //     callback: () => {
-            //         this.$set(this.alerts, params.message, 'success');
-            //         setTimeout(() => this.$delete(this.alerts, params.message), 3000);
-            //     }
-            // }
             
-            // this.upcomingMeetings = this.request(params);
-    },
+            
+            this.upcomingMeetings = this.request(params);
+
+        },
+        getUpcomingMeetings()  {
+                // const upcomingMeetings = [
+                //     [new Date('24 Nov 2022 13:00')],
+                //     [new Date('25 Nov 2022 15:00')]
+                // ];
+                // const params = {
+                //     method: 'GET',
+                //     url: '/api/timeblock/checkoccurred',
+                //     callback: () => {
+                //         this.$set(this.alerts, params.message, 'success');
+                //         setTimeout(() => this.$delete(this.alerts, params.message), 3000);
+                //     }
+                // }
+                
+                // this.upcomingMeetings = this.request(params);
+        },
     // async getIncomingRequests() {
 
     // },

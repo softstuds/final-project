@@ -44,7 +44,6 @@ router.get(
       userValidator.isUserLoggedIn,
     ],
     async (req: Request, res: Response) => {
-      console.log('hi');
       const userId = (req.session.userId as string) ?? '';
       const occurredTimeBlocks = await TimeBlockCollection.findAllByUserOccurred(userId);
       const response = occurredTimeBlocks.map(util.constructTimeBlockResponse);
