@@ -69,11 +69,8 @@ class TimeBlockCollection {
   static async findAllByUserOccurred(userId: Types.ObjectId | string): Promise<Array<HydratedDocument<TimeBlock>>> {
     // Retrieves time blocks and sorts them from latest to earliest time
     const now = new Date();
-<<<<<<< HEAD
     return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}],start: {$lte: now}, accepted: true, occurred: null}).sort({start: -1}).populate('owner requester');
-=======
-    return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}]}, {start: {$lte: now}, accepted: true, occurred: null}).sort({start: -1}).populate('owner requester');
->>>>>>> 8eeffeb86f09cfb8faeeebc23b42e49dce022a00
+
   }
 
   /**
