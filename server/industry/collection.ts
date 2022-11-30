@@ -35,6 +35,14 @@ class IndustryCollection {
     }
 
     /**
+     * Find an industry object
+     */
+    static async findOne(userId: Types.ObjectId | string): Promise<HydratedDocument<Industry>> {
+        const industry = await IndustryModel.findOne({userId});
+        return industry;
+    }
+
+    /**
      * Delete Industry object. Deletes when a user is deleted
      */
     static async deleteOne(userId: Types.ObjectId | string) {
