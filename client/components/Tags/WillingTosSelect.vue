@@ -52,19 +52,13 @@ export default {
                 'helpInterview': 'Help with Interview Preparation',
                 'email': 'Email'
             },
-            backEndTags: {
-                'Write referrals': 'refer',
-                'Review resumes': 'resumeReview',
-                'Provide mentoring': 'mentor',
-                'Coffee Chat': 'coffeeChat',
-                'Help with Interview Preparation': 'helpInterview',
-                'Email': 'email'
-            },
+            backEndTags: {},
             value: []
         };
     },
     mounted() {
         this.getTags();
+        this.backEndTags = this.inverse(this.frontEndTags);
     },
     watch: {
         tags: function(val) {
@@ -82,11 +76,33 @@ export default {
         }
     },
     methods: {
-        addWillingTos() {
-            console.log('added');
+        async addWillingTos(value) {
+            const options = {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    tagName: this.backEndTags[value.name],
+                    newValue: true
+                }),
+                credentials: 'same-origin' // Sends express-session credentials with request
+            };
+            const r = await fetch('/api/tags', options);
+            const res = await r.json();
+            this.tags = res.tags;
         },
-        removeWillingTos() {
-            console.log('removed');
+        async removeWillingTos(value) {
+            const options = {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    tagName: this.backEndTags[value.name],
+                    newValue: false
+                }),
+                credentials: 'same-origin' // Sends express-session credentials with request
+            };
+            const r = await fetch('/api/tags', options);
+            const res = await r.json();
+            this.tags = res.tags;
         },
         async getTags() {
             const r = await fetch(`/api/tags/${this.userId}`);
@@ -95,6 +111,13 @@ export default {
                 throw new Error(res.error);
             }
             this.tags = res.tags;
+        },
+        inverse (tagsDict) {
+            var retobj = {};
+            for(var key in tagsDict){
+                retobj[tagsDict[key]] = key;
+            }
+            return retobj;
         }
     }
 }
