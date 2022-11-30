@@ -65,7 +65,7 @@ router.get(
     '/unclaimed/:userId?',
     [
       userValidator.isUserLoggedIn,
-      timeBlockValidator.isValidUserParam,
+      timeBlockValidator.isValidUserParam
     ],
     async (req: Request, res: Response) => {
       const userId = (req.params.userId as string);
@@ -89,7 +89,7 @@ router.put(
   '/',
   [
     userValidator.isUserLoggedIn,
-    timeBlockValidator.isBlockNonexistent,
+    timeBlockValidator.isBlockNonexistent
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn

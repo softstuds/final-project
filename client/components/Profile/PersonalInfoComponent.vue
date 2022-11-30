@@ -26,7 +26,7 @@
       </section>
       <section class="calendar">
         <section
-          v-for="(date, index) in availabilities"
+          v-for="(date, index) in timeBlocks"
           :key="index"
           class="day"
         >
@@ -51,6 +51,64 @@
           </section>
         </section>
       </section>
+      <section class="dateSelector">
+        <section class="selector">
+          <div><small>Month</small></div>
+          <select id="dateMonth">
+            <option 
+              v-for="i in 12"
+              :key="i"
+              :value="i"
+            >
+              {{ i }}
+            </option>
+          </select>
+        </section>
+        <section class="selector">
+          <div><small>Day</small></div>
+          <select id="dateDay">
+            <option 
+              v-for="j in 31"
+              :key="j"
+              :value="j"
+            >
+              {{ j }}
+            </option>
+          </select>
+        </section>
+        <section class="selector">
+          <div><small>Time</small></div>
+          <select id="dateTime">
+            <option :value="0">
+              12 am
+            </option>
+            <option 
+              v-for="k in 11"
+              :key="k"
+              :value="k"
+            >
+              {{ k }} am
+            </option>
+            <option :value="12">
+              12 pm
+            </option>
+            <option 
+              v-for="k in 11"
+              :key="k + 12"
+              :value="k + 12"
+            >
+              {{ k }} pm
+            </option>
+          </select>
+        </section>
+        <section class="selector">
+          <button
+            @click="addTimeBlock"
+          >
+            Add Availability
+          </button>
+        </section>
+      </section>
     </section>
   </div>
 </template>
@@ -73,12 +131,13 @@ export default {
         gradYear: "",
         industry: ""
       },
-      availabilities: []
+      timeBlocks: []
     }
   },
   mounted() {
     this.getUser();
     this.getAvailibilities();
+    this.setDatePicker();
   },
   methods: {
     async getUser() {
@@ -89,17 +148,80 @@ export default {
       }
       this.user = res.user;
     },
-    getAvailibilities() {
-        const availabilities = [
-            [new Date('24 Nov 2022 13:00')],
-            [new Date('25 Nov 2022 15:00')],
-            [new Date('26 Nov 2022 11:00'), new Date('26 Nov 2022 13:00')],
-            [],
-            [new Date('28 Nov 2022 9:00')],
-            [new Date('29 Nov 2022 10:00')],
-            [new Date('30 Nov 2022 14:00')]
-        ];
-        this.availabilities = availabilities;
+    async getAvailibilities() {
+      const r = await fetch("api/timeblock/unclaimed/" + this.userId);
+      const res = await r.json();
+      if (!r.ok) {
+        throw new Error(res.error);
+      }
+      this.timeBlocks = res;
+
+      const nextSeven = [];
+      console.log(res);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      console.log(today);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      console.log(tomorrow);
+
+        // const timeBlocks = [
+        //     [new Date('24 Nov 2022 13:00')],
+        //     [new Date('25 Nov 2022 15:00')],
+        //     [new Date('26 Nov 2022 11:00'), new Date('26 Nov 2022 13:00')],
+        //     [],
+        //     [new Date('28 Nov 2022 9:00')],
+        //     [new Date('29 Nov 2022 10:00')],
+        //     [new Date('30 Nov 2022 14:00')]
+        // ];
+        // this.timeBlocks = timeBlocks;
+    },
+    setDatePicker() {
+      const today = new Date();
+
+      const monthSelector = document.getElementById('dateMonth');
+      monthSelector.selectedIndex = today.getMonth(); // already zero indexed
+
+      const daySelector = document.getElementById('dateDay');
+      daySelector.selectedIndex = today.getDate() - 1;  // not zero indexed
+
+      const timeSelector = document.getElementById('dateTime');
+      timeSelector.selectedIndex = 9;
+    },
+    async addTimeBlock() {
+      const date = new Date();
+
+      const monthSelector = document.getElementById('dateMonth');
+      date.setMonth(monthSelector.value - 1); // zero index
+
+      const daySelector = document.getElementById('dateDay');
+      date.setDate(daySelector.value);
+
+      const timeSelector = document.getElementById('dateTime');
+      date.setHours(timeSelector.value, 0, 0, 0);
+
+      const options = {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          start: date.toString(),
+        })
+      };
+
+      try {
+        const r = await fetch('api/timeblock', options);
+        const res = await r.json();
+        if (!r.ok) {
+          throw new Error(res.error);
+        }
+
+        console.log(res.timeBlock);
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$delete(this.alerts, e), 3000);
+      }
+      
     }
   }
 };
@@ -136,4 +258,18 @@ export default {
     border: 1px solid black;
     padding: 10%
 }
+
+.dateSelector {
+  display: flex;
+  justify-content: center;
+}
+
+.selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: end;
+  margin: 10px
+}
+
 </style>
