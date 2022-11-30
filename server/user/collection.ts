@@ -25,12 +25,21 @@ class UserCollection {
       email: username,
       password,
       firstName: nameArray[0],
-      lastName: nameArray[nameArray.length-1],
-      graduationYear: graduationYear,
+      lastName: nameArray[nameArray.length - 1],
+      graduationYear,
       lastActive
     });
     await user.save(); // Saves user to MongoDB
     return user;
+  }
+
+  /**
+   * Find all users
+   *
+   * @return {Promise<Array<HydratedDocument<User>>>} - All the users
+   */
+  static async findAll(): Promise<Array<HydratedDocument<User>>> {
+    return UserModel.find({});
   }
 
   /**

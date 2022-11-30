@@ -1,67 +1,153 @@
-# Fritter Frontend
-Congrats, you've completed the Fritter backend! Now it's time to make an interface that your users will be able to interact with in A6: Fritter frontend. **Make sure to read this document fully** as well, as it contains a lot of A6-specific info!
+# Alumni Connector
 
-## Starter Code
+## Structure
 
-This starter code implements freets, feeds, and forms with no styling. The backend starter code for freets and users from the previous assignment (A5) is contained in the `server` folder. The frontend starter code is in the `client` folder and is implemented using the [Vue](https://v2.vuejs.org/) framework.
+This code implements users, timeblocks, tags, and statistics with no styling. The backend code is contained in the `server` folder. The frontend code is in the `client` folder and is implemented using the [Vue](https://v2.vuejs.org/) framework.
 
 The project is structured as follows:
 
 - `api/index.ts` sets up the backend database connection and Express server. This should actually be in the `server` folder, but it must be here due to a Vercel limitation.
 - `server/` contains the backend starter code from A5 (with some changes)
-  - `freet/` contains files related to the Freet concept
+  - `tags/` contains files related to the Tags concept
+  - `timeblock/` contains files related to the Time Block concept
   - `user/` contains files related to the User concept
 - `client/` contains the frontend starter code
   - `App.vue` is the root component of your application
   - `main.ts` is the entry point of your application, which initializes Vue
   - `components/` contains the components of the frontend
     - `Account/` contains the account settings page and the related forms
-    - `Freet/` contains the homepage and components related to Freets
+    - `Profiles/` contains the profiles and components related to Users' information
     - `Login/` contains the login/register page and the related forms
     - `Common/` contains general form components that can be reused across different concepts
-  - `public/` contains base HTML files and static assets (like the default Fritter logo)
+  - `public/` contains base HTML files and static assets (like the default Alumni Connector logo)
   - `router.ts` contains the Vue router
   - `store.ts` contains the Vuex store, which stores application state and persistent data
 
+## API Routes
+
+The following api routes have been implemented (**Make sure to document all the routes that you have added.**):
+
+#### `GET /`
+
+This renders the `index.html` file that will be used to interact with the backend
+
+#### `GET /api/timeblock` - Get all the time blocks for a user
+
+**Returns**
+
+- A list of all the time blocks for the user sorted in descending order by start
+
+**Throws**
+
+- `404` if user is not logged in
+
+#### `GET /api/timeblock/checkoccurred` - Get all the time blocks that a user needs to mark as occurred/not
+
+**Returns**
+
+- A list of all the time blocks for the user to mark as occurred, sorted in descending order by start
+
+**Throws**
+
+- `404` if user is not logged in
+
+#### `GET /api/timeblock/unclaimed/:userId` - Get all the time blocks that a given user has unclaimed
+
+**Returns**
+
+- A list of all the time blocks for the user to mark as occurred, sorted in descending order by start
+
+**Throws**
+
+- `404` if user is not logged in or the userId is not a valid one
+
+#### `PUT /api/timeblock` - Create a new time block.
+
+**Body**
+
+- `start` _{string}_ - The start time of the time block
+
+**Returns**
+
+- The created time block
+
+**Throws**
+
+- `403` if the user is not logged in
+- `409` If the user already has a time block with the given start time
+
+#### `DELETE /api/timeblock/:timeBlockId` - Delete a time block
+
+**Returns**
+
+- A success message
+
+**Throws**
+
+- `403` if the user is not logged in or user is not block owner
+- `404` If the time block with given ID does not exist
+
+#### `PATCH /api/timeblock/request/:timeBlockId` - Modify a time block by sending a request to meet
+
+**Body**
+
+- `userId` _{string}_ - The userId of the requester
+
+**Returns**
+
+- the updated time block
+
+**Throws**
+
+- `400` if the user is not given
+- `403` if the user is not logged in or is already the owner of the time block
+- `404` if either the time block or the user with given ID does not exist
+- `409` if the time block has already passed
+
+#### `PATCH /api/timeblock/accepted/:timeBlockId` - Modify a time block by accepting or rejecting it
+
+**Body**
+
+- `input` _{boolean}_ - The response of the owner
+
+**Returns**
+
+- the updated time block
+
+**Throws**
+
+- `403` if the user is not logged in or is not the owner of the time block
+- `404` if either the time block with given ID does not exist or the input is not valid
+
+#### `PATCH /api/timeblock/occurred/:timeBlockId` - Modify a time block by marking a meeting as occurred or not
+
+**Body**
+
+- `input` _{boolean}_ - The response of the owner or requester
+
+**Returns**
+
+- the updated time block
+
+**Throws**
+
+- `403` if the user is not logged in or user is not owner or requested
+- `404` if either the time block with given ID does not exist or the input is not valid
+- `409` if the time block start has not passed yet or is not an accepted meeting
+
+
 ## Installation
 
-Make a copy of this repository under your personal GitHub account by clicking the `Use this template` button. Run `npm install` in your terminal to install local dependencies. Copy your `.env` file from A5 into the root directory of your new repo. Make sure you can run the starter code locally before proceeding.
-
-## Setup
-To incorporate the backend you developed in A5 with our starter frontend, please move your files into the `server` folder. For example, note that whereas the `freet` and `user` folders were in the root directory of your backend, they have been now moved to `server/freet` and `server/user`, respectively.
-
-We've made some updated to the A5 server starter code that we hope you can incorporate into your backend as well.
-
-> **Please reference the [full diff here](https://gist.github.com/dengzac/a9f592950e947b604798443b5ce71be1) for a complete list of changes.**
-
-A summary of the changes is provided below:
-- `api/index.ts`:
-  - Add mongo store to track sessions
-  - Remove old frontend from express server (**remember to copy over lines importing your `router.ts` files**)
-- `freet/middleware.ts` and `user/middleware.ts`:
-  - change all contents of `error:` to strings to be easily printed out by the frontend
-  - in `isUsernameNotAlreadyInUse()` of `user/middleware.ts`: bug fix related to changing password
-- `freet/collection.ts`:
-  - update finding freets from an author to return in descending order for consistency with finding all freets
-- `freet/router.ts`
-  - updated incorrect documentation for `GET /api/freets`
-  - changed `PUT` to `PATCH /api/freets/:freetid`, to better follow REST API conventions
-- `user/router.ts`
-  - add `GET /api/users/session` so the frontend can fetch info about the logged-in user
-  - changed `PUT` to `PATCH /api/users`, to better follow REST API conventions
-- `user/collection.ts`
-  - add typings to a `updateOne()` parameter to make TypeScript happy
-
-Once you're done, test once more that you can run the project locally. Now you're ready to start developing your frontend interface for Fritter!
+Run `npm install` in your terminal to install local dependencies. Create a `.env` file from the project folder in the root directory of your repo. Make sure you can run the starter code locally before proceeding.
 
 ## Running locally
 
-Running locally requires a few extra npm scripts from `package.json` in comparison to A5.
+Running locally requires a few extra npm scripts from `package.json`.
 1. Run `npm run serve`, which compiles the frontend for hot-reloading with webpack and serves it at port `8080`.
 2. Open a new terminal (with the original one still open) and run `npm run dev` to start the backend at port `3000`.
 3. To view your website, **connect to [localhost:8080](http://localhost:8080)** (instead of port 3000) since the backend will no longer serve any HTML files.
 
-Vue proxies any URL it can't resolve on the client side (at port 8080) to the server (to port 3030), which is why we can call API routes using relative URLs (such as `fetch('/api/freets')`). See `client/vue.config.js` and associated [Vue CLI docs](https://cli.vuejs.org/config/#vue-config-js) for more details.
+Vue proxies any URL it can't resolve on the client side (at port 8080) to the server (to port 3030), which is why we can call API routes using relative URLs (such as `fetch('/api/user/session')`). See `client/vue.config.js` and associated [Vue CLI docs](https://cli.vuejs.org/config/#vue-config-js) for more details.
 
 ## Deployment to Vercel
 
@@ -116,19 +202,6 @@ The "lower level" components are the general form components that we have provid
 - `props` (sometimes) properties that are passed from a parent component to child components as needed
 - `data()` stores data associated with this Vue instance
 - `methods` methods associated with the current component that can be used in it
-
-### Store
-You may see that many components use `this.$store`. In `client/store.ts`, we have created a `Vuex.Store` that is used to our application state. We use [**mutations**](https://vuex.vuejs.org/guide/mutations.html) to change state. We call these mutations by doing `this.$store.commit('[mutation]', [payload])`. The `payload` is like an additional argument that could be used in our mutation. An example mutation:
-```
-setUsername(state, username) {
-  /**
-    * Update the stored username to the specified one.
-    * @param username - new username to set
-    */
-  state.username = username;
-}
-```
-This mutation is called a few times, such as in `App.vue` where it says `this.$store.commit('setUsername', user ? user.username : null);`. In this case, we are committing the value of our username, which can be accessed within the state as `$store.state.username`.
 
 ### Routing
 Routing on the server side means the server sending a response based on the URL path that the user is visiting. When we click on a link in a traditional server-rendered web app, the browser receives an HTML response from the server and reloads the entire page with the new HTML.
