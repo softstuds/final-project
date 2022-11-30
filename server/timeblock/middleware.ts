@@ -1,6 +1,5 @@
 import type {Request, Response, NextFunction} from 'express';
 import TimeBlockCollection from '../timeblock/collection';
-import {Types} from 'mongoose';
 import UserCollection from '../user/collection';
 
 /**

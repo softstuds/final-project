@@ -1,7 +1,6 @@
 import type {HydratedDocument, Types} from 'mongoose';
 import type {TimeBlock} from './model';
 import TimeBlockModel from './model';
-import UserCollection from '../user/collection';
 
 /**
  * This files contains a class that has the functionality to explore time blocks
