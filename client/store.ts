@@ -10,7 +10,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     filter: null, // Username to filter shown freets by (null = show all)
-    freets: [], // All freets created in the app
+    timeblocks: [], // All freets created in the app
     username: null, // Username of the logged in user
     gradYear: null, // Graduation year of the logged in user
     name: null, // Name of the logged in user
@@ -70,20 +70,20 @@ const store = new Vuex.Store({
        */
       state.filter = filter;
     },
-    updateFreets(state, freets) {
+    updateTimeblocks(state, timeblocks) {
       /**
        * Update the stored freets to the provided freets.
        * @param freets - Freets to store
        */
-      state.freets = freets;
+      state.timeblocks = timeblocks;
     },
-    async refreshFreets(state) {
+    async refreshTimeblocks(state) {
       /**
        * Request the server for the currently available freets.
        */
-      const url = state.filter ? `/api/users/${state.filter}/freets` : '/api/freets';
+      const url = state.filter=='Past Meetings' ? `/api/timeblock/checkoccurred` : '/api/timeblock';
       const res = await fetch(url).then(async r => r.json());
-      state.freets = res;
+      state.timeblocks = res;
     }
   },
   // Store data across page refreshes, only discard on browser close

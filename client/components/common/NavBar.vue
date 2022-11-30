@@ -22,9 +22,15 @@
       </router-link>
       <router-link
         v-if="$store.state.username"
+        to="/meeting"
+      >
+        Meetings
+      </router-link>
+      <router-link
+        v-if="$store.state.username"
         to="/profile"
       >
-        Profiles
+        Profile
       </router-link>
       <router-link
         v-else
