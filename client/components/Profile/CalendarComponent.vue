@@ -226,6 +226,11 @@ export default {
             const timeSelector = document.getElementById('dateTime');
             date.setHours(timeSelector.value, 0, 0, 0);
 
+            const today = new Date();
+            if (date < today) {
+              date.setFullYear(today.getFullYear() + 1);
+            }
+
             const options = {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
