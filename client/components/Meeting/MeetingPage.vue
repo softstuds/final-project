@@ -4,7 +4,6 @@
 <template>
     <main>
       <section>
-        <!-- <h1>{{ $store.state.name }}'s Meetings</h1> -->
         <div class="row">
             <div class="column">
                 <h2>Past Meetings</h2>
@@ -30,25 +29,10 @@
             </div>
             <div class="column">
                 <h2>Incoming Requests</h2>
-                <!-- <section
-                v-for="block in this.IncomingRequests"
-                class="meeting"
-                >
-                <MeetingComponent
-                :meeting="block"
-                 />
-                </section> -->
+
             </div>
             <div class="column">
                 <h2>Outgoing Requests</h2>
-                <!-- <section
-                v-for="block in this.OutgoingRequests"
-                class="meeting"
-                >
-                <MeetingComponent
-                :meeting="block"
-                 />
-                </section> -->
             </div>
         </div>
       </section>
@@ -89,53 +73,36 @@
             throw new Error(res.error);
         }
         this.user = res.user;
-    },
-    getPastMeetings() {
-        // const upcomingMeetings = [
-        //         [new Date('24 Nov 2022 13:00')],
-        //         [new Date('25 Nov 2022 15:00')]
-        //     ];
-        // const params = {
-        //     method: 'GET',
-        //     url: '/api/timeblock/checkoccurred',
-        // }
-        fetch("/api/timeblock/checkoccurred")
-            .then(async response => {
-            const data = await response.json();
-
-            // check for error response
-            if (!response.ok) {
-                // get error message from body or default to response statusText
-                const error = (data && data.message) || response.statusText;
-                return Promise.reject(error);
-            }
-
-            this.pastMeetings = data.total;
-        })
-        .catch(error => {
-        this.errorMessage = error;
-        console.error("There was an error!", error);
-        });
-        
-        // this.upcomingMeetings = this.request(params);
-
-    },
-    getUpcomingMeetings()  {
+        },
+        getPastMeetings() {
             // const upcomingMeetings = [
-            //     [new Date('24 Nov 2022 13:00')],
-            //     [new Date('25 Nov 2022 15:00')]
-            // ];
-            // const params = {
-            //     method: 'GET',
-            //     url: '/api/timeblock/checkoccurred',
-            //     callback: () => {
-            //         this.$set(this.alerts, params.message, 'success');
-            //         setTimeout(() => this.$delete(this.alerts, params.message), 3000);
-            //     }
-            // }
+            //         [new Date('24 Nov 2022 13:00')],
+            //         [new Date('25 Nov 2022 15:00')]
+            //     ];
+            const params = {
+                method: 'GET',
+                url: '/api/timeblock/checkoccurred',
+            }
             
-            // this.upcomingMeetings = this.request(params);
-    },
+            this.upcomingMeetings = this.request(params);
+
+        },
+        getUpcomingMeetings()  {
+                // const upcomingMeetings = [
+                //     [new Date('24 Nov 2022 13:00')],
+                //     [new Date('25 Nov 2022 15:00')]
+                // ];
+                // const params = {
+                //     method: 'GET',
+                //     url: '/api/timeblock/checkoccurred',
+                //     callback: () => {
+                //         this.$set(this.alerts, params.message, 'success');
+                //         setTimeout(() => this.$delete(this.alerts, params.message), 3000);
+                //     }
+                // }
+                
+                // this.upcomingMeetings = this.request(params);
+        },
     // async getIncomingRequests() {
 
     // },
@@ -196,11 +163,6 @@ h2, h2 > * {
     justify-content: center;
 }
 
-/* header, header > * {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-} */
 
 .row {
   display: flex;
