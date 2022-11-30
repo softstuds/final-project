@@ -23,7 +23,7 @@ export default {
         {id: 'industry', label: 'Industry', value: this.user.industry},
         {id: 'graduationYear', label: 'Graduation Year', value: this.user.graduationYear},
         {id: 'bio', label: 'Bio', value: this.user.bio},
-        {id: 'zoomLink', label: 'Zoom Link', value: this.user.zoomLink}
+        {id: 'meetingLink', label: 'Meeting Link', value: this.user.meetingLink}
       ],
       title: 'Change Profile Info',
       callback: () => {
