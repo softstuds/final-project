@@ -20,7 +20,7 @@
         </h3>
       </article>
     </section>
-    <section>
+    <section v-if="$store.state.email">
       <section
         v-if="users.length"
       >

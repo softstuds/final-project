@@ -53,6 +53,14 @@ const store = new Vuex.Store({
       }
       state.user = res.user;
     },
+    async updateLastActive(state) {
+      const r = await fetch("api/users/lastActive", {method: "PATCH"});
+      const res = await r.json();
+      if (!r.ok) {
+        throw new Error(res.error);
+      }
+      state.user = res.user;
+    }
   },
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]
