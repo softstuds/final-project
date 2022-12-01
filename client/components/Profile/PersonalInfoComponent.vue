@@ -12,9 +12,28 @@
         <i class="flatText">
           Last Active: {{ user.lastActive }}
         </i>
-        <p>Class of {{ user.graduationYear }}</p>
-        <p><b>Industry: {{ user.industry !== undefined ? user.industry : "None" }}</b></p>
-        <p>Bio: {{ user.bio ?? '' }}</p>
+        <section class="editInfo">
+          <button v-if="editingInfo" @click="(editingInfo=false)">Stop Editing</button>
+          <button v-else @click="(editingInfo=true)">Edit Info</button>
+        </section>
+        <section class="fieldInput">
+          <b class="field">Class of</b>
+          <textarea v-if="editingInfo">{{ user.graduationYear }}</textarea>
+          <b v-else>{{ user.graduationYear }}</b>
+        </section>
+        <section class="fieldInput">
+          <b class="field">Industry:</b>
+          <textarea v-if="editingInfo">{{ user.industry }}</textarea>
+          <b v-else>{{ user.industry }}</b>
+        </section>
+        <section class="fieldInput">
+          <b class="field">Bio:</b>
+          <textarea v-if="editingInfo">{{ user.bio }}</textarea>
+          <b v-else>{{ user.bio }}</b>
+        </section>
+        <WillingTosSelect v-if="user._id === $store.state.userId"
+          :userId="userId"
+        />
       </section>
     </section>
     <CalendarComponent 
@@ -38,7 +57,9 @@ export default {
   data() {
     return {
       user: null,
-      availabilities: []
+      statistics: {},
+      availabilities: [],
+      editingInfo: false
     }
   },
   mounted() {
@@ -62,4 +83,44 @@ export default {
     color: gray
 }
 
+.segmentHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.editButton {
+  height: 25px
+}
+.calendar {
+    display: flex;
+}
+
+.day {
+    width: 100%;
+    border: 1px solid black;
+    padding: 1%
+}
+
+.timeBlock {
+    border: 1px solid black;
+    padding: 10%
+}
+
+.fieldInput {
+  display: flex;
+  justify-content: start;
+  max-width: 750px;
+  align-items: center;
+  margin: 10px;
+}
+
+.field {
+  width: 15%
+}
+
+.editInfo {
+  display: flex;
+  justify-content: flex-end;
+}
 </style>

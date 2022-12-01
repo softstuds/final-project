@@ -58,16 +58,6 @@ const UserSchema = new Schema({
   industry: {
     type: String,
     required: false
-  },
-  // Optional bio from user
-  bio: {
-    type: String,
-    required: false
-  },
-  // The zoom link to meet the user
-  meetingLink: {
-    type: String,
-    required: false
   }
 });
 
