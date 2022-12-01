@@ -17,7 +17,7 @@
           <div
             v-for="(week, i) in timeBlocks"
             :key="i"
-            class="calendar"
+            class="week"
           >
             <section
               v-for="(date, index) in week"
@@ -208,7 +208,7 @@ export default {
               }
               timeBlocks.push(week);
             }
-            console.log(res);
+
             for (var block of res) {
                 block.start = new Date(block.start);
                 for (var j = 0; j < 28; j++) {
@@ -222,7 +222,6 @@ export default {
                   }
                 }
             }
-            console.log(timeBlocks);
 
             this.timeBlocks = timeBlocks;
         },
@@ -343,6 +342,12 @@ export default {
   height: 25px
 }
 .calendar {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.week {
   display: flex;
   width: 100%;
 }
