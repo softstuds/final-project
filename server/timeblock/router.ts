@@ -142,6 +142,36 @@ router.get(
 );
 
 /**
+ * Get the statistics for a given user, including total hours accepted (as owner) 
+ * and meeting success rate (hours met / hours accepted)
+ *
+ * @name GET /api/timeblock/stats/:userId
+ *
+ * @return {TimeBlockResponse[]} - An object of all the statistics available for users to see
+ * @throws {403} - If the user is not logged in
+ * @throws {404} - If the userId is not a valid one
+ */
+router.get(
+  '/stats/:userId?',
+  [
+    userValidator.isUserLoggedIn,
+    timeBlockValidator.isValidUserParam
+  ],
+  async (req: Request, res: Response) => {
+    const {userId} = req.params;
+    const totalHoursAccepted = await TimeBlockCollection.findTotalAcceptedByOwner(userId) as number;
+    const totalHoursMet = await TimeBlockCollection.findTotalMetByOwner(userId) as number;
+    res.status(200).json({
+      message: 'totalHoursAccepted and meetingSuccessRate were fetched successfully.',
+      statistics: {
+        totalHoursAccepted: totalHoursAccepted,
+        meetingSuccessRate: `${(totalHoursAccepted) ? totalHoursMet / totalHoursAccepted : 0}`,
+      }
+    });
+  }
+);
+
+/**
  * Create a new time block.
  *
  * @name PUT /api/timeblock
@@ -157,7 +187,7 @@ router.put(
   [
     userValidator.isUserLoggedIn,
     timeBlockValidator.isBlockNonexistent,
-    timeBlockValidator.isValidStart,
+    timeBlockValidator.isBlockInNextSeven
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn

@@ -42,7 +42,7 @@ const TimeBlockSchema = new Schema<TimeBlock>({
     // Use Types.ObjectId outside of the schema
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: false,
     default: null
   },
   // The start time of the 1hr-long time block
@@ -53,15 +53,15 @@ const TimeBlockSchema = new Schema<TimeBlock>({
   // Whether the time block has been accepted by the owner
   accepted: {
     type: Boolean,
-    required: true,
+    required: false,
     default: false
   },
   // Whether the accepted meeting has actually met
   met: {
     type: Boolean,
-    required: true,
-    default: null,
-  },
+    required: false,
+    default: null
+  }
 });
 
 const TimeBlockModel = model<TimeBlock>('TimeBlock', TimeBlockSchema);

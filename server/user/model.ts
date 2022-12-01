@@ -54,11 +54,6 @@ const UserSchema = new Schema({
     type: Date,
     required: true
   },
-  // The industry the user is in
-  industry: {
-    type: String,
-    required: false
-  },
   // Optional bio from user
   bio: {
     type: String,
@@ -71,5 +66,15 @@ const UserSchema = new Schema({
   }
 });
 
+// (virtual-population)
+// Auto-populate a User.industry with any followings where User._id == Industry.userId
+UserSchema.virtual('industry', {
+  ref: 'Industry',
+  localField: '_id',
+  foreignField: 'userId'
+});
+
+UserSchema.set('toObject', {virtuals: true});
+UserSchema.set('toJSON', {virtuals: true});
 const UserModel = model<User>('User', UserSchema);
 export default UserModel;

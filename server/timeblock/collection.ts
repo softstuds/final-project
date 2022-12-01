@@ -91,7 +91,6 @@ class TimeBlockCollection {
     // Retrieves time blocks and sorts them from latest to earliest time
     const now = new Date();
     now.setHours(0, 0, 0, 0);
-    console.log(ownerId);
     return TimeBlockModel.find({owner: ownerId, requester: null, start: {$gte: now}}).sort({start: -1}).sort({start: 1}).populate('owner requester');
   }
 
@@ -111,6 +110,27 @@ class TimeBlockCollection {
     } else {
       return TimeBlockModel.find({owner: userId, requester: {$ne: null}, start: {$gte: now}}).sort({start: 1}).populate('owner requester');
     }
+  }
+
+  /**
+   * Get the number of total meetings that the user has accepted
+   * 
+   * @param {string} userId - The id of the user
+   * @return {Promise<Number>} - The number of meetings a user owns and has accepted 
+   */
+   static async findTotalAcceptedByOwner(userId: Types.ObjectId | string): Promise<Number> {
+    return TimeBlockModel.find({owner: userId, accepted: true}).count();
+  }
+
+  /**
+   * Get the number of total meetings that the user has attended (or at least 
+   * has not been reported as not attending)
+   * 
+   * @param {string} userId - The id of the user
+   * @return {Promise<Number>} - The number of meetings a user owns, has accepted, and has attended 
+   */
+  static async findTotalMetByOwner(userId: Types.ObjectId | string): Promise<Number> {
+    return TimeBlockModel.find({owner: userId, accepted: true, met: {$ne: false}}).count();
   }
 
   /**

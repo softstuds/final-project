@@ -70,7 +70,7 @@ export default {
       hasBody: false, // Whether or not form request has a body
       setUser: false, // Whether or not stored username should be updated after form submission
       refreshUser: false, // Whether or not to refresh user info
-      clearFields: true,
+      deleteUser: false, // If the user info has been deleted
       alerts: {}, // Displays success/error messages encountered during form submission
       callback: null // Function to run after successful form submission
     };
@@ -98,6 +98,17 @@ export default {
       }
 
       try {
+        if (this.deleteUser) {
+          // delete tags when a user is deleted
+          const options = {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'same-origin' // Sends express-session credentials with request
+          };
+          const tags = await fetch('/api/tags', options);
+          const tagsRes = await tags.json();
+        }
+
         const r = await fetch(this.url, options);
         if (!r.ok) {
           // If response is not okay, we throw an error and enter the catch block
@@ -110,6 +121,15 @@ export default {
           const res = text ? JSON.parse(text) : {user: null};
           this.$store.commit('setUser', res.user ? res.user : null);
           this.$store.commit('setUserId', res.user ? res.user._id.toString() : null);
+
+          // create tags when a new user is created
+          const options = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'same-origin' // Sends express-session credentials with request
+          };
+          const tags = await fetch('/api/tags', options);
+          const tagsRes = await tags.json();
         }
 
         if (this.refreshUser) {

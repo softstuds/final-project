@@ -37,7 +37,7 @@ const isValidUserParam = async (req: Request, res: Response, next: NextFunction)
 const isValidUserBody = async (req: Request, res: Response, next: NextFunction) => {
   const user = await UserCollection.findOneByUserId(req.body.userId);
 
-  if (user) {
+  if (!user) {
     res.status(404).json({
       error: `User with ID ${req.params.userId} does not exist.`
     });
@@ -52,27 +52,10 @@ const isValidUserBody = async (req: Request, res: Response, next: NextFunction) 
  */
 const isValidInput = async (req: Request, res: Response, next: NextFunction) => {
   const {input} = req.body as {input: boolean};
-  if (input && !input) {
+  if (!input && input) {
     res.status(404).json({error: 'Invalid input value.'});
     return;
   }
-
-  next();
-};
-
-/**
- * Checks if the start time given in req.body is in the future
- */
- const isValidStart = async (req: Request, res: Response, next: NextFunction) => {
-  const now = new Date();
-  const start = new Date(req.body.start);
-  if (start < now) {
-      res.status(409).json({
-          error: `Start time ${start} has already passed.`
-      });
-      return;
-  }
-
 
   next();
 };
@@ -116,7 +99,7 @@ const isBlockExistent = async (req: Request, res: Response, next: NextFunction) 
  */
 const isBlockOwner = async (req: Request, res: Response, next: NextFunction) => {
   const timeBlock = await TimeBlockCollection.findOne(req.params.timeBlockId);
-  if (timeBlock.owner._id !== req.session.userId) {
+  if (timeBlock.owner._id.toString() !== (req.session.userId as string)) {
     res.status(403).json({
       error: `User is not owner of time block with ID ${req.params.timeBlockId}.`
     });
@@ -203,18 +186,37 @@ const isBlockAccepted = async (req: Request, res: Response, next: NextFunction) 
   next();
 };
 
+/**
+ * Checks if the time given is in the next seven days
+ */
+const isBlockInNextSeven = async (req: Request, res: Response, next: NextFunction) => {
+  const endOfWeek = new Date();
+  endOfWeek.setDate((new Date()).getDate() + 8);
+  endOfWeek.setHours(0, 0, 0, 0);
+
+  const start = new Date(req.body.start);
+  if (start >= endOfWeek) {
+    res.status(409).json({
+      error: 'You can only enter time blocks for the next 7 days.'
+    });
+    return;
+  }
+
+  next();
+};
+
 export {
-    isUserGiven,
-    isValidUserParam,
-    isValidUserBody,
-    isValidInput,
-    isValidStart,
-    isBlockNonexistent,
-    isBlockExistent,
-    isBlockOwner,
-    isBlockNotOwner,
-    isBlockOwnerOrRequester,
-    isBlockInFuture,
-    isBlockInPast,
-    isBlockAccepted,
+  isUserGiven,
+  isValidUserParam,
+  isValidUserBody,
+  isValidInput,
+  isBlockNonexistent,
+  isBlockExistent,
+  isBlockOwner,
+  isBlockNotOwner,
+  isBlockOwnerOrRequester,
+  isBlockInFuture,
+  isBlockInPast,
+  isBlockAccepted,
+  isBlockInNextSeven
 };
