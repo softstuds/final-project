@@ -69,7 +69,9 @@ export default {
       method: 'GET', // Form request method
       hasBody: false, // Whether or not form request has a body
       setUser: false, // Whether or not stored username should be updated after form submission
-      refreshFreets: false, // Whether or not stored freets should be updated after form submission
+      refreshUser: false, // Whether or not to refresh user info
+      deleteUser: false, // If the user info has been deleted
+      clearFields: true,
       alerts: {}, // Displays success/error messages encountered during form submission
       callback: null // Function to run after successful form submission
     };
@@ -88,13 +90,26 @@ export default {
         options.body = JSON.stringify(Object.fromEntries(
           this.fields.map(field => {
             const {id, value} = field;
-            field.value = '';
+            if (this.clearFields) {
+              field.value = '';
+            }
             return [id, value];
           })
         ));
       }
 
       try {
+        if (this.deleteUser) {
+          // delete tags when a user is deleted
+          const options = {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'same-origin' // Sends express-session credentials with request
+          };
+          const tags = await fetch('/api/tags', options);
+          const tagsRes = await tags.json();
+        }
+
         const r = await fetch(this.url, options);
         if (!r.ok) {
           // If response is not okay, we throw an error and enter the catch block
@@ -105,12 +120,22 @@ export default {
         if (this.setUser) {
           const text = await r.text();
           const res = text ? JSON.parse(text) : {user: null};
-          this.$store.commit('setUsername', res.user ? res.user.email : null);
+          this.$store.commit('setUser', res.user ? res.user : null);
           this.$store.commit('setUserId', res.user ? res.user._id.toString() : null);
+
+          // create tags when a new user is created
+          const options = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'same-origin' // Sends express-session credentials with request
+          };
+          const tags = await fetch('/api/tags', options);
+          const tagsRes = await tags.json();
         }
 
-        if (this.refreshFreets) {
-          this.$store.commit('refreshFreets');
+        if (this.refreshUser) {
+          this.$store.commit('refreshUser');
+          this.$store.commit('updateLastActive');
         }
 
         if (this.callback) {

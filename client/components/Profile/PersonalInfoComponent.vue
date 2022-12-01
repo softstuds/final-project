@@ -1,7 +1,9 @@
 <!-- Component for viewing a person's information (name, username, graduation year, last active, industry -->
 
 <template>
-  <div>
+  <div
+    v-if="user !== null"
+  >
     <header>
       <h2>{{ user.firstName }}</h2>
     </header>
@@ -12,6 +14,11 @@
         </i>
         <p>Class of {{ user.graduationYear }}</p>
         <p><b>Industry: {{ user.industry !== undefined ? user.industry : "None" }}</b></p>
+
+        <WillingTosSelect v-if="user._id === $store.state.userId"
+          :userId="userId"
+        />
+        <p>Bio: {{ user.bio ?? '' }}</p>
       </section>
     </section>
     <section class="availability">
@@ -56,8 +63,11 @@
 </template>
 
 <script>
+import WillingTosSelect from '@/components/Tags/WillingTosSelect.vue';
+
 export default {
   name: 'PersonalInfoComponent',
+  components: {WillingTosSelect},
   props: {
     userId: {
       type: String,
@@ -66,13 +76,7 @@ export default {
   },
   data() {
     return {
-      user: {
-        firstName: "",
-        lastName: "",
-        lastActive: "",
-        gradYear: "",
-        industry: ""
-      },
+      user: null,
       availabilities: []
     }
   },

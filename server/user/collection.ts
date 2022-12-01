@@ -83,7 +83,7 @@ class UserCollection {
    * @param {Object} userDetails - An object with the user's updated credentials
    * @return {Promise<HydratedDocument<User>>} - The updated user
    */
-  static async updateOne(userId: Types.ObjectId | string, userDetails: {password?: string; email?: string}): Promise<HydratedDocument<User>> {
+  static async updateOne(userId: Types.ObjectId | string, userDetails: {password?: string; email?: string; industry?: string; graduationYear?: number; bio?: string; meetingLink?: string}): Promise<HydratedDocument<User>> {
     const user = await UserModel.findOne({_id: userId});
     if (userDetails.password) {
       user.password = userDetails.password;
@@ -93,7 +93,36 @@ class UserCollection {
       user.email = userDetails.email;
     }
 
+    if (userDetails.industry) {
+      user.industry = userDetails.industry;
+    }
+
+    if (userDetails.graduationYear) {
+      user.graduationYear = userDetails.graduationYear;
+    }
+
+    if (userDetails.bio) {
+      user.bio = userDetails.bio;
+    }
+
+    if (userDetails.meetingLink) {
+      user.meetingLink = userDetails.meetingLink;
+    }
+
     await user.save();
+    return user;
+  }
+
+  /**
+   * Update last active
+   *
+   * @return {Promise<HydratedDocument<User>>} - The newly created user
+   */
+  static async updateLastActive(userId: Types.ObjectId | string): Promise<HydratedDocument<User>> {
+    const user = await UserModel.findOne({_id: userId});
+    const lastActive = new Date();
+    user.lastActive = lastActive;
+    await user.save(); // Saves user to MongoDB
     return user;
   }
 
