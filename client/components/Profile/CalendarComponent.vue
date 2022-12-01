@@ -4,43 +4,59 @@
   <div>
     <section class="availability">
       <h3><b>Availability</b></h3>
-      <section class="calendar">
-        <section
-          v-for="(date, index) in timeBlocks"
-          :key="index"
-          class="day"
-        >
-          <section class="dayHeader">
-            {{ calendarDays[index].getMonth() + 1 }}/{{ calendarDays[index].getDate() }}
+      <section>
+        <div class="daysOfWeek">
+          <section
+            v-for="day in daysOfWeek"
+            class="dayOfWeek">
+              {{ day }}
           </section>
-          <section 
-            v-for="block in date"
-            :key="block.start.getHours()"
-            class="timeBlock"
+        </div>
+
+        <section class="calendar">
+          <div
+            v-for="(week, i) in timeBlocks"
+            :key="i"
+            class="calendar"
           >
-            {{ block.start.getHours() == 12 ?
-              12 + "pm" :
-              block.start.getHours() == 0 ?
-                12 + "am" :
-                block.start.getHours() > 12 ?
-                  block.start.getHours() - 12 + "pm" : 
-                  block.start.getHours() + "am"
-            }}
-            <div>
-              <button 
-                v-if="userId !== $store.state.userId"
-                @click="requestTimeBlock(block._id)"
+            <section
+              v-for="(date, index) in week"
+              :key="index"
+              class="day"
+            >
+              <section class="dayHeader">
+                {{ calendarDays[i][index].getMonth() + 1 }}/{{ calendarDays[i][index].getDate() }}
+              </section>
+              <section 
+                v-for="block in date"
+                :key="block.start.getHours()"
+                class="timeBlock"
               >
-                Request
-              </button>
-              <button 
-                v-if="editing"
-                @click="deleteTimeBlock(block._id)"
-              >
-                Delete
-              </button>
-            </div>
-          </section>
+                {{ block.start.getHours() == 12 ?
+                  12 + "pm" :
+                  block.start.getHours() == 0 ?
+                    12 + "am" :
+                    block.start.getHours() > 12 ?
+                      block.start.getHours() - 12 + "pm" : 
+                      block.start.getHours() + "am"
+                }}
+                <div>
+                  <button 
+                    v-if="userId !== $store.state.userId"
+                    @click="requestTimeBlock(block._id)"
+                  >
+                    Request
+                  </button>
+                  <button 
+                    v-if="editing"
+                    @click="deleteTimeBlock(block._id)"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </section>
+            </section>
+          </div>
         </section>
       </section>
       <section class="editFooter">
@@ -151,6 +167,7 @@ export default {
             editing: false,
             timeBlocks: [],
             calendarDays: [],
+            daysOfWeek: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
             alerts: {}
         }
     },
@@ -166,33 +183,46 @@ export default {
                 throw new Error(res.error);
             }
 
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const nextSeven = [];
-            for (var i = 0; i < 8; i++) {
-                const nextDay = new Date(today);
-                nextDay.setDate(today.getDate() + i);
+            const start = new Date();
+            start.setHours(0, 0, 0, 0);
+            const currentDay = start.getDay();
+            start.setDate(start.getDate() - start.getDay());
+
+            const nextFourWeeks = []
+            for (var x = 0; x < 4; x++) {
+              const nextSeven = [];
+              for (var i = 0; i < 7; i++) {
+                const nextDay = new Date(start);
+                nextDay.setDate(start.getDate() + x * 7 + i);
                 nextSeven.push(nextDay);
+              }
+              nextFourWeeks.push(nextSeven);
             }
-            this.calendarDays = nextSeven;
+            this.calendarDays = nextFourWeeks;
             
             const timeBlocks = []
-            for (var k = 0; k < 7; k++) {
-                timeBlocks.push([]);
+            for (var x = 0; x < 4; x++) {
+              const week = [];
+              for (var i = 0; i < 7; i++) {
+                week.push([]);
+              }
+              timeBlocks.push(week);
             }
-            
+            console.log(res);
             for (var block of res) {
                 block.start = new Date(block.start);
-                if (block.start < nextSeven[0] || block.start > nextSeven[-1]) {
-                continue;
-                }
-                for (var j = 0; j < 7; j++) {
-                if (block.start < nextSeven[j + 1]) {
-                    timeBlocks[j].push(block);
+                for (var j = 0; j < 28; j++) {
+                  const row = Math.floor(j / 7);
+                  const col = j % 7;
+                  const sameMonth = block.start.getMonth() == nextFourWeeks[row][col].getMonth();
+                  const sameDay = block.start.getDate() == nextFourWeeks[row][col].getDate();
+                  if (sameMonth && sameDay) {
+                    timeBlocks[row][col].push(block);
                     break;
-                }
+                  }
                 }
             }
+            console.log(timeBlocks);
 
             this.timeBlocks = timeBlocks;
         },
@@ -310,32 +340,47 @@ export default {
 }
 
 .editButton {
-height: 25px
+  height: 25px
 }
 .calendar {
-    display: flex;
+  display: flex;
+  width: 100%;
 }
 
 .day {
-    width: 100%;
-    border: 1px solid black;
-    min-height: 100px;
+  width: 100%;
+  border: 1px solid black;
+  min-height: 100px;
 }
 .dayHeader {
-    border-bottom: 1px solid black;
-    display: flex;
-    justify-content: center;
+  border-bottom: 1px solid black;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.daysOfWeek {
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.dayOfWeek {
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .timeBlock {
-    border: 1px solid black;
-    padding: 10px;
-    margin: 10px;
+  border: 1px solid black;
+  padding: 10px;
+  margin: 10px;
 }
 
 .dateSelector {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .selector {
