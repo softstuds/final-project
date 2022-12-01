@@ -54,11 +54,6 @@ const UserSchema = new Schema({
     type: Date,
     required: true
   },
-  // The industry the user is in
-  industry: {
-    type: String,
-    required: false
-  },
   // Optional bio from user
   bio: {
     type: String,
