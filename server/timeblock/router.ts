@@ -45,7 +45,7 @@ router.get(
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? '';
-    const occurredTimeBlocks = await TimeBlockCollection.findAllByUserOccurred(userId);
+    const occurredTimeBlocks = await TimeBlockCollection.findAllByUserOccurred(userId, false);
     const response = occurredTimeBlocks.map(util.constructTimeBlockResponse);
     res.status(200).json(response);
   }

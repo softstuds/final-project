@@ -106,6 +106,27 @@ router.get(
 );
 
 /**
+ * Get a user by email
+ *
+ * @name GET /api/users/:email
+ *
+ * @return - specified user
+ */
+ router.get(
+  '/email/:email',
+  [
+    userValidator.isUserExists
+  ],
+  async (req: Request, res: Response) => {
+    const user = await UserCollection.findOneByEmail(req.params.email);
+    res.status(200).json({
+      message: `Found user ${user.firstName}`,
+      user: util.constructUserResponse(user)
+    });
+  }
+);
+
+/**
  * Get all users
  *
  * @name GET /api/users

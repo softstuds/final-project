@@ -21,7 +21,7 @@ const isUserGiven = async (req: Request, res: Response, next: NextFunction) => {
 const isValidUserParam = async (req: Request, res: Response, next: NextFunction) => {
   const user = await UserCollection.findOneByUserId(req.params.userId);
 
-  if (user) {
+  if (!user) {
     res.status(404).json({
       error: `User with ID ${req.params.userId} does not exist.`
     });

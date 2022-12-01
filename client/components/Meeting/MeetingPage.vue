@@ -33,6 +33,15 @@
             </div>
             <div class="column">
                 <h2>Outgoing Requests</h2>
+                <section
+                class="meeting"
+                >
+                <MeetingComponent
+                v-for="block in this.outgoingRequests"
+                :key="block.id"
+                :meeting="block"
+                 />
+                </section>
             </div>
         </div>
       </section>
@@ -60,10 +69,10 @@
     },
     mounted() {
         // this.getUser();
-        this.getPastMeetings();
+        // this.getPastMeetings();
         this.getUpcomingMeetings();
         // this.getIncomingRequests();
-        // this.getOutgoingRequests();
+        this.getOutgoingRequests();
     },
     methods: {
         async getUser() {
@@ -103,12 +112,33 @@
                 
                 // this.upcomingMeetings = this.request(params);
         },
-    // async getIncomingRequests() {
+        getIncomingRequests() {
 
-    // },
-    // async getOutgoingRequests() {
+        },
+    async getOutgoingRequests() {
+        try {
+        const r = await fetch('/api/timeblock/requests/sent', {
+          method: 'GET', 
+          headers: {'Content-Type': 'application/json'}
+        });
 
-    // },
+        const res = await r.json();
+        if (!r.ok) {
+          throw new Error(res.error);
+        }
+
+        var arrayOfBlocks = [];
+        for (var block of res){
+           arrayOfBlocks.push(block);
+        }
+        this.outgoingRequests = arrayOfBlocks;
+
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$delete(this.alerts, e), 3000);
+      }
+
+        },
     async request(params) {
       /**
        * Submits a request to the freet's endpoint
@@ -122,13 +152,19 @@
       };
     
       try {
-        var r;
-        r = await fetch(`${params.url}`, options);
+        const r = await fetch(`${params.url}`, options);
         const res = await r.json();
         if (!r.ok) {
           throw new Error(res.error);
         }
-        return res;
+
+        var arrayOfBlocks = [];
+        for (var block of res){
+          // console.log("yuou", block.owner);
+          arrayOfBlocks.push(block);
+        }
+        return arrayOfBlocks;
+        // this.outgoingRequests = arrayOfBlocks;
 
       } catch (e) {
         this.$set(this.alerts, e, 'error');

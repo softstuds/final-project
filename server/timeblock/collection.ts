@@ -91,6 +91,7 @@ class TimeBlockCollection {
     // Retrieves time blocks and sorts them from latest to earliest time
     const now = new Date();
     now.setHours(0, 0, 0, 0);
+    console.log(ownerId);
     return TimeBlockModel.find({owner: ownerId, requester: null, start: {$gte: now}}).sort({start: -1}).sort({start: 1}).populate('owner requester');
   }
 
