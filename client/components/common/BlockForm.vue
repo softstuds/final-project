@@ -69,6 +69,7 @@ export default {
       method: 'GET', // Form request method
       hasBody: false, // Whether or not form request has a body
       setUser: false, // Whether or not stored username should be updated after form submission
+      newUser: false, // if a new user is being created
       refreshUser: false, // Whether or not to refresh user info
       deleteUser: false, // If the user info has been deleted
       alerts: {}, // Displays success/error messages encountered during form submission
@@ -126,15 +127,19 @@ export default {
           this.$store.commit('setUser', res.user ? res.user : null);
           this.$store.commit('setUserId', res.user ? res.user._id.toString() : null);
 
+          if (this.newUser && res.user) {
           // create tags when a new user is created
           const options = {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            credentials: 'same-origin' // Sends express-session credentials with request
-          };
-          const tags = await fetch('/api/tags', options);
-          const tagsRes = await tags.json();
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'same-origin' // Sends express-session credentials with request
+              };
+              const tags = await fetch('/api/tags', options);
+              const tagsRes = await tags.json();
+              console.log(tagsRes);
         }
+        }
+
 
         if (this.refreshUser) {
           this.$store.commit('refreshUser');
