@@ -22,7 +22,7 @@ const isValidTagName = async (req: Request, res: Response, next: NextFunction) =
  */
  const isValidTagNameInBody = async (req: Request, res: Response, next: NextFunction) => {
     const validNames = ['coffeeChat', 'refer', 'helpInterview', 'resumeReview', 'mentor', 'email'];
-    if (!(req.body.tagName in validNames)) {
+    if (!validNames.includes(req.body.tagName)) {
         res.status(400).json({
             error: 'Category must be a string only consisting of letters and numbers.'
         });
