@@ -23,7 +23,7 @@ router.post(
         const tags = await TagsCollection.addOne(userId);
         res.status(201).json({
             message: 'Tags were created successfully.',
-            category: util.constructTagsResponse(tags)
+            tags: util.constructTagsResponse(tags)
         });
     }
 );
@@ -31,18 +31,18 @@ router.post(
 /**
  * Retrieve a user's tags
  * 
- * @name GET /api/tags
+ * @name GET /api/tags/:userId
  * @return {TagsResponse} - The tags for a user
  */
 router.get(
-    '/',
+    '/:userId?',
     [],
     async (req: Request, res: Response) => {
-        const userId = (req.session.userId as string) ?? '';
+        const userId = req.params.userId;
         const tags = await TagsCollection.findOneByUserId(userId);
         res.status(201).json({
             message: 'Tags were retrieved successfully.',
-            category: util.constructTagsResponse(tags)
+            tags: util.constructTagsResponse(tags)
         });
     }
 );
@@ -76,10 +76,10 @@ router.get(
     [tagsValidator.isValidTagNameInBody],
     async (req: Request, res: Response) => {
         const userId = (req.session.userId as string) ?? '';
-        const tags = await TagsCollection.updateOne(userId, req.body.tagName, req.body.newValue === 'true');
+        const tags = await TagsCollection.updateOne(userId, req.body.tagName, req.body.newValue);
         res.status(201).json({
             message: 'Tags were updated successfully.',
-            category: util.constructTagsResponse(tags)
+            tags: util.constructTagsResponse(tags)
         });
     }
 );

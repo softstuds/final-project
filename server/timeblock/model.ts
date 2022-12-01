@@ -14,7 +14,7 @@ export type TimeBlock = {
   requester: Types.ObjectId;
   start: Date;
   accepted: boolean;
-  occurred: boolean;
+  met: boolean;
 };
 
 export type PopulatedTimeBlock = {
@@ -23,7 +23,7 @@ export type PopulatedTimeBlock = {
   requester: User;
   start: Date;
   accepted: boolean;
-  occurred: boolean;
+  met: boolean;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -56,8 +56,8 @@ const TimeBlockSchema = new Schema<TimeBlock>({
     required: false,
     default: false
   },
-  // Whether the accepted meeting has occurred
-  occurred: {
+  // Whether the accepted meeting has actually met
+  met: {
     type: Boolean,
     required: false,
     default: null
