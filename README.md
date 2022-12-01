@@ -93,6 +93,17 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if user is not logged in
 
+#### `GET /api/timeblock/stats/:userId` - Get the statistics for a given user, including total hours accepted (as owner) and meeting success rate (hours met / hours accepted)
+
+**Returns**
+
+- An object of all the statistics available for users to see
+
+**Throws**
+
+- `403` if user is not logged in
+- `404` if the userId is not a valid one
+
 #### `PUT /api/timeblock` - Create a new time block.
 
 **Body**

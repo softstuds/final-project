@@ -112,6 +112,27 @@ class TimeBlockCollection {
   }
 
   /**
+   * Get the number of total meetings that the user has accepted
+   * 
+   * @param {string} userId - The id of the user
+   * @return {Promise<Number>} - The number of meetings a user owns and has accepted 
+   */
+   static async findTotalAcceptedByOwner(userId: Types.ObjectId | string): Promise<Number> {
+    return TimeBlockModel.find({owner: userId, accepted: true}).count();
+  }
+
+  /**
+   * Get the number of total meetings that the user has attended (or at least 
+   * has not been reported as not attending)
+   * 
+   * @param {string} userId - The id of the user
+   * @return {Promise<Number>} - The number of meetings a user owns, has accepted, and has attended 
+   */
+  static async findTotalMetByOwner(userId: Types.ObjectId | string): Promise<Number> {
+    return TimeBlockModel.find({owner: userId, accepted: true, met: {$ne: false}}).count();
+  }
+
+  /**
    * Update a time block with the new requester
    *
    * @param {string} timeBlockId - The id of the time block to be updated
