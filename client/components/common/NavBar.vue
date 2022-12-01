@@ -53,13 +53,14 @@
 
 <style scoped>
 nav {
-    padding: 1vw 2vw;
-    background-color: #ccc;
+    padding: 1.5vw 2vw;
+    background-color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
     text-decoration: none;
+    color: black;
 }
 
 .title {
