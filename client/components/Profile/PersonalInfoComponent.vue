@@ -18,6 +18,7 @@
         <WillingTosSelect v-if="user._id === $store.state.userId"
           :userId="userId"
         />
+        <p>Bio: {{ user.bio ?? '' }}</p>
       </section>
     </section>
     <section class="availability">

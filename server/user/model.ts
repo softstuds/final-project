@@ -16,6 +16,8 @@ export type User = {
   graduationYear: number;
   lastActive: Date;
   industry: string;
+  bio: string;
+  meetingLink: string;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -54,6 +56,16 @@ const UserSchema = new Schema({
   },
   // The industry the user is in
   industry: {
+    type: String,
+    required: false
+  },
+  // Optional bio from user
+  bio: {
+    type: String,
+    required: false
+  },
+  // The zoom link to meet the user
+  meetingLink: {
     type: String,
     required: false
   }
