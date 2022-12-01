@@ -17,8 +17,15 @@
         <p>Bio: {{ user.bio ?? '' }}</p>
       </section>
     </section>
-    <section class="availability">
-      <section class="availabilityHeader">
+    <section class="segment">
+      <section class="segmentHeader">
+        <h3><b>{{ user.firstName }}'s Statistics</b></h3>
+      </section>
+      <p><b>Hours accepted: </b>{{statistics.totalHoursAccepted}}</p>
+      <p><b>Meeting success rate: </b>{{statistics.meetingSuccessRate}}</p>
+    </section>
+    <section class="segment">
+      <section class="segmentHeader">
         <h3><b>Availability</b></h3>
         <button 
           v-if="user._id === $store.state.userId"
@@ -70,11 +77,13 @@ export default {
   data() {
     return {
       user: null,
+      statistics: {},
       availabilities: []
     }
   },
   mounted() {
     this.getUser();
+    this.getStats();
     this.getAvailibilities();
   },
   methods: {
@@ -85,6 +94,14 @@ export default {
         throw new Error(res.error);
       }
       this.user = res.user;
+    },
+    async getStats() {
+      const r = await fetch(`api/timeblock/stats/${this.userId}`);
+      const res = await r.json();
+      if (!r.ok) {
+        throw new Error(res.error);
+      }
+      this.statistics = res.statistics;
     },
     getAvailibilities() {
         const availabilities = [
@@ -106,11 +123,11 @@ export default {
 .flatText {
     color: gray
 }
-.availability {
+.segment {
     border-top: 1px solid black;
 }
 
-.availabilityHeader {
+.segmentHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
