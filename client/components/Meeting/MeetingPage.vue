@@ -29,7 +29,15 @@
             </div>
             <div class="column">
                 <h2>Incoming Requests</h2>
-
+                <section
+                class="meeting"
+                >
+                <MeetingComponent
+                v-for="block in this.incomingRequests"
+                :key="block.id"
+                :meeting="block"
+                 />
+                </section>
             </div>
             <div class="column">
                 <h2>Outgoing Requests</h2>
@@ -71,7 +79,7 @@
         // this.getUser();
         // this.getPastMeetings();
         this.getUpcomingMeetings();
-        // this.getIncomingRequests();
+        this.getIncomingRequests();
         this.getOutgoingRequests();
     },
     methods: {
@@ -112,7 +120,29 @@
                 
                 // this.upcomingMeetings = this.request(params);
         },
-        getIncomingRequests() {
+    async getIncomingRequests() {
+        try {
+          const r = await fetch('/api/timeblock/requests/received', {
+            method: 'GET', 
+            headers: {'Content-Type': 'application/json'}
+          });
+
+          const res = await r.json();
+          if (!r.ok) {
+            throw new Error(res.error);
+          }
+
+          var arrayOfBlocks = [];
+          for (var block of res){
+            arrayOfBlocks.push(block);
+          }
+          console.log(arrayOfBlocks, 'HELLO');
+          this.incomingRequests = arrayOfBlocks;
+
+        } catch (e) {
+          this.$set(this.alerts, e, 'error');
+          setTimeout(() => this.$delete(this.alerts, e), 3000);
+        }
 
         },
     async getOutgoingRequests() {

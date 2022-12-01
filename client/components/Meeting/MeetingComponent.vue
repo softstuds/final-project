@@ -9,7 +9,7 @@
       <div class="row">
         <p v-if="(meeting.accepted==true)" class="accepted column">accepted</p>
         <p v-else class="notAccepted column">not accepted</p>
-        <button class="column">cancel</button>
+        <button class="column" @click="cancelRequest">cancel</button>
       </div>
 
     </section>
@@ -45,6 +45,27 @@ export default {
     this.getOwner();
   },
   methods: {
+    async cancelRequest () {
+      try {
+        const r = await fetch(`/api/users/email/${this.owner}`, {
+          method: 'GET', 
+          headers: {'Content-Type': 'application/json'}
+        });
+
+        const res = await r.json();
+        if (!r.ok) {
+          throw new Error(res.error);
+        }
+
+        console.log('BARDI', res);
+        this.outgoingRequests = arrayOfBlocks;
+
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$delete(this.alerts, e), 3000);
+      }
+
+    },
     getDate () {
       const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
       const date = new Date(this.meeting.start);

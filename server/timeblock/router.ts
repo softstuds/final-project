@@ -136,6 +136,7 @@ router.get(
   async (req: Request, res: Response) => {
     const userId = (req.params.userId as string);
     const requestedTimeBlocks = await TimeBlockCollection.findAllRequests(userId, false);
+    console.log('hello', requestedTimeBlocks);
     const response = requestedTimeBlocks.map(util.constructTimeBlockResponse);
     res.status(200).json(response);
   }
