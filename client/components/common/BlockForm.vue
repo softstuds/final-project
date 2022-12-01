@@ -87,9 +87,21 @@ export default {
       if (this.hasBody) {
         options.body = JSON.stringify(Object.fromEntries(
           this.fields.map(field => {
+<<<<<<< Updated upstream
             const {id, value} = field;
             field.value = '';
             return [id, value];
+=======
+            if (field == 'graduationYear') {
+              const {id, value} = field;
+              return [id, parseInt(value, 10)];
+            } else {
+              const {id, value} = field;
+              return [id, value];
+            }
+            field.value = '';
+            
+>>>>>>> Stashed changes
           })
         ));
       }
