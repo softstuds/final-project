@@ -165,7 +165,7 @@ router.get(
       message: 'totalHoursAccepted and meetingSuccessRate were fetched successfully.',
       statistics: {
         totalHoursAccepted: totalHoursAccepted,
-        meetingSuccessRate: `${(totalHoursAccepted) ? totalHoursMet / totalHoursAccepted : 0}`,
+        meetingSuccessRate: `${(totalHoursAccepted) ? totalHoursMet / totalHoursAccepted * 100 : 100}`,
       }
     });
   }

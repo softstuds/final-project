@@ -52,7 +52,7 @@
         <h3><b>{{ user.firstName }}'s Statistics</b></h3>
       </section>
       <p><b>Hours accepted: </b>{{statistics.totalHoursAccepted}}</p>
-      <p><b>Meeting success rate: </b>{{statistics.meetingSuccessRate}}</p>
+      <p><b>Meeting success rate: </b>{{statistics.meetingSuccessRate}}%</p>
     </section>
     <CalendarComponent 
       :userId="userId"
