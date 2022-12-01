@@ -4,6 +4,7 @@ import express from 'express';
 import TagsCollection from './collection';
 import * as util from './util';
 import * as tagsValidator from './middleware';
+import * as userValidator from '../user/middleware';
 
 const router = express.Router();
 
@@ -17,7 +18,10 @@ const router = express.Router();
  */
 router.post(
     '/',
-    [tagsValidator.isTagsExistForCreation],
+    [
+        userValidator.isUserLoggedIn,
+        tagsValidator.isTagsExistForCreation
+    ],
     async (req: Request, res: Response) => {
         const userId = (req.session.userId as string) ?? '';
         const tags = await TagsCollection.addOne(userId);
@@ -36,7 +40,7 @@ router.post(
  */
 router.get(
     '/:userId?',
-    [],
+    [userValidator.isUserLoggedIn],
     async (req: Request, res: Response) => {
         const userId = req.params.userId;
         const tags = await TagsCollection.findOneByUserId(userId);
@@ -56,7 +60,10 @@ router.get(
  */
  router.get(
     '/:tagName',
-    [tagsValidator.isValidTagName],
+    [
+        userValidator.isUserLoggedIn,
+        tagsValidator.isValidTagName
+    ],
     async (req: Request, res: Response) => {
         const tags = await TagsCollection.findAllByTag(req.params.tagName);
         const response = tags.map(util.constructTagsResponse);
@@ -73,7 +80,10 @@ router.get(
  */
  router.put(
     '/',
-    [tagsValidator.isValidTagNameInBody],
+    [
+        userValidator.isUserLoggedIn,
+        tagsValidator.isValidTagNameInBody
+    ],
     async (req: Request, res: Response) => {
         const userId = (req.session.userId as string) ?? '';
         const tags = await TagsCollection.updateOne(userId, req.body.tagName, req.body.newValue);
@@ -93,7 +103,10 @@ router.get(
  */
  router.delete(
     '/',
-    [tagsValidator.isTagsExistForDeletion],
+    [
+        userValidator.isUserLoggedIn,
+        tagsValidator.isTagsExistForDeletion
+    ],
     async (req: Request, res: Response) => {
         const userId = (req.session.userId as string) ?? '';
         await TagsCollection.deleteOne(userId);
