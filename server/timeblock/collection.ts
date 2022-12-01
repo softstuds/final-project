@@ -1,7 +1,6 @@
 import type {HydratedDocument, Types} from 'mongoose';
 import type {TimeBlock} from './model';
 import TimeBlockModel from './model';
-import UserCollection from '../user/collection';
 
 /**
  * This files contains a class that has the functionality to explore time blocks
@@ -23,7 +22,7 @@ class TimeBlockCollection {
     const time = new Date(start);
     const timeBlock = new TimeBlockModel({
       owner: ownerId,
-      start: time,
+      start: time
     });
     await timeBlock.save(); // Saves time block to MongoDB
     return timeBlock.populate('owner');
@@ -39,19 +38,21 @@ class TimeBlockCollection {
     return TimeBlockModel.findOne({_id: timeBlockId}).populate('owner requester');
   }
 
-/**
+  /**
    * Get all the time blocks in the database with a given user as owner or requester
+   * in order of most to least recent start time
    *
    * @param {string} ownerId - The id of the owner
    * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the time blocks for a given owner
    */
-     static async findAllByOwner(ownerId: Types.ObjectId | string): Promise<Array<HydratedDocument<TimeBlock>>> {
-        // Retrieves time blocks and sorts them from latest to earliest time
-        return TimeBlockModel.find({owner: ownerId}).sort({start: -1}).populate('owner requester');
-    }
+  static async findAllByOwner(ownerId: Types.ObjectId | string): Promise<Array<HydratedDocument<TimeBlock>>> {
+    // Retrieves time blocks and sorts them from latest to earliest time
+    return TimeBlockModel.find({owner: ownerId}).sort({start: -1}).populate('owner requester');
+  }
 
   /**
    * Get all the time blocks in the database with a given user as owner or requester
+   * in order of most to least recent start time
    *
    * @param {string} userId - The id of the user
    * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the time blocks for a given user
@@ -62,19 +63,26 @@ class TimeBlockCollection {
   }
 
   /**
-   * Get all the time blocks in the database with a given user as owner or requester that's occurred and unmarked
+   * Get all the time blocks in the database with a given user as owner or requester that's passed
+   * in order of most to least recent start time
    *
    * @param {string} userId - The id of the user
+   * @param {boolean} getUnmarked - Whether we want only unmarked past meetings or all
    * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the time blocks for a given owner
    */
-   static async findAllByUserOccurred(userId: Types.ObjectId | string): Promise<Array<HydratedDocument<TimeBlock>>> {
+   static async findAllByUserOccurred(userId: Types.ObjectId | string, getUnmarked: boolean): Promise<Array<HydratedDocument<TimeBlock>>> {
     // Retrieves time blocks and sorts them from latest to earliest time
     const now = new Date();
-    return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}]},{start: {$lte: now}, accepted: true, occurred: null}).sort({start: -1}).populate('owner requester');
+    if (getUnmarked) {
+      return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}],start: {$lte: now}, accepted: true, met: null}).sort({start: -1}).populate('owner requester');
+    } else {
+      return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}],start: {$lte: now}, accepted: true}).sort({start: -1}).populate('owner requester');
+    }
   }
 
   /**
    * Get all the time blocks in the database with a given owner that are unclaimed in the future
+   * in order of most to least recent start time
    *
    * @param {string} ownerId - The id of the owner
    * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the time blocks for a given owner
@@ -82,7 +90,47 @@ class TimeBlockCollection {
   static async findAllByOwnerUnclaimed(ownerId: Types.ObjectId | string): Promise<Array<HydratedDocument<TimeBlock>>> {
     // Retrieves time blocks and sorts them from latest to earliest time
     const now = new Date();
-    return TimeBlockModel.find({owner: ownerId, requester: {$ne: null}, start: {$gte: now}}).sort({start: -1}).populate('owner requester');
+    now.setHours(0, 0, 0, 0);
+    return TimeBlockModel.find({owner: ownerId, requester: null, start: {$gte: now}}).sort({start: -1}).sort({start: 1}).populate('owner requester');
+  }
+
+  /**
+   * Get all the time blocks in the database that are unanswered requests that haven't happened yet
+   * in order of closest to farthest start time
+   *
+   * @param {string} userId - The id of the user
+   * @param {boolean} getSent - Whether we want sent meeting requests or received meeting requests
+   * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the request time blocks
+   */
+   static async findAllRequests(userId: Types.ObjectId | string, getSent: boolean): Promise<Array<HydratedDocument<TimeBlock>>> {
+    // Retrieves time blocks and sorts them from latest to earliest time
+    const now = new Date();
+    if (getSent) {
+      return TimeBlockModel.find({requester: userId, accepted: false, start: {$gte: now}}).sort({start: 1}).populate('owner requester');
+    } else {
+      return TimeBlockModel.find({owner: userId, requester: {$ne: null}, start: {$gte: now}}).sort({start: 1}).populate('owner requester');
+    }
+  }
+
+  /**
+   * Get the number of total meetings that the user has accepted
+   * 
+   * @param {string} userId - The id of the user
+   * @return {Promise<Number>} - The number of meetings a user owns and has accepted 
+   */
+   static async findTotalAcceptedByOwner(userId: Types.ObjectId | string): Promise<Number> {
+    return TimeBlockModel.find({owner: userId, accepted: true}).count();
+  }
+
+  /**
+   * Get the number of total meetings that the user has attended (or at least 
+   * has not been reported as not attending)
+   * 
+   * @param {string} userId - The id of the user
+   * @return {Promise<Number>} - The number of meetings a user owns, has accepted, and has attended 
+   */
+  static async findTotalMetByOwner(userId: Types.ObjectId | string): Promise<Number> {
+    return TimeBlockModel.find({owner: userId, accepted: true, met: {$ne: false}}).count();
   }
 
   /**
@@ -106,22 +154,22 @@ class TimeBlockCollection {
    * @return {Promise<HydratedDocument<TimeBlock>>} - The newly updated time block
    */
   static async updateOneAccepted(timeBlockId: Types.ObjectId | string): Promise<HydratedDocument<TimeBlock>> {
-        const timeBlock = await TimeBlockModel.findOne({_id: timeBlockId});
-        timeBlock.accepted = true;
-        await timeBlock.save();
-        return timeBlock.populate('owner requester');
+    const timeBlock = await TimeBlockModel.findOne({_id: timeBlockId});
+    timeBlock.accepted = true;
+    await timeBlock.save();
+    return timeBlock.populate('owner requester');
   }
 
   /**
-   * Update a time block with an occurred
+   * Update a time block with met
    *
    * @param {string} timeBlockId - The id of the time block to be updated
-   * @param {boolean} occurred - Whether the meeting should be marked as occurred or not
+   * @param {boolean} met - Whether the meeting should be marked as met or not
    * @return {Promise<HydratedDocument<TimeBlock>>} - The newly updated time block
    */
-     static async updateOneOccurred(timeBlockId: Types.ObjectId | string, occurred: boolean): Promise<HydratedDocument<TimeBlock>> {
+     static async updateOneMet(timeBlockId: Types.ObjectId | string, met: boolean): Promise<HydratedDocument<TimeBlock>> {
         const timeBlock = await TimeBlockModel.findOne({_id: timeBlockId});
-        timeBlock.occurred = occurred;
+        timeBlock.met = met;
         await timeBlock.save();
         return timeBlock.populate('owner requester');
   }

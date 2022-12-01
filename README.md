@@ -40,27 +40,69 @@ This renders the `index.html` file that will be used to interact with the backen
 
 **Throws**
 
-- `404` if user is not logged in
+- `403` if user is not logged in
 
-#### `GET /api/timeblock/checkoccurred` - Get all the time blocks that a user needs to mark as occurred/not
+#### `GET /api/timeblock/occurred` - Get all the meetings a user has had
 
 **Returns**
 
-- A list of all the time blocks for the user to mark as occurred, sorted in descending order by start
+- A list of all the meetings a user has had sorting in descending order by start
 
 **Throws**
 
-- `404` if user is not logged in
+- `403` if user is not logged in
+
+#### `GET /api/timeblock/met/check` - Get all the time blocks that a user needs to mark as met/not
+
+**Returns**
+
+- A list of all the time blocks for the user to mark as met, sorted in descending order by start
+
+**Throws**
+
+- `403` if user is not logged in
 
 #### `GET /api/timeblock/unclaimed/:userId` - Get all the time blocks that a given user has unclaimed
 
 **Returns**
 
-- A list of all the time blocks for the user to mark as occurred, sorted in descending order by start
+- A list of all the time blocks for the user to mark as met, sorted in descending order by start
 
 **Throws**
 
-- `404` if user is not logged in or the userId is not a valid one
+- `403` if user is not logged in
+- `404` if the userId is not a valid one
+
+#### `GET /api/timeblock/requests/sent` - Get all the unanswered meeting requests that a user has sent
+
+**Returns**
+
+- A list of all the time blocks that the user is a requester for but are unanswered, sorted in ascending order by start
+
+**Throws**
+
+- `403` if user is not logged in
+
+#### `GET /api/timeblock/requests/received` - Get all the unanswered meeting requests that a user has received
+
+**Returns**
+
+- A list of all the requested time blocks that the user is as owner for but are unanswered, sorted in ascending order by start
+
+**Throws**
+
+- `403` if user is not logged in
+
+#### `GET /api/timeblock/stats/:userId` - Get the statistics for a given user, including total hours accepted (as owner) and meeting success rate (hours met / hours accepted)
+
+**Returns**
+
+- An object of all the statistics available for users to see
+
+**Throws**
+
+- `403` if user is not logged in
+- `404` if the userId is not a valid one
 
 #### `PUT /api/timeblock` - Create a new time block.
 
@@ -75,7 +117,7 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
-- `409` If the user already has a time block with the given start time
+- `409` If the user already has a time block with the given start time or if the start time has already passed
 
 #### `DELETE /api/timeblock/:timeBlockId` - Delete a time block
 
@@ -120,7 +162,7 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in or is not the owner of the time block
 - `404` if either the time block with given ID does not exist or the input is not valid
 
-#### `PATCH /api/timeblock/occurred/:timeBlockId` - Modify a time block by marking a meeting as occurred or not
+#### `PATCH /api/timeblock/met/:timeBlockId` - Modify a time block by marking a meeting as met or not
 
 **Body**
 
@@ -164,6 +206,31 @@ Vercel will automatically deploy the latest version of your code whenever a push
 
 ## Using Vue
 Working in Vue means working with Vue components. The starter code organizes components by the resultant tree structure of how the components are composed together.
+
+### Template
+Every component takes advantage of an [HTML-based template syntax](https://v2.vuejs.org/v2/guide/syntax.html), which is HTML code that binds the rendered DOM to the component data. Inside the template is where we can display specific form components like `<CreateFreetForm />`. We also take advantage of [conditional rendering](https://v2.vuejs.org/v2/guide/conditional.html) here to display different things to different users (such as signed in vs. signed out). For example, in `client/components/Freet/Freets.vue` in lines 5-23, we have:
+```
+<section v-if="$store.state.userId">
+  <header>
+    <h2>Welcome @{{ $store.state.user.firstName }}</h2>
+  </header>
+  <CreateFreetForm />
+</section>
+<section v-else>
+  <header>
+    <h2>Welcome to Alumni Connector!</h2>
+  </header>
+  <article>
+    <h3>
+      <router-link to="/login">
+        Sign in
+      </router-link>
+      to access Alumni Connector.
+    </h3>
+  </article>
+</section>
+```
+Here, if `store.state.userId` exists, we say `Welcome user.firstName`. Otherwise, we say `Welcome to Fritter!` and give them a link to the login page. This is just one example of conditional rendering.
 
 ### Components
 Each `.vue` file also has script tag, which is where you can export the actual component.

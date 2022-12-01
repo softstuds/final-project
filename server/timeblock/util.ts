@@ -9,7 +9,7 @@ type TimeBlockResponse = {
   requester: string;
   start: string;
   accepted: boolean;
-  occurred: boolean;
+  met: boolean;
 };
 
 /**
@@ -18,7 +18,8 @@ type TimeBlockResponse = {
  * @param {Date} date - A date object
  * @returns {string} - formatted date as string
  */
-const formatDate = (date: Date): string => moment(date).format('MMMM Do YYYY, h:mm:ss a');
+// const formatDate = (date: Date): string => moment(date).format('MMMM Do YYYY, h:mm:ss a');
+const formatDate = (date: Date): string => date.toString();
 
 /**
  * Transform a raw TimeBlock object from the database into an object

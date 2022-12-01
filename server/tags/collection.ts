@@ -24,8 +24,8 @@ class TagsCollection {
      * 
      * @param username the username of the user
      */
-    static async findOneByEmail(username: string): Promise<HydratedDocument<Tags>> {
-        const user = await UserCollection.findOneByEmail(username);
+    static async findOneByEmail(email: string): Promise<HydratedDocument<Tags>> {
+        const user = await UserCollection.findOneByEmail(email);
         const tags = await TagsModel.findOne({userId: user._id});
         return tags;
     }
