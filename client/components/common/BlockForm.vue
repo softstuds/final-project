@@ -88,11 +88,15 @@ export default {
       if (this.hasBody) {
         options.body = JSON.stringify(Object.fromEntries(
           this.fields.map(field => {
-            const {id, value} = field;
-            if (this.clearFields) {
-              field.value = '';
+            if (field == 'graduationYear') {
+              const {id, value} = field;
+              return [id, parseInt(value, 10)];
+            } else {
+              const {id, value} = field;
+              return [id, value];
             }
-            return [id, value];
+            field.value = '';
+            
           })
         ));
       }
