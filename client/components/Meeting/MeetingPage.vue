@@ -23,7 +23,9 @@
                 class="meeting"
                 >
                 <MeetingComponent
+                :key="block.id"
                 :meeting="block"
+                :type="'upcoming'"
                  />
                 </section>
             </div>
@@ -36,6 +38,7 @@
                 v-for="block in this.incomingRequests"
                 :key="block.id"
                 :meeting="block"
+                :type="'incoming'"
                  />
                 </section>
             </div>
@@ -48,6 +51,7 @@
                 v-for="block in this.outgoingRequests"
                 :key="block.id"
                 :meeting="block"
+                :type="'outgoing'"
                  />
                 </section>
             </div>
@@ -70,55 +74,74 @@
             upcomingMeetings: [],
             incomingRequests: [],
             outgoingRequests: [],
-            user: {
-                firstName: '',
-            },
+            user: '',
         }
     },
     mounted() {
-        // this.getUser();
-        // this.getPastMeetings();
+        this.getUser();
+        this.getPastMeetings();
         this.getUpcomingMeetings();
         this.getIncomingRequests();
         this.getOutgoingRequests();
     },
     methods: {
         async getUser() {
-        const r = await fetch("api/users/" + this.userId);
-        const res = await r.json();
-        if (!r.ok) {
-            throw new Error(res.error);
-        }
-        this.user = res.user;
+          const r = await fetch("api/users/" + this.$route.params.userId);
+          const res = await r.json();
+          if (!r.ok) {
+              throw new Error(res.error);
+          }
+          
+          this.user = res.user.email;
         },
-        getPastMeetings() {
-            // const upcomingMeetings = [
-            //         [new Date('24 Nov 2022 13:00')],
-            //         [new Date('25 Nov 2022 15:00')]
-            //     ];
-            const params = {
-                method: 'GET',
-                url: '/api/timeblock/checkoccurred',
+    async getPastMeetings() {
+          try {
+            const r = await fetch('/api/timeblock/checkoccurred', {
+              method: 'GET', 
+              headers: {'Content-Type': 'application/json'}
+            });
+
+            const res = await r.json();
+            if (!r.ok) {
+              throw new Error(res.error);
+            }
+
+            var arrayOfBlocks = [];
+            for (var block of res){
+              arrayOfBlocks.push(block);
             }
             
-            this.upcomingMeetings = this.request(params);
+            this.pastMeetings = arrayOfBlocks;
+
+          } catch (e) {
+            this.$set(this.alerts, e, 'error');
+            setTimeout(() => this.$delete(this.alerts, e), 3000);
+          }   
 
         },
-        getUpcomingMeetings()  {
-                // const upcomingMeetings = [
-                //     [new Date('24 Nov 2022 13:00')],
-                //     [new Date('25 Nov 2022 15:00')]
-                // ];
-                // const params = {
-                //     method: 'GET',
-                //     url: '/api/timeblock/checkoccurred',
-                //     callback: () => {
-                //         this.$set(this.alerts, params.message, 'success');
-                //         setTimeout(() => this.$delete(this.alerts, params.message), 3000);
-                //     }
-                // }
-                
-                // this.upcomingMeetings = this.request(params);
+    async getUpcomingMeetings()  {
+      try {
+          const r = await fetch('/api/timeblock/upcoming', {
+            method: 'GET', 
+            headers: {'Content-Type': 'application/json'}
+          });
+
+          const res = await r.json();
+          if (!r.ok) {
+            throw new Error(res.error);
+          }
+
+          var arrayOfBlocks = [];
+          for (var block of res){
+            arrayOfBlocks.push(block);
+          }
+
+          this.upcomingMeetings = arrayOfBlocks;
+
+        } catch (e) {
+          this.$set(this.alerts, e, 'error');
+          setTimeout(() => this.$delete(this.alerts, e), 3000);
+        }   
         },
     async getIncomingRequests() {
         try {
@@ -229,6 +252,9 @@ h2, h2 > * {
     justify-content: center;
 }
 
+h3 {
+  font-size: 12px;
+}
 
 .row {
   display: flex;
@@ -239,7 +265,10 @@ h2, h2 > * {
 .timeBlock {
     border: 0.5px solid black;
     padding: 10%;
-    margin: 5% 0% 5%;
+    margin: 5% 10% 5%;
+}
+.notAccepted {
+  color: indianred;
 }
 
 .column {

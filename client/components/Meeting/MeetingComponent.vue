@@ -3,13 +3,20 @@
 <template>
     <main>
     <section class="timeBlock">
-      <p>Requested meeting with {{meeting.owner}}</p>
+      <p v-if="type=='outgoing'">Requested meeting with {{meeting.owner}}</p>
+      <p v-else-if="type=='incoming'">Incoming meeting invite from {{meeting.requester}}</p>
+      <p v-if="(type=='upcoming' && this.user==meeting.owner)">Upcoming meeting with {{meeting.requester}}</p>
+      <p v-if="(type=='upcoming' && this.user==meeting.requester)">Upcoming meeting with {{meeting.owner}}</p>
       <p class="time">{{this.day}} at {{this.hour}}:{{this.minute}} {{this.pm}}</p>
       
-      <div class="row">
+      <div v-if="type=='outgoing'" class="row">
         <p v-if="(meeting.accepted==true)" class="accepted column">accepted</p>
         <p v-else class="notAccepted column">not accepted</p>
         <button class="column" @click="cancelRequest">cancel</button>
+      </div>
+      <div v-else-if="type=='incoming'" class="row">
+        <button @click="rejectRequest" class="column">Reject</button>
+        <button @click="acceptRequest" class="column accept">Accept</button>
       </div>
 
     </section>
@@ -29,11 +36,13 @@ export default {
     meeting: {
       type: Object,
       required: true
-    }
+    },
+    type: '',
+    button: '',
   },
   data () {
     return {
-      owner: this.meeting.owner, // Potentially-new content for this freet
+      user: '', // Potentially-new content for this freet
       day: '',
       hour: '',
       minute: '',
@@ -42,13 +51,22 @@ export default {
   },
   mounted () {
     this.getDate();
-    this.getOwner();
+    this.getUser();
   },
   methods: {
+    async getUser() {
+      const r = await fetch("api/users/" + this.$route.params.userId);
+      const res = await r.json();
+      if (!r.ok) {
+          throw new Error(res.error);
+      }
+      
+      this.user = res.user.email;
+    },
     async cancelRequest () {
       try {
-        const r = await fetch(`/api/users/email/${this.owner}`, {
-          method: 'GET', 
+        const r = await fetch(`/api/timeblock/request/${this.meeting._id}/unsend`, {
+          method: 'PATCH', 
           headers: {'Content-Type': 'application/json'}
         });
 
@@ -58,13 +76,52 @@ export default {
         }
 
         console.log('BARDI', res);
-        this.outgoingRequests = arrayOfBlocks;
 
       } catch (e) {
         this.$set(this.alerts, e, 'error');
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
 
+      this.key = 'reset';
+
+    
+    },
+    async rejectRequest () {
+      try {
+        console.log('harry', this.meeting._id);
+        const r = await fetch(`/api/timeblock/accepted/${this.meeting._id}`, {
+          method: 'PATCH', 
+          headers: {'Content-Type': 'application/json'},
+        });
+
+        const res = await r.json();
+        if (!r.ok) {
+          throw new Error(res.error);
+        }
+
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$delete(this.alerts, e), 3000);
+      }
+    },
+    async acceptRequest () {
+      try {
+        console.log('harry', this.meeting._id);
+        const r = await fetch(`/api/timeblock/accepted/${this.meeting._id}`, {
+          method: 'PATCH', 
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({input: 'true'})
+        });
+
+        const res = await r.json();
+        if (!r.ok) {
+          throw new Error(res.error);
+        }
+
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$delete(this.alerts, e), 3000);
+      }
     },
     getDate () {
       const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
@@ -91,7 +148,8 @@ export default {
       console.log(date);
     },
     async getOwner() {
-      console.log('cardi', typeof this.owner)
+      console.log('Heylo', this.user);
+      // console.log('cardi', typeof this.owner)
       // try {
       //   const r = await fetch(`/api/users/email/${this.owner}`, {
       //     method: 'GET', 
@@ -142,6 +200,12 @@ section, p {
 
 .notAccepted {
   color: indianred;
+}
+
+.accept {
+  background-color: forestgreen;
+  color: white;
+  border: none;
 }
 
 .row {

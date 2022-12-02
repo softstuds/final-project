@@ -22,7 +22,7 @@
       </router-link>
       <router-link
         v-if="$store.state.userId"
-        to="/meeting"
+        :to="('/meeting/' + $store.state.userId)"
       >
         Meetings
       </router-link>

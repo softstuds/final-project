@@ -81,6 +81,24 @@ class TimeBlockCollection {
   }
 
   /**
+   * Get all the time blocks in the database with a given user as owner or requester that's passed
+   * in order of most to least recent start time
+   *
+   * @param {string} userId - The id of the user
+   * @param {boolean} userOwner - Whether we want time blocks that user owns or all
+   * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the time blocks for a given owner
+   */
+   static async findAllByUserAccepted(userId: Types.ObjectId | string, userOwner: boolean): Promise<Array<HydratedDocument<TimeBlock>>> {
+    // Retrieves time blocks and sorts them from latest to earliest time
+    const now = new Date();
+    if (userOwner) {
+      return TimeBlockModel.find({owner: userId, start: {$gte: now}, accepted: true, met: null}).sort({start: -1}).populate('owner requester');
+    } else {
+      return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}],start: {$gte: now}, accepted: true}).sort({start: -1}).populate('owner requester');
+    }
+  }
+
+  /**
    * Get all the time blocks in the database with a given owner that are unclaimed in the future
    * in order of most to least recent start time
    *
@@ -108,7 +126,7 @@ class TimeBlockCollection {
     if (getSent) {
       return TimeBlockModel.find({requester: userId, accepted: false, start: {$gte: now}}).sort({start: 1}).populate('owner requester');
     } else {
-      return TimeBlockModel.find({owner: userId, requester: {$ne: null}, start: {$gte: now}}).sort({start: 1}).populate('owner requester');
+      return TimeBlockModel.find({owner: userId, accepted: false, requester: {$ne: null}, start: {$gte: now}}).sort({start: 1}).populate('owner requester');
     }
   }
 

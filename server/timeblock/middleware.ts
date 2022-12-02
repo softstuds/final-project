@@ -95,6 +95,21 @@ const isBlockExistent = async (req: Request, res: Response, next: NextFunction) 
 };
 
 /**
+ * Checks if the user is the requester of the block with given ID in req.params
+ */
+ const isBlockRequester = async (req: Request, res: Response, next: NextFunction) => {
+  const timeBlock = await TimeBlockCollection.findOne(req.params.timeBlockId);
+  if (timeBlock.requester._id.toString() !== (req.session.userId as string)) {
+    res.status(403).json({
+      error: `User is not requester of time block with ID ${req.params.timeBlockId}.`
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
  * Checks if the user is the owner of the block with given ID in req.params
  */
 const isBlockOwner = async (req: Request, res: Response, next: NextFunction) => {
@@ -214,6 +229,7 @@ export {
   isBlockExistent,
   isBlockOwner,
   isBlockNotOwner,
+  isBlockRequester,
   isBlockOwnerOrRequester,
   isBlockInFuture,
   isBlockInPast,
