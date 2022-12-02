@@ -185,7 +185,6 @@ export default {
 
             const start = new Date();
             start.setHours(0, 0, 0, 0);
-            const currentDay = start.getDay();
             start.setDate(start.getDate() - start.getDay());
 
             const nextFourWeeks = []
@@ -260,7 +259,7 @@ export default {
 
             const today = new Date();
             if (date < today) {
-              date.setFullYear(today.getFullYear() + 1);
+              date.setFullYear(today.getFullYear() + 1); // ensure that date is always in future
             }
 
             const options = {

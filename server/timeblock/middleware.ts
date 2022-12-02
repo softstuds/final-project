@@ -189,15 +189,17 @@ const isBlockAccepted = async (req: Request, res: Response, next: NextFunction) 
 /**
  * Checks if the time given is in the next seven days
  */
-const isBlockInNextSeven = async (req: Request, res: Response, next: NextFunction) => {
-  const endOfWeek = new Date();
-  endOfWeek.setDate((new Date()).getDate() + 8);
-  endOfWeek.setHours(0, 0, 0, 0);
+const isBlockInNextFour = async (req: Request, res: Response, next: NextFunction) => {
+  const rangeEnd = new Date();
+  rangeEnd.setHours(0, 0, 0, 0);
+  rangeEnd.setDate(rangeEnd.getDate() - rangeEnd.getDay() + 28);
+
+  const now = new Date();
 
   const start = new Date(req.body.start);
-  if (start >= endOfWeek) {
-    res.status(409).json({
-      error: 'You can only enter time blocks for the next 7 days.'
+  if (start < now || start >= rangeEnd) {
+    res.status(403).json({
+      error: 'You can only enter time blocks for the next 4 weeks.'
     });
     return;
   }
@@ -218,5 +220,5 @@ export {
   isBlockInFuture,
   isBlockInPast,
   isBlockAccepted,
-  isBlockInNextSeven
+  isBlockInNextFour
 };
