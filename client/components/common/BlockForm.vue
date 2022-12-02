@@ -125,6 +125,7 @@ export default {
           const res = text ? JSON.parse(text) : {user: null};
           this.$store.commit('setUser', res.user ? res.user : null);
           this.$store.commit('setUserId', res.user ? res.user._id.toString() : null);
+          this.$store.commit('getUsers');
 
           // create tags when a new user is created
           const options = {
@@ -139,6 +140,7 @@ export default {
         if (this.refreshUser) {
           this.$store.commit('refreshUser');
           this.$store.commit('updateLastActive');
+          this.$store.commit('getUsers');
         }
 
         if (this.callback) {
