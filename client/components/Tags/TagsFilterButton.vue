@@ -31,9 +31,12 @@ export default {
     },
     methods: {
         toggleActive(value) {
+            
+            const currentlyActive = this.active[value];
             this.active = this.initializeActive(this.active);
-            this.active[value] = true;
-            console.log(this.active);
+            if (!currentlyActive) {
+                this.active[value] = true;
+            }
         },
         inverse (tagsDict) {
             var retobj = {};
@@ -52,3 +55,9 @@ export default {
     }
 }
 </script>
+
+<style>
+.active{
+  background-color:red;
+}
+</style>
