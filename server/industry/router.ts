@@ -3,6 +3,7 @@ import express from 'express';
 import IndustryCollection from './collection';
 import * as util from './util';
 import * as industryValidator from '../industry/middleware';
+import * as userValidator from '../user/middleware';
 
 
 const router = express.Router();
@@ -14,7 +15,10 @@ const router = express.Router();
  */
 router.post(
     '/',
-    [industryValidator.isIndustryExistForCreation],
+    [
+        userValidator.isUserLoggedIn,
+        industryValidator.isIndustryExistForCreation
+    ],
     async (req: Request, res: Response) => {
         const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
         // const userId = req.body.userId;
@@ -34,6 +38,7 @@ router.post(
  router.put(
     '/',
     [
+        userValidator.isUserLoggedIn,
         industryValidator.isIndustryExistForDeletion,
         industryValidator.isValidNewIndustry
     ],
@@ -55,6 +60,7 @@ router.post(
  router.get(
     '/:industryValue?',
     [
+        userValidator.isUserLoggedIn,
         industryValidator.isValidIndustryValue
     ],
     async (req: Request, res: Response) => {
@@ -71,7 +77,10 @@ router.post(
  */
  router.get(
     '/users/:userId?',
-    [],
+    [
+        userValidator.isUserExists,
+        userValidator.isUserLoggedIn
+    ],
     async (req: Request, res: Response) => {
         const industry = await IndustryCollection.findOne(req.params.userId);
         res.status(200).json({
@@ -89,6 +98,7 @@ router.post(
  router.delete(
     '/',
     [
+        userValidator.isUserLoggedIn,
         industryValidator.isIndustryExistForDeletion
     ],
     async (req: Request, res: Response) => {
