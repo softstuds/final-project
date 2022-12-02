@@ -6,6 +6,9 @@
       <header>
         <h2>Viewing Users</h2>
       </header>
+      <section>
+        <TagsFilterButton></TagsFilterButton>
+      </section>
     </section>
     <section v-else>
       <header>
@@ -41,28 +44,29 @@
 
 <script>
 import UserCardComponent from '@/components/Search/UserCardComponent.vue';
+import TagsFilterButton from '@/components/Tags/TagsFilterButton.vue';
 
 export default {
   name: 'SearchPage',
-  components: {UserCardComponent},
-  // data() {
-  //   return {
-  //     users: []
-  //   }
-  // },
-  // mounted() {
-  //   this.getUsers();
-  // },
-  // methods: {
-  //   async getUsers() {
-  //     const r = await fetch("api/users");
-  //     const res = await r.json();
-  //     if (!r.ok) {
-  //       throw new Error(res.error);
-  //     }
-  //     this.users = res;
-  //   }
-  // }
+  components: {UserCardComponent, TagsFilterButton},
+  data() {
+    return {
+      users: []
+    }
+  },
+  mounted() {
+    this.getUsers();
+  },
+  methods: {
+    async getUsers() {
+      const r = await fetch("api/users");
+      const res = await r.json();
+      if (!r.ok) {
+        throw new Error(res.error);
+      }
+      this.users = res;
+    }
+  }
 };
 </script>
 
