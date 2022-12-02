@@ -6,7 +6,6 @@ import IndustryCollection from './collection';
  */
 const isIndustryExistForCreation = async (req: Request, res: Response, next: NextFunction) => {
     const industry = await IndustryCollection.findOne(req.session.userId);
-    // const industry = await IndustryCollection.findOne(req.body.userId);
     if (industry) {
         res.status(409).json({
             error: `Industry already exists for user.`

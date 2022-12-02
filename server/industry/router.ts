@@ -21,7 +21,6 @@ router.post(
     ],
     async (req: Request, res: Response) => {
         const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-        // const userId = req.body.userId;
         const industry = await IndustryCollection.addOne(userId);
         res.status(200).json({
             message: 'Your industry info was created successfully.',
