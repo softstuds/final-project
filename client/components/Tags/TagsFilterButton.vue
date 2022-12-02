@@ -2,7 +2,8 @@
     <section>
         <button 
             v-for="tagName in frontEndTags"
-            @click="filterByTag">
+            @click="toggleActive(backEndTags[tagName])"
+            :class="{active: active[backEndTags[tagName]]}">
             {{ tagName }}
         </button>
     </section>
@@ -21,19 +22,30 @@ export default {
                 'email': 'Email'
             },
             backEndTags: {},
+            active: {}
         }
     },
     mounted() {
         this.backEndTags = this.inverse(this.frontEndTags);
+        this.active = this.initializeActive(this.frontEndTags);
     },
     methods: {
-        filterByTag() {
-
+        toggleActive(value) {
+            this.active = this.initializeActive(this.active);
+            this.active[value] = true;
+            console.log(this.active);
         },
         inverse (tagsDict) {
             var retobj = {};
             for(var key in tagsDict){
                 retobj[tagsDict[key]] = key;
+            }
+            return retobj;
+        },
+        initializeActive (tagsDict) {
+            var retobj = {};
+            for(var key in tagsDict){
+                retobj[key] = false;
             }
             return retobj;
         }
