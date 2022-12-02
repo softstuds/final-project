@@ -10,7 +10,6 @@ export type UserResponse = {
   lastName: string;
   graduationYear: number;
   lastActive: string;
-  industry: string;
   bio: string;
   meetingLink: string;
 };
@@ -37,6 +36,7 @@ const constructUserResponse = (user: HydratedDocument<User>): UserResponse => {
       versionKey: false // Cosmetics; prevents returning of __v property
     })
   };
+  console.log(userCopy);
   delete userCopy.password;
   return {
     ...userCopy,
