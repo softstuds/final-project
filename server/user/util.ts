@@ -36,7 +36,6 @@ const constructUserResponse = (user: HydratedDocument<User>): UserResponse => {
       versionKey: false // Cosmetics; prevents returning of __v property
     })
   };
-  console.log(userCopy);
   delete userCopy.password;
   return {
     ...userCopy,

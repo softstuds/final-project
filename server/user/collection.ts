@@ -39,8 +39,11 @@ class UserCollection {
    * @return {Promise<Array<HydratedDocument<User>>>} - All the users
    */
   static async findAll(): Promise<Array<HydratedDocument<User>>> {
+    let newUsers:Promise<Array<HydratedDocument<User>>>;
     const users = await UserModel.find({});
-    const newUsers = Promise.all(users.map(async user => user.populate('industry')));
+    if (users) {
+      newUsers = Promise.all(users.map(async user => user.populate('industry')));
+    } 
     return newUsers;
   }
 
@@ -66,7 +69,9 @@ class UserCollection {
    */
   static async findOneByEmail(email: string): Promise<HydratedDocument<User>> {
     const user = await UserModel.findOne({email: new RegExp(`^${email.trim()}$`, 'i')});
-    await user.populate('industry');
+    if (user) {
+      await user.populate('industry');
+    }
     return user;
   }
 
@@ -82,7 +87,9 @@ class UserCollection {
       email: new RegExp(`^${email.trim()}$`, 'i'),
       password
     });
-    await user.populate('industry');
+    if (user) {
+      await user.populate('industry');
+    }
     return user;
   }
 

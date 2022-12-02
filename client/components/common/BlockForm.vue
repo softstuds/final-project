@@ -156,7 +156,6 @@ export default {
               };
               const industry = await fetch('/api/industry', options);
               const industryRes = await industry.json();
-              console.log(industryRes);
           }
         }
 

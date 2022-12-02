@@ -46,9 +46,17 @@ export default {
         }
     },
     mounted() {
-        this.value = this.$store.state.user.industry.industryType;
+        this.getIndustry();
     },
     methods: {
+        async getIndustry() {
+            const r = await fetch(`/api/industry/users/${this.$store.state.user.id}`);
+            const res = await r.json();
+            if (!r.ok) {
+                throw new Error(res.error);
+            }
+            this.value = res.industry.industryType;
+        },
         addIndustry(value) {
             const options = {
                 method: 'PUT',

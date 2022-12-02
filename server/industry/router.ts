@@ -65,6 +65,23 @@ router.post(
 );
 
 /**
+ * Gets Industry object for a specific user
+ * 
+ * @name GET /api/industry/users/:userId
+ */
+ router.get(
+    '/users/:userId?',
+    [],
+    async (req: Request, res: Response) => {
+        const industry = await IndustryCollection.findOne(req.params.userId);
+        res.status(200).json({
+            message: 'Your industry info was found successfully.',
+            industry: industry
+         });
+    }
+);
+
+/**
  * Deletes an Industry object
  * 
  * @name DELETE /api/industry
