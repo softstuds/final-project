@@ -136,7 +136,6 @@ export default {
               };
               const tags = await fetch('/api/tags', options);
               const tagsRes = await tags.json();
-              console.log(tagsRes);
         }
         }
 
