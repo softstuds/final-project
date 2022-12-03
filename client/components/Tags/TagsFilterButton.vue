@@ -1,6 +1,7 @@
 <template>
-    <section>
+    <section class="flex-buttons">
         <button 
+            class="filter-button"
             v-for="tagName in frontEndTags"
             @click="toggleActive(backEndTags[tagName])"
             :class="{active: active[backEndTags[tagName]]}">
@@ -73,4 +74,17 @@ export default {
 .active{
   background-color:red;
 }
+
+.filter-button {
+    margin: 3px;
+    border-radius: 12px;
+    width: 100px;
+    float: left;
+}
+
+/* .flex-buttons {
+    display: flex;
+    flex-direction: row;
+    float: left;
+} */
 </style>

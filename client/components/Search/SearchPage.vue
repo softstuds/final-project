@@ -6,7 +6,8 @@
       <header>
         <h2>Viewing Users</h2>
       </header>
-      <section>
+      <section
+        class="filterBar">
         <TagsFilterButton
           @filterUsers="filterUsers"
           @unfilterUsers="unfilterUsers">
@@ -73,12 +74,10 @@ export default {
       this.displayedUsers = res;
     },
     filterUsers(value) {
-      console.log(this.displayedUsers);
       this.displayedUsers = this.displayedUsers.filter(user => value.includes(user.id));
     },
     unfilterUsers() {
       this.displayedUsers = this.users;
-      console.log(this.displayedUsers);
     }
   }
 };
@@ -104,5 +103,10 @@ section .scrollbox {
   flex: 1 0 50vh;
   padding: 3%;
   overflow-y: scroll;
+}
+
+.filterBar {
+  display: flex;
+  flex-direction: row;
 }
 </style>
