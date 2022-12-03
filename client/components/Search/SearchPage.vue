@@ -7,7 +7,10 @@
         <h2>Viewing Users</h2>
       </header>
       <section>
-        <TagsFilterButton></TagsFilterButton>
+        <TagsFilterButton
+          @filterUsers="filterUsers"
+          @unfilterUsers="unfilterUsers">
+        </TagsFilterButton>
       </section>
     </section>
     <section v-else>
@@ -28,6 +31,7 @@
         v-if="$store.state.users.length"
       >
         <UserCardComponent
+          v-if="(users.length > 0)"
           v-for="user in $store.state.users"
           :key="user.id"
           :user="user"
@@ -51,7 +55,8 @@ export default {
   components: {UserCardComponent, TagsFilterButton},
   data() {
     return {
-      users: []
+      users: [],
+      displayedUsers: []
     }
   },
   mounted() {
@@ -65,6 +70,15 @@ export default {
         throw new Error(res.error);
       }
       this.users = res;
+      this.displayedUsers = res;
+    },
+    filterUsers(value) {
+      console.log(this.displayedUsers);
+      this.displayedUsers = this.displayedUsers.filter(user => value.includes(user.id));
+    },
+    unfilterUsers() {
+      this.displayedUsers = this.users;
+      console.log(this.displayedUsers);
     }
   }
 };

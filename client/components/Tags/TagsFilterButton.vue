@@ -22,7 +22,8 @@ export default {
                 'email': 'Email'
             },
             backEndTags: {},
-            active: {}
+            active: {},
+            filteredIds: []
         }
     },
     mounted() {
@@ -36,6 +37,9 @@ export default {
             this.active = this.initializeActive(this.active);
             if (!currentlyActive) {
                 this.active[value] = true;
+                this.request(value);
+            } else {
+                this.$emit('unfilterUsers');
             }
         },
         inverse (tagsDict) {
@@ -51,6 +55,15 @@ export default {
                 retobj[key] = false;
             }
             return retobj;
+        },
+        async request(value) {
+            const r = await fetch(`api/tags/${value}`);
+            const res = await r.json();
+            if (!r.ok) {
+                throw new Error(res.error);
+            }
+            this.filteredIds = res.map(tag => tag.userId);
+            this.$emit('filterUsers', this.filteredIds);
         }
     }
 }

@@ -26,13 +26,7 @@ type TagsResponse = {
     return {
         ...tagsCopy,
         _id: tagsCopy._id.toString(),
-        userId: tagsCopy.userId.toString(),
-        coffeeChat: tagsCopy.coffeeChat,
-        refer: tagsCopy.refer,
-        helpInterview: tagsCopy.helpInterview,
-        resumeReview: tagsCopy.resumeReview,
-        mentor: tagsCopy.mentor,
-        email: tagsCopy.email
+        userId: tagsCopy.userId.toString()
     };
 };
 
