@@ -15,6 +15,7 @@
                 :key="block.id"
                 :meeting="block"
                 :type="'past'"
+                @refreshMeetings="refreshMeetings"
                  />
                 </section>
             </div>
@@ -28,6 +29,7 @@
                 :key="block.id"
                 :meeting="block"
                 :type="'upcoming'"
+                @refreshMeetings="refreshMeetings"
                  />
                 </section>
             </div>
@@ -41,6 +43,7 @@
                 :key="block.id"
                 :meeting="block"
                 :type="'incoming'"
+                @refreshMeetings="refreshMeetings"
                  />
                 </section>
             </div>
@@ -54,6 +57,7 @@
                 :key="block.id"
                 :meeting="block"
                 :type="'outgoing'"
+                @refreshMeetings="refreshMeetings"
                  />
                 </section>
             </div>
@@ -89,16 +93,14 @@
         this.getOutgoingRequests();
     },
     methods: {
-        async getUser() {
-          const r = await fetch("api/users/" + this.$route.params.userId);
-          const res = await r.json();
-          if (!r.ok) {
-              throw new Error(res.error);
-          }
-          
-          this.user = res.user;
+        async refreshMeetings() {
+          this.getPastMeetings();
+          this.getMeetingsNeedFeedback();
+          this.getUpcomingMeetings();
+          this.getIncomingRequests();
+          this.getOutgoingRequests();
         },
-    async getPastMeetings() {
+      async getPastMeetings() {
           try {
             const r = await fetch('/api/timeblock/checkoccurred', {
               method: 'GET', 
