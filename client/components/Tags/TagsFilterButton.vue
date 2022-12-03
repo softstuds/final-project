@@ -33,7 +33,6 @@ export default {
     },
     methods: {
         toggleActive(value) {
-            
             const currentlyActive = this.active[value];
             this.active = this.initializeActive(this.active);
             if (!currentlyActive) {
