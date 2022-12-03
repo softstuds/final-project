@@ -64,7 +64,7 @@ export default {
   },
   mounted () {
     this.getUser();
-    // this.getMeetingLink();
+    this.getMeetingLink();
     this.getDate();
     this.needFeedback();
   },
