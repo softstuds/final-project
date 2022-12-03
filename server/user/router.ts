@@ -45,7 +45,6 @@ router.post(
   '/session',
   [
     userValidator.isUserLoggedOut,
-    // userValidator.isValidName,
     userValidator.isValidEmail,
     userValidator.isValidPassword,
     userValidator.isAccountExists

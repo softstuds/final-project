@@ -12,11 +12,12 @@ export default {
       method: 'POST',
       hasBody: true,
       setUser: true,
+      newUser: true,
       fields: [
         {id: 'email', label: 'Email', value: ''},
         {id: 'password', label: 'Password', value: ''},
         {id: 'name', label: 'Name', value: ''},
-        {id: 'graduationYear', label: 'Graduation Year (YYYY)', value: 2022},
+        {id: 'graduationYear', label: 'Graduation Year (YYYY)', value: (new Date()).getFullYear()},
       ],
       title: 'Create account',
       callback: () => {

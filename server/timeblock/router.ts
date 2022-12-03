@@ -135,7 +135,8 @@ router.get(
     userValidator.isUserLoggedIn,
   ],
   async (req: Request, res: Response) => {
-    const userId = (req.session.userId as string);    const requestedTimeBlocks = await TimeBlockCollection.findAllRequests(userId, true);
+    const userId = (req.session.userId as string);
+    const requestedTimeBlocks = await TimeBlockCollection.findAllRequests(userId, true);
     const response = requestedTimeBlocks.map(util.constructTimeBlockResponse);
     res.status(200).json(response);
   }
