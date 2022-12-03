@@ -72,7 +72,6 @@ export default {
       }
       this.users = res;
       this.displayedUsers = res;
-      console.log(this.displayedUsers);
     },
     filterUsers(value) {
       this.displayedUsers = this.displayedUsers.filter(user => value.includes(user.id));

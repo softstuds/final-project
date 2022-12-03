@@ -71,7 +71,7 @@ export default {
 
 <style>
 .active{
-  background-color:red;
+  background-color:green;
 }
 
 .filter-button {
