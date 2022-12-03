@@ -12,17 +12,19 @@
                 class="meeting"
                 >
                 <MeetingComponent
+                :key="block.id"
                 :meeting="block"
+                :type="'past'"
                  />
                 </section>
             </div>
             <div class="column">
                 <h2>Upcoming Meetings</h2>
                 <section
-                v-for="block in this.upcomingMeetings"
                 class="meeting"
                 >
                 <MeetingComponent
+                v-for="block in this.upcomingMeetings"
                 :key="block.id"
                 :meeting="block"
                 :type="'upcoming'"
@@ -71,15 +73,17 @@
     data () {
         return {
             pastMeetings: [],
+            meetingsWithoutFeedback: [],
             upcomingMeetings: [],
             incomingRequests: [],
             outgoingRequests: [],
-            user: '',
+            user: null,
         }
     },
     mounted() {
-        this.getUser();
+        // this.getUser();
         this.getPastMeetings();
+        this.getMeetingsNeedFeedback();
         this.getUpcomingMeetings();
         this.getIncomingRequests();
         this.getOutgoingRequests();
@@ -92,7 +96,7 @@
               throw new Error(res.error);
           }
           
-          this.user = res.user.email;
+          this.user = res.user;
         },
     async getPastMeetings() {
           try {
@@ -119,6 +123,28 @@
           }   
 
         },
+    async getMeetingsNeedFeedback() {
+      try {
+            const r = await fetch('/api/timeblock/met/check', {
+              method: 'GET', 
+              headers: {'Content-Type': 'application/json'}
+            });
+
+            const res = await r.json();
+            if (!r.ok) {
+              throw new Error(res.error);
+            }
+
+            var arrayOfBlocks = [];
+            for (var block of res){
+              arrayOfBlocks.push(block);
+            }
+            this.meetingsWithoutFeedback = arrayOfBlocks;
+          } catch (e) {
+            this.$set(this.alerts, e, 'error');
+            setTimeout(() => this.$delete(this.alerts, e), 3000);
+          }   
+    },
     async getUpcomingMeetings()  {
       try {
           const r = await fetch('/api/timeblock/upcoming', {
@@ -159,7 +185,6 @@
           for (var block of res){
             arrayOfBlocks.push(block);
           }
-          console.log(arrayOfBlocks, 'HELLO');
           this.incomingRequests = arrayOfBlocks;
 
         } catch (e) {
@@ -213,11 +238,9 @@
 
         var arrayOfBlocks = [];
         for (var block of res){
-          // console.log("yuou", block.owner);
           arrayOfBlocks.push(block);
         }
         return arrayOfBlocks;
-        // this.outgoingRequests = arrayOfBlocks;
 
       } catch (e) {
         this.$set(this.alerts, e, 'error');

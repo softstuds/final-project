@@ -38,7 +38,7 @@ body {
   height: 100vh;
   flex-direction: column;
   display: flex;
-  padding: 0;
+  padding: 0 20;
   margin: 0;
   font-size: 1.2em;
   font-family: Montserrat;
@@ -46,6 +46,7 @@ body {
 
 main {
   padding: 40px;
+  margin: 0 64px;
   padding-top: 20px;
 }
 

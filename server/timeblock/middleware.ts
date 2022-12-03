@@ -144,7 +144,7 @@ const isBlockNotOwner = async (req: Request, res: Response, next: NextFunction) 
  */
 const isBlockOwnerOrRequester = async (req: Request, res: Response, next: NextFunction) => {
   const timeBlock = await TimeBlockCollection.findOne(req.params.timeBlockId);
-  if (timeBlock.owner._id !== req.session.userId && timeBlock.requester._id !== req.session.userId) {
+  if (timeBlock.owner._id.toString() !== req.session.userId && timeBlock.requester._id.toString() !== req.session.userId) {
     res.status(403).json({
       error: `User is not owner or requester of time block with ID ${req.params.timeBlockId}.`
     });
