@@ -27,13 +27,13 @@
         </h3>
       </article>
     </section>
-    <section v-if="$store.state.email">
+    <section v-if="$store.state.user">
       <section
-        v-if="$store.state.users.length"
+        v-if="(displayedUsers.length > 0)"
       >
         <UserCardComponent
-          v-if="(users.length > 0)"
-          v-for="user in $store.state.users"
+          v-if="(displayedUsers.length > 0)"
+          v-for="user in displayedUsers"
           :key="user.id"
           :user="user"
         />
@@ -72,6 +72,7 @@ export default {
       }
       this.users = res;
       this.displayedUsers = res;
+      console.log(this.displayedUsers);
     },
     filterUsers(value) {
       this.displayedUsers = this.displayedUsers.filter(user => value.includes(user.id));
