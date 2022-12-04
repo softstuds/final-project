@@ -114,7 +114,6 @@ export default {
           const tagsRes = await tags.json();
 
           // delete industry when a user is deleted
-          // create an industry object when a new user is created
           const industryOptions = {
               method: 'DELETE',
               headers: {'Content-Type': 'application/json'},

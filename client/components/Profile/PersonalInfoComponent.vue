@@ -84,7 +84,6 @@ export default {
       editingInfo: false,
       fields: [
         {'name': 'graduationYear', 'display': 'Class of: '}, 
-        // {'name': 'industry', 'display':  'Industry: '},
         {'name': 'bio', 'display':  'Bio: '},
       ],
     }
