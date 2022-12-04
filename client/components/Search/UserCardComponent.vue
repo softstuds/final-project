@@ -7,7 +7,7 @@
     </router-link>
     <div class="otherInfo">
       <i>Class of {{ user.graduationYear }}</i>
-      <p><b>Industry: {{ user.industry !== undefined ? user.industry : "None" }}</b></p>
+      <p><b>Industry: {{ user.industry !== undefined ? user.industry.industryType : "None" }}</b></p>
       <p v-if="tagsDisplayed.length > 0">
         I am willing to: {{ tagsDisplayed.join(', ') }}</p>
         <p v-if="tagsDisplayed.length === 0">

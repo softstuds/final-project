@@ -12,6 +12,7 @@
           @filterUsers="filterUsers"
           @unfilterUsers="unfilterUsers">
         </TagsFilterButton>
+        <IndustryFilter></IndustryFilter>
       </section>
     </section>
     <section v-else>
@@ -50,10 +51,11 @@
 <script>
 import UserCardComponent from '@/components/Search/UserCardComponent.vue';
 import TagsFilterButton from '@/components/Tags/TagsFilterButton.vue';
+import IndustryFilter from '@/components/Industry/IndustryFilter.vue';
 
 export default {
   name: 'SearchPage',
-  components: {UserCardComponent, TagsFilterButton},
+  components: {UserCardComponent, TagsFilterButton, IndustryFilter},
   data() {
     return {
       users: [],
