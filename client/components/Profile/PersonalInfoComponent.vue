@@ -131,7 +131,7 @@ export default {
           body: JSON.stringify({graduationYear: parseInt(graduationYear, 10), industry, bio})
       };
       
-      const r = await fetch("api/users/info", options);
+      const r = await fetch("api/users/profile", options);
       const res = await r.json();
       if (!r.ok) {
         throw new Error(res.error);
