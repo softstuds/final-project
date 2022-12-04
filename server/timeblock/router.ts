@@ -53,6 +53,26 @@ router.get(
 );
 
 /**
+ * Whether signed in user has access
+ *
+ * @name GET /api/timeblock/access/
+ *
+ * @return {Boolean} - Whether of not the user has access
+ * @throws {403} - If the user is not logged in
+ */
+ router.get(
+  '/access/',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? '';
+    const hasAccess = await TimeBlockCollection.findAccessStatus(userId);
+    res.status(200).json({hasAccess});
+  }
+);
+
+/**
  * Get all the meetings a user has had
  *
  * @name GET /api/timeblock/checkoccurred

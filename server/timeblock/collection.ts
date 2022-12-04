@@ -39,7 +39,7 @@ class TimeBlockCollection {
   }
 
   /**
-   * Get all the time blocks in the database with a given user as owner or requester
+   * Get all the time blocks in the database with a given user as owner
    * in order of most to least recent start time
    *
    * @param {string} ownerId - The id of the owner
@@ -157,6 +157,28 @@ class TimeBlockCollection {
   }
 
   /**
+   * Find if user has access to request other user's blocks
+   * 
+   * @param {string} userId - The id of the user
+   * @return {Promise<Boolean>} - The number of meetings a user owns, has accepted, and has attended 
+   */
+  static async findAccessStatus(userId: Types.ObjectId | string): Promise<Boolean> {
+    const userBlocks = await TimeBlockModel.find({owner: userId}).sort({start: -1}).populate('owner requester');
+    const today = new Date();
+    const rangeEnd = new Date();
+    rangeEnd.setHours(0, 0, 0, 0);
+    rangeEnd.setDate(rangeEnd.getDate() - rangeEnd.getDay() + 7 * 4); // What shows on calendar
+
+    for (const block of userBlocks) {
+      const blockDate = new Date(block.start);
+      if (blockDate > today && blockDate < rangeEnd) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  /**
    * Get the number of total months that the user has been active (e.g. putting time blocks in)
    * 
    * @param {string} userId - The id of the user
@@ -183,7 +205,8 @@ class TimeBlockCollection {
    * @return {Promise<Number>} - The number of unique users that a given owner has met with
    */
    static async findTotalUniqueMetByOwner(ownerId: Types.ObjectId | string): Promise<Number> {
-    const distinct = await TimeBlockModel.find({owner: ownerId, accepted: true, met: {$ne: false}}).distinct('requester');
+    const now = new Date();
+    const distinct = await TimeBlockModel.find({owner: ownerId, accepted: true, start: {$lte: now}, met: {$ne: false}}).distinct('requester');
     return distinct.length;
   }
 

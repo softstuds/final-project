@@ -14,6 +14,7 @@ const store = new Vuex.Store({
     user: null, // logged in user
     userId: null, // User ID of logged in user
     users: [], // All users
+    hasAccess: false,
     alerts: {} // global success/error messages encountered during submissions to non-visible forms
   },
   mutations: {
@@ -70,6 +71,14 @@ const store = new Vuex.Store({
         throw new Error(res.error);
       }
       state.user = res.user;
+    },
+    async updateAccess(state) {
+      const r = await fetch("api/timeblock/access/");
+      const res = await r.json();
+      if (!r.ok) {
+        throw new Error(res.error);
+      }
+      state.hasAccess = res.hasAccess;
     },
     async getUsers(state) {
       const r = await fetch("api/users");
