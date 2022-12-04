@@ -71,7 +71,7 @@ export default {
     async getMeetingLink() {
       if (this.user) {
         if (this.user.email == this.meeting.owner) {
-          this.link == this.user.meetingLink;
+          this.link = this.$store.state.user.meetingLink == '' ? "no link yet" : this.$store.state.user.meetingLink;
         } else {
             try {
               const r = await fetch(`/api/users/${this.meeting.owner}`, {
@@ -84,7 +84,7 @@ export default {
                 throw new Error(res.error);
               }
 
-              this.link == res.user.meetingLink;
+              this.link = res.user.meetingLink == '' ? "no link yet" : this.$store.state.user.meetingLink;
 
             } catch (e) {
               this.$set(this.alerts, e, 'error');
