@@ -53,7 +53,7 @@ export default {
   },
   data () {
     return {
-      user: null,
+      user: this.$store.state.user,
       feedback: Boolean,
       link: String,
       day: String,
@@ -63,22 +63,11 @@ export default {
     }
   },
   mounted () {
-    this.getUser();
     this.getMeetingLink();
     this.getDate();
     this.needFeedback();
   },
   methods: {
-    async getUser() {
-      const r = await fetch("api/users/" + this.$route.params.userId);
-      const res = await r.json();
-      if (!r.ok) {
-          throw new Error(res.error);
-      }
-      
-      this.user = res.user;
-
-    },
     async getMeetingLink() {
       if (this.user) {
         if (this.user.email == this.meeting.owner) {
