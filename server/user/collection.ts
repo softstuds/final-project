@@ -49,7 +49,11 @@ class UserCollection {
    * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given email, if any
    */
   static async findOneByUserId(userId: Types.ObjectId | string): Promise<HydratedDocument<User>> {
-    return await UserModel.findOne({_id: userId}).populate('industry');
+    const user = await UserModel.findOne({_id: userId});
+    if (user) {
+      user.populate('industry');
+    }
+    return user;
   }
 
   /**
@@ -59,7 +63,11 @@ class UserCollection {
    * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given email, if any
    */
   static async findOneByEmail(email: string): Promise<HydratedDocument<User>> {
-    return await (await UserModel.findOne({email: new RegExp(`^${email.trim()}$`, 'i')})).populated('industry');
+    const user = await UserModel.findOne({email: new RegExp(`^${email.trim()}$`, 'i')});
+    if (user) {
+      user.populate('industry');
+    }
+    return user;
   }
 
   /**
@@ -70,10 +78,14 @@ class UserCollection {
    * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given email, if any
    */
   static async findOneByEmailAndPassword(email: string, password: string): Promise<HydratedDocument<User>> {
-    return await UserModel.findOne({
+    const user = UserModel.findOne({
       email: new RegExp(`^${email.trim()}$`, 'i'),
       password
-    }).populate('industry');
+    });
+    if (user) {
+      user.populate('industry');
+    }
+    return user;
   }
 
   /**
