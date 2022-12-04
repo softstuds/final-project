@@ -183,7 +183,8 @@ class TimeBlockCollection {
    * @return {Promise<Number>} - The number of unique users that a given owner has met with
    */
    static async findTotalUniqueMetByOwner(ownerId: Types.ObjectId | string): Promise<Number> {
-    const distinct = await TimeBlockModel.find({owner: ownerId, accepted: true, met: {$ne: false}}).distinct('requester');
+    const now = new Date();
+    const distinct = await TimeBlockModel.find({owner: ownerId, accepted: true, start: {$lte: now}, met: {$ne: false}}).distinct('requester');
     return distinct.length;
   }
 
