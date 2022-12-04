@@ -23,8 +23,8 @@
           :name="field.id"
           :value="field.value"
           type="number"
-          min="1920"
-          step="1"
+          :min="1920"
+          :step="1"
           @input="field.value = $event.target.value"
         />
         <input
