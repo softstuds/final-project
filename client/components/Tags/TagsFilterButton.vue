@@ -70,7 +70,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .active{
   background-color:green;
 }
@@ -82,9 +82,10 @@ export default {
     float: left;
 }
 
-/* .flex-buttons {
+.flex-buttons {
     display: flex;
     flex-direction: row;
     float: left;
-} */
+    width: 100%;
+}
 </style>
