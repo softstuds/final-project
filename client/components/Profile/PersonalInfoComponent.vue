@@ -5,7 +5,7 @@
     v-if="user !== null"
   >
     <header>
-      <h2>{{ user.firstName }}</h2>
+      <h2>{{ user.firstName }} {{ user.lastName }}</h2>
     </header>
     <section class="info">
       <section>
@@ -69,6 +69,7 @@
     </section>
     <CalendarComponent 
       :userId="userId"
+      :userName="user.firstName + ' ' + user.lastName"
     />
   </div>
 </template>
