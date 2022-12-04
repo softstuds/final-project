@@ -39,13 +39,15 @@ body {
   height: 100vh;
   flex-direction: column;
   display: flex;
-  padding: 0;
+  padding: 0 20;
   margin: 0;
   font-size: 1.2em;
+  font-family: Montserrat;
 }
 
 main {
   padding: 40px;
+  margin: 0 64px;
   padding-top: 20px;
 }
 
@@ -76,5 +78,11 @@ main {
 
 .alerts .success {
     background-color: rgb(45, 135, 87);
+}
+
+/* montserrat-regular - latin */
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/public/montserrat-v25-latin-regular.woff'); /* IE9 Compat Modes */
 }
 </style>

@@ -9,6 +9,8 @@ Vue.use(Vuex);
  */
 const store = new Vuex.Store({
   state: {
+    filter: null,
+    timeblocks: [], // All freets created in the app
     user: null, // logged in user
     userId: null, // User ID of logged in user
     users: [], // All users
@@ -37,6 +39,21 @@ const store = new Vuex.Store({
        * @param userId - new userId to set
        */
       state.user = user;
+    },
+    updateTimeblocks(state, timeblocks) {
+      /**
+       * Update the stored freets to the provided freets.
+       * @param freets - Freets to store
+       */
+      state.timeblocks = timeblocks;
+    },
+    async refreshTimeblocks(state) {
+      /**
+       * Request the server for the currently available freets.
+       */
+      const url = state.filter=='Past Meetings' ? `/api/timeblock/checkoccurred` : '/api/timeblock';
+      const res = await fetch(url).then(async r => r.json());
+      state.timeblocks = res;
     },
     async refreshUser(state) {
       const r = await fetch("api/users/" + state.userId);
