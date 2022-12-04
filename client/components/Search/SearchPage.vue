@@ -9,12 +9,12 @@
       <section
         class="filterBar">
         <TagsFilterButton
-          @filterUsers="filterUsers"
-          @unfilterUsers="unfilterUsers">
+          @filterUsers="filterTags"
+          @unfilterUsers="unfilterTags">
         </TagsFilterButton>
         <IndustryFilter
-          @filterUsers="filterUsers"
-          @unfilterUsers="unfilterUsers">
+          @filterUsers="filterIndustry"
+          @unfilterUsers="unfilterIndustry">
         </IndustryFilter>
       </section>
     </section>
@@ -62,6 +62,8 @@ export default {
   data() {
     return {
       users: [],
+      tagsFilteredUsers: new Set(),
+      industryFilteredUsers: new Set(),
       displayedUsers: []
     }
   },
@@ -77,12 +79,35 @@ export default {
       }
       this.users = res;
       this.displayedUsers = res;
+      this.tagsFilteredUsers = this.getIds();
+      this.industryFilteredUsers = this.getIds();
     },
-    filterUsers(value) {
-      this.displayedUsers = this.displayedUsers.filter(user => value.includes(user.id));
+    filterTags(value) {
+      this.tagsFilteredUsers = new Set(value);
+      const filterIntersection = this.getIntersection(this.tagsFilteredUsers, this.industryFilteredUsers)
+      this.displayedUsers = this.displayedUsers.filter(user => filterIntersection.has(user.id));
     },
-    unfilterUsers() {
+    filterIndustry(value) {
+      this.industryFilteredUsers = new Set(value);
+      const filterIntersection = this.getIntersection(this.tagsFilteredUsers, this.industryFilteredUsers)
+      this.displayedUsers = this.displayedUsers.filter(user => filterIntersection.has(user.id));
+    },
+    unfilterTags() {
+      this.tagsFilteredUsers = this.getIds();
       this.displayedUsers = this.users;
+      this.displayedUsers = this.displayedUsers.filter(user => this.industryFilteredUsers.has(user.id));
+    },
+    unfilterIndustry() {
+      this.industryFilteredUsers = this.getIds();
+      this.displayedUsers = this.users;
+      this.displayedUsers = this.displayedUsers.filter(user => this.tagsFilteredUsers.has(user.id));
+    },
+    getIds() {
+      return new Set(this.users.map(user => user.id));
+    },
+    getIntersection(setA, setB) {
+      const intersection = new Set([...setA].filter(element => setB.has(element)));
+      return intersection;
     }
   }
 };
