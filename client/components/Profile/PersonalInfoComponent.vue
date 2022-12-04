@@ -54,7 +54,7 @@
             v-if="editingInfo"
             :userId="userId"
           />
-          <section v-else>{{ tags.map(tag => frontEndTags[tag]).join(', ') }}</section>
+          <section v-else>{{ this.tags.length > 0 ? tags.map(tag => frontEndTags[tag]).join(', ') : 'None Selected'}}</section>
         </section>
       </section>
     </section>
