@@ -12,7 +12,8 @@
         <i class="flatText">
           Last Active: {{ user.lastActive }}
         </i>
-        <section class="editInfo">
+        <section class="editInfo"
+          v-if="user._id === $store.state.userId">
           <button v-if="editingInfo" @click="updateInfo">Save Changes</button>
           <button v-else @click="(editingInfo=true)">Edit Info</button>
         </section>
@@ -86,6 +87,12 @@ export default {
         {'name': 'graduationYear', 'display': 'Class of: '}, 
         {'name': 'bio', 'display':  'Bio: '},
       ],
+    }
+  },
+  watch: {
+    userId: function() {
+      this.getUser();
+      this.getStats();
     }
   },
   mounted() {
