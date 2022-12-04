@@ -15,7 +15,7 @@ export type User = {
   lastName: string;
   graduationYear: number;
   lastActive: Date;
-  industry: string;
+  industry?: Types.ObjectId;
   bio: string;
   meetingLink: string;
 };
@@ -71,7 +71,8 @@ const UserSchema = new Schema({
 UserSchema.virtual('industry', {
   ref: 'Industry',
   localField: '_id',
-  foreignField: 'userId'
+  foreignField: 'userId',
+  justOne: true
 });
 
 UserSchema.set('toObject', {virtuals: true});
