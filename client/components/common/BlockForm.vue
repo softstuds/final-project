@@ -112,6 +112,15 @@ export default {
           };
           const tags = await fetch('/api/tags', options);
           const tagsRes = await tags.json();
+
+          // delete industry when a user is deleted
+          const industryOptions = {
+              method: 'DELETE',
+              headers: {'Content-Type': 'application/json'},
+              credentials: 'same-origin' // Sends express-session credentials with request
+          };
+          const industry = await fetch('/api/industry', options);
+          const industryRes = await industry.json();
         }
 
         const r = await fetch(this.url, options);
@@ -129,15 +138,24 @@ export default {
           this.$store.commit('getUsers');
 
           if (this.newUser && res.user) {
-          // create tags when a new user is created
-          const options = {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                credentials: 'same-origin' // Sends express-session credentials with request
+            // create tags when a new user is created
+              const options = {
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/json'},
+                  credentials: 'same-origin' // Sends express-session credentials with request
               };
               const tags = await fetch('/api/tags', options);
               const tagsRes = await tags.json();
-        }
+
+              // create an industry object when a new user is created
+              const industryOptions = {
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/json'},
+                  credentials: 'same-origin' // Sends express-session credentials with request
+              };
+              const industry = await fetch('/api/industry', options);
+              const industryRes = await industry.json();
+          }
         }
 
 

@@ -6,7 +6,8 @@
             track-by="name" 
             :options="options" 
             :multiple="true" 
-            :hideSelected="true" 
+            :hideSelected="true"
+            :show-labels="false" 
             @select="addWillingTos" 
             @remove="removeWillingTos">
         </multiselect>
