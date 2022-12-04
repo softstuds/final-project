@@ -169,7 +169,7 @@ router.get(
     const meetingSuccessRate = (totalHoursAccepted) ? totalHoursMet / totalHoursAccepted * 100 : 100;
     const uniqueUsers = await TimeBlockCollection.findTotalUniqueMetByOwner(userId);
     res.status(200).json({
-      message: 'totalHoursAccepted and meetingSuccessRate were fetched successfully.',
+      message: 'Statistics were fetched successfully.',
       statistics: [
         {label: 'Total Hours Accepted', value: totalHoursAccepted},
         {label: 'Average Hours Accepted per Month', value: `${averageMonthlyHours.toFixed(2)}`},

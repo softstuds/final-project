@@ -147,6 +147,9 @@ class TimeBlockCollection {
   static async findTotalMonthsByOwner(userId: Types.ObjectId | string): Promise<Number> {
     // month calculation taken from https://stackoverflow.com/a/2536445 
     const firstTimeBlock = await TimeBlockModel.findOne({owner: userId}).sort({start: 1});
+    if (!firstTimeBlock) {
+      return 0;
+    }
     const firstStart = firstTimeBlock.start;
     const today = new Date();
     var months = (today.getFullYear() - firstStart.getFullYear()) * 12;
