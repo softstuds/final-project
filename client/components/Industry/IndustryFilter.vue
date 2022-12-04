@@ -60,6 +60,7 @@ export default {
                 throw new Error(res.error);
             }
             this.filteredIds = res.map(user => user.userId);
+            this.$emit('unfilterUsers');
             this.$emit('filterUsers', this.filteredIds);
         }
     }
