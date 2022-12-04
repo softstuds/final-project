@@ -106,7 +106,7 @@ class UserCollection {
     }
 
     await user.save();
-    return user;
+    return user.populate('industry');
   }
 
   /**
@@ -119,7 +119,7 @@ class UserCollection {
     const lastActive = new Date();
     user.lastActive = lastActive;
     await user.save(); // Saves user to MongoDB
-    return user;
+    return user.populate('industry');
   }
 
   /**
