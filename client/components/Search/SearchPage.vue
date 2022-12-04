@@ -8,14 +8,20 @@
       </header>
       <section
         class="filterBar">
-        <TagsFilterButton
-          @filterUsers="filterTags"
-          @unfilterUsers="unfilterTags">
-        </TagsFilterButton>
-        <IndustryFilter
-          @filterUsers="filterIndustry"
-          @unfilterUsers="unfilterIndustry">
-        </IndustryFilter>
+        <section>
+          <h1>Filter by Willing To Tags...</h1>
+          <TagsFilterButton
+            @filterUsers="filterTags"
+            @unfilterUsers="unfilterTags">
+          </TagsFilterButton>
+        </section>
+        <section class="industry-filter">
+          <h1>Filter by Industry...</h1>
+          <IndustryFilter
+            @filterUsers="filterIndustry"
+            @unfilterUsers="unfilterIndustry">
+          </IndustryFilter>
+        </section>
       </section>
     </section>
     <section v-else>
@@ -138,5 +144,9 @@ section .scrollbox {
 .filterBar {
   display: flex;
   flex-direction: row;
+}
+
+.industry-filter {
+  margin-left: 40px;
 }
 </style>

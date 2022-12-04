@@ -78,8 +78,8 @@ export default {
 .filter-button {
     margin: 3px;
     border-radius: 12px;
-    width: 100px;
     float: left;
+    font-size: 18px;
 }
 
 .flex-buttons {
