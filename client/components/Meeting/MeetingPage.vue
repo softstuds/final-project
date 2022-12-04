@@ -269,7 +269,7 @@ main{
 }
 
 main .column {
-    paddiong: 0;
+    padding: 0;
 }
 
 h2, h2 > * {
