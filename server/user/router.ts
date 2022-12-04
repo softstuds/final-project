@@ -157,7 +157,7 @@ router.post(
 );
 
 /**
- * Update a user's profile.
+ * Update a user's email.
  *
  * @name PATCH /api/users/email
  *
@@ -185,7 +185,7 @@ router.patch(
 );
 
 /**
- * Update a user's profile.
+ * Update a user's password.
  *
  * @name PATCH /api/users/password
  *
@@ -239,9 +239,11 @@ router.patch(
  *
  * @name PATCH /api/users/profile
  *
- * @param {string} gradYear - The user's new gradYear
+ * @param {string} gradYear? - The user's new gradYear
+ * @param {string} bio? - The user's new bio
  * @return {UserResponse} - The updated user
  * @throws {403} - If user is not logged in
+ * @throws {400} - If graduation year is invalid
  */
 router.patch(
   '/profile',
