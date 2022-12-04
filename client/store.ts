@@ -11,6 +11,7 @@ const store = new Vuex.Store({
   state: {
     user: null, // logged in user
     userId: null, // User ID of logged in user
+    users: [], // All users
     alerts: {} // global success/error messages encountered during submissions to non-visible forms
   },
   mutations: {
@@ -53,13 +54,13 @@ const store = new Vuex.Store({
       }
       state.user = res.user;
     },
-    async updateLastActive(state) {
-      const r = await fetch("api/users/lastActive", {method: "PATCH"});
+    async getUsers(state) {
+      const r = await fetch("api/users");
       const res = await r.json();
       if (!r.ok) {
         throw new Error(res.error);
       }
-      state.user = res.user;
+      state.users = res;
     }
   },
   // Store data across page refreshes, only discard on browser close
