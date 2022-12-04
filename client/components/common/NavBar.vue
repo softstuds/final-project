@@ -16,7 +16,7 @@
       </router-link>
       <router-link
         v-if="$store.state.userId"
-        :to="('/meeting/' + $store.state.userId)"
+        to="/meeting"
       >
         Meetings
       </router-link>
@@ -25,12 +25,6 @@
         :to="('/profile/' + $store.state.userId)"
       >
         My Profile
-      </router-link>
-      <router-link
-        v-if="$store.state.userId"
-        to="/account"
-      >
-        Account
       </router-link>
       <router-link
         v-if="$store.state.userId"
