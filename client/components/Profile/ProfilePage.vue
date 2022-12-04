@@ -5,7 +5,7 @@
     <main>
       <section>
         <PersonalInfoComponent 
-          :userId="userId"
+          :userId="$route.params.userId"
         />
       </section>
     </main>
@@ -16,12 +16,7 @@
   
   export default {
     name: 'AccountPage',
-    components: {PersonalInfoComponent},
-    data() {
-      return {
-        userId: this.$route.params.userId
-      }
-    }
+    components: {PersonalInfoComponent}
   };
   </script>
   

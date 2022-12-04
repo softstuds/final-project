@@ -6,7 +6,8 @@
             track-by="name" 
             :options="options" 
             :multiple="true" 
-            :hideSelected="true" 
+            :hideSelected="true"
+            :show-labels="false" 
             @select="addWillingTos" 
             @remove="removeWillingTos">
         </multiselect>
@@ -92,7 +93,7 @@ export default {
             this.tags = res.tags;
         },
         async getTags() {
-            const r = await fetch(`/api/tags/${this.userId}`);
+            const r = await fetch(`/api/tags/users/${this.userId}`);
             const res = await r.json();
             if (!r.ok) {
                 throw new Error(res.error);

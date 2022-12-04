@@ -184,12 +184,22 @@ router.get(
     const {userId} = req.params;
     const totalHoursAccepted = await TimeBlockCollection.findTotalAcceptedByOwner(userId) as number;
     const totalHoursMet = await TimeBlockCollection.findTotalMetByOwner(userId) as number;
+    const months = await TimeBlockCollection.findTotalMonthsByOwner(userId) as number;
+    const averageMonthlyHours = (months) ? totalHoursAccepted / months : 0;
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const hoursThisMonth = await TimeBlockCollection.findTotalAcceptedByOwner(userId, firstDay);
+    const meetingSuccessRate = (totalHoursAccepted) ? totalHoursMet / totalHoursAccepted * 100 : 100;
+    const uniqueUsers = await TimeBlockCollection.findTotalUniqueMetByOwner(userId);
     res.status(200).json({
-      message: 'totalHoursAccepted and meetingSuccessRate were fetched successfully.',
-      statistics: {
-        totalHoursAccepted: totalHoursAccepted,
-        meetingSuccessRate: `${(totalHoursAccepted) ? totalHoursMet / totalHoursAccepted : 0}`,
-      }
+      message: 'Statistics were fetched successfully.',
+      statistics: [
+        {label: 'Total Hours Accepted', value: totalHoursAccepted},
+        {label: 'Average Hours Accepted per Month', value: `${averageMonthlyHours.toFixed(2)}`},
+        {label: 'Total Hours Accepted This Month', value: hoursThisMonth},
+        {label: 'Meeting Success Rate', value: `${Math.round(meetingSuccessRate)}%`},
+        {label: 'Unique Users Met', value: uniqueUsers},
+      ]
     });
   }
 );
@@ -210,7 +220,7 @@ router.put(
   [
     userValidator.isUserLoggedIn,
     timeBlockValidator.isBlockNonexistent,
-    timeBlockValidator.isBlockInNextSeven
+    timeBlockValidator.isBlockInNextFour
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn

@@ -134,10 +134,15 @@ class TimeBlockCollection {
    * Get the number of total meetings that the user has accepted
    * 
    * @param {string} userId - The id of the user
+   * @param {Date} startAfter - The date after which to count timeblocks
    * @return {Promise<Number>} - The number of meetings a user owns and has accepted 
    */
-   static async findTotalAcceptedByOwner(userId: Types.ObjectId | string): Promise<Number> {
-    return TimeBlockModel.find({owner: userId, accepted: true}).count();
+   static async findTotalAcceptedByOwner(userId: Types.ObjectId | string, startAfter: Date = null): Promise<Number> {
+    if (startAfter) {
+      return TimeBlockModel.find({owner: userId, accepted: true, start: {$gte: startAfter}}).count();
+    } else {
+      return TimeBlockModel.find({owner: userId, accepted: true}).count();
+    }
   }
 
   /**
@@ -149,6 +154,36 @@ class TimeBlockCollection {
    */
   static async findTotalMetByOwner(userId: Types.ObjectId | string): Promise<Number> {
     return TimeBlockModel.find({owner: userId, accepted: true, met: {$ne: false}}).count();
+  }
+
+  /**
+   * Get the number of total months that the user has been active (e.g. putting time blocks in)
+   * 
+   * @param {string} userId - The id of the user
+   * @return {Promise<Number>} - The number of months since a user put in their first availability
+   */
+  static async findTotalMonthsByOwner(userId: Types.ObjectId | string): Promise<Number> {
+    // month calculation taken from https://stackoverflow.com/a/2536445 
+    const firstTimeBlock = await TimeBlockModel.findOne({owner: userId}).sort({start: 1});
+    if (!firstTimeBlock) {
+      return 0;
+    }
+    const firstStart = firstTimeBlock.start;
+    const today = new Date();
+    var months = (today.getFullYear() - firstStart.getFullYear()) * 12;
+    months -= firstStart.getMonth();
+    months += today.getMonth();
+    return months <= 0 ? 0 : months;
+  }
+
+  /**
+   * Get the number of total unique users that the given owner has met with
+   *
+   * @param {string} ownerId - The id of the owner
+   * @return {Promise<Number>} - The number of unique users that a given owner has met with
+   */
+   static async findTotalUniqueMetByOwner(ownerId: Types.ObjectId | string): Promise<Number> {
+    return TimeBlockModel.find({owner: ownerId, accepted: true, met: {$ne: false}}).distinct('requester').count();
   }
 
   /**

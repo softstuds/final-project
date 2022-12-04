@@ -39,7 +39,7 @@ class UserCollection {
    * @return {Promise<Array<HydratedDocument<User>>>} - All the users
    */
   static async findAll(): Promise<Array<HydratedDocument<User>>> {
-    return UserModel.find({});
+    return await UserModel.find({}).populate('industry');
   }
 
   /**
@@ -49,7 +49,7 @@ class UserCollection {
    * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given email, if any
    */
   static async findOneByUserId(userId: Types.ObjectId | string): Promise<HydratedDocument<User>> {
-    return UserModel.findOne({_id: userId});
+    return await UserModel.findOne({_id: userId}).populate('industry');
   }
 
   /**
@@ -59,7 +59,7 @@ class UserCollection {
    * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given email, if any
    */
   static async findOneByEmail(email: string): Promise<HydratedDocument<User>> {
-    return UserModel.findOne({email: new RegExp(`^${email.trim()}$`, 'i')});
+    return await (await UserModel.findOne({email: new RegExp(`^${email.trim()}$`, 'i')})).populated('industry');
   }
 
   /**
@@ -70,10 +70,10 @@ class UserCollection {
    * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given email, if any
    */
   static async findOneByEmailAndPassword(email: string, password: string): Promise<HydratedDocument<User>> {
-    return UserModel.findOne({
+    return await UserModel.findOne({
       email: new RegExp(`^${email.trim()}$`, 'i'),
       password
-    });
+    }).populate('industry');
   }
 
   /**
@@ -106,7 +106,7 @@ class UserCollection {
     }
 
     await user.save();
-    return user;
+    return user.populate('industry');
   }
 
   /**
@@ -119,7 +119,7 @@ class UserCollection {
     const lastActive = new Date();
     user.lastActive = lastActive;
     await user.save(); // Saves user to MongoDB
-    return user;
+    return user.populate('industry');
   }
 
   /**
