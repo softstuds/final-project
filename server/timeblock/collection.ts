@@ -116,13 +116,12 @@ class TimeBlockCollection {
    * Get the number of total meetings that the user has accepted
    * 
    * @param {string} userId - The id of the user
-   * @param {string} startAfter - The date after which to count timeblocks
+   * @param {Date} startAfter - The date after which to count timeblocks
    * @return {Promise<Number>} - The number of meetings a user owns and has accepted 
    */
-   static async findTotalAcceptedByOwner(userId: Types.ObjectId | string, startAfter: string = null): Promise<Number> {
+   static async findTotalAcceptedByOwner(userId: Types.ObjectId | string, startAfter: Date = null): Promise<Number> {
     if (startAfter) {
-      const startDate = new Date(startAfter);
-      return TimeBlockModel.find({owner: userId, accepted: true, start: {$gte: startDate}}).count();
+      return TimeBlockModel.find({owner: userId, accepted: true, start: {$gte: startAfter}}).count();
     } else {
       return TimeBlockModel.find({owner: userId, accepted: true}).count();
     }
