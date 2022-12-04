@@ -80,7 +80,7 @@ export default {
 
     },
     async getMeetingLink() {
-      if (this.user != null) {
+      if (this.user) {
         if (this.user.email == this.meeting.owner) {
           this.link == this.user.meetingLink;
         } else {
