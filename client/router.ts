@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import SearchPage from './components/Search/SearchPage.vue';
 import AccountPage from './components/Account/AccountPage.vue';
 import ProfilePage from './components/Profile/ProfilePage.vue';
+import MeetingPage from './components/Meeting/MeetingPage.vue';
 import LoginPage from './components/Login/LoginPage.vue';
 import NotFound from './NotFound.vue';
 
@@ -11,7 +12,8 @@ Vue.use(VueRouter);
 const routes = [
   {path: '/', name: 'Home', component: SearchPage},
   {path: '/account', name: 'Account', component: AccountPage},
-  {path: '/profile/:userId', name: 'Profiles', component: ProfilePage},
+  {path: '/meeting/:userId', name: 'Meetings', component: MeetingPage},
+  {path: '/profile/:userId', name: 'My Profile', component: ProfilePage},
   {path: '/login', name: 'Login', component: LoginPage},
   {path: '*', name: 'Not Found', component: NotFound}
 ];
@@ -33,7 +35,14 @@ router.beforeEach((to, from, next) => {
       return;
     }
 
-    if (to.name === 'Profiles' && !router.app.$store.state.userId) {
+
+    if (to.name === 'Meetings' && !router.app.$store.state.username) {
+      next({name: 'Login'}); // Go to Login page if user navigates to Meetings and is not signed in
+      return;
+    }
+
+
+    if (to.name === 'My Profile' && !router.app.$store.state.username) {
       next({name: 'Login'}); // Go to Login page if user navigates to Profiles and are not signed in
       return;
     }

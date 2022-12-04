@@ -35,11 +35,11 @@ router.post(
 /**
  * Retrieve a user's tags
  * 
- * @name GET /api/tags/:userId
+ * @name GET /api/tags/users/:userId
  * @return {TagsResponse} - The tags for a user
  */
 router.get(
-    '/:userId?',
+    '/users/:userId?',
     [userValidator.isUserLoggedIn],
     async (req: Request, res: Response) => {
         const userId = req.params.userId;
@@ -59,7 +59,7 @@ router.get(
  * @throws {400} - If the tag name is not valid
  */
  router.get(
-    '/:tagName',
+    '/:tagName?',
     [
         userValidator.isUserLoggedIn,
         tagsValidator.isValidTagName

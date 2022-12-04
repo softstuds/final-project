@@ -45,14 +45,16 @@
         </section>
         <section class="fieldInput">
           <b class="field">Industry:</b>
-          <IndustryButton></IndustryButton>
+          <IndustryButton v-if="editingInfo"></IndustryButton>
+          <section v-else>{{ user.industry ? user.industry.industryType : 'Unspecified' }}</section>
         </section>
         <section class="fieldInput">
           <b class="field">Willing To:</b>
           <WillingTosSelect 
-            v-if="user._id === $store.state.userId"
+            v-if="editingInfo"
             :userId="userId"
           />
+          <section v-else>{{ tags.map(tag => frontEndTags[tag]).join(', ') }}</section>
         </section>
       </section>
     </section>
@@ -60,8 +62,10 @@
       <section class="segmentHeader">
         <h3><b>{{ user.firstName }}'s Statistics</b></h3>
       </section>
-      <p><b>Hours accepted: </b>{{statistics.totalHoursAccepted}}</p>
-      <p><b>Meeting success rate: </b>{{statistics.meetingSuccessRate}}</p>
+      <p v-for="stat in statistics">
+        <b>{{ stat.label }}:</b>
+        {{ stat.value }}
+      </p>
     </section>
     <CalendarComponent 
       :userId="userId"
@@ -85,23 +89,34 @@ export default {
   data() {
     return {
       user: null,
+      tags: [],
       statistics: {},
       editingInfo: false,
       fields: [
         {'name': 'graduationYear', 'display': 'Class of: '}, 
         {'name': 'bio', 'display':  'Bio: '},
       ],
+      frontEndTags: {
+        'refer': 'Write referrals',
+        'resumeReview': 'Review resumes',
+        'mentor': 'Provide mentoring',
+        'coffeeChat': 'Coffee Chat',
+        'helpInterview': 'Help with Interview Preparation',
+        'email': 'Email'
+      },
     }
   },
   watch: {
     userId: function() {
       this.getUser();
       this.getStats();
+      this.getTags();
     }
   },
   mounted() {
     this.getUser();
     this.getStats();
+    this.getTags();
   },
   methods: {
     async getUser() {
@@ -111,6 +126,20 @@ export default {
         throw new Error(res.error);
       }
       this.user = res.user;
+    },
+    async getTags() {
+      const r = await fetch(`/api/tags/users/${this.userId}`);
+      const res = await r.json();
+      if (!r.ok) {
+          throw new Error(res.error);
+      }
+      const newTags = [];
+      for (const tag in res.tags) {
+        if (res.tags[tag] == true) {
+          newTags.push(tag);
+        }
+      }
+      this.tags = newTags;
     },
     async getStats() {
       const r = await fetch(`api/timeblock/stats/${this.userId}`);
@@ -137,6 +166,7 @@ export default {
         throw new Error(res.error);
       }
       this.user = res.user;
+      this.getTags();
     }
   }
 };

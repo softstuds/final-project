@@ -70,7 +70,7 @@ const isValidEmail = (req: Request, res: Response, next: NextFunction) => {
  * Checks if a email in req.body is valid
  */
 const isValidGraduationYear = (req: Request, res: Response, next: NextFunction) => {
-  if (!Number.isInteger(req.body.graduationYear)) {
+  if (isNaN(+req.body.graduationYear)) {
     res.status(400).json({
       error: 'Graduation Year must be number.'
     });

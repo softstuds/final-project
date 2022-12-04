@@ -16,15 +16,21 @@
       </router-link>
       <router-link
         v-if="$store.state.userId"
-        :to="'/profile/' + $store.state.userId"
-      >
-        My Profile
-      </router-link>
-      <router-link
-        v-if="$store.state.userId"
         to="/account"
       >
         Account
+      </router-link>
+      <router-link
+        v-if="$store.state.userId"
+        :to="('/meeting/' + $store.state.userId)"
+      >
+        Meetings
+      </router-link>
+      <router-link
+        v-if="$store.state.userId"
+        :to="('/profile/' + $store.state.userId)"
+      >
+        My Profile
       </router-link>
       <router-link
         v-else
@@ -47,12 +53,14 @@
 
 <style scoped>
 nav {
-    padding: 1vw 2vw;
-    background-color: #ccc;
+    padding: 1.5vw 2vw;
+    background-color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
+    text-decoration: none;
+    color: black;
 }
 
 .title {
@@ -79,6 +87,7 @@ img {
 
 .right a {
     margin-left: 5px;
+    text-decoration: none;
 }
 
 .alerts {

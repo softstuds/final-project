@@ -8,7 +8,7 @@ import TagsCollection from './collection';
  */
 const isValidTagName = async (req: Request, res: Response, next: NextFunction) => {
     const validNames = ['coffeeChat', 'refer', 'helpInterview', 'resumeReview', 'mentor', 'email'];
-    if (!(req.params.tagName in validNames)) {
+    if (!validNames.includes(req.params.tagName)) {
         res.status(400).json({
             error: 'Category must be a string only consisting of letters and numbers.'
         });

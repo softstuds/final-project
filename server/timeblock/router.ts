@@ -30,6 +30,29 @@ router.get(
 );
 
 /**
+ * Get all the upcoming meetings (meetings that have been accepted and haven't
+ * happened yet for a user)
+ *
+ * @name GET /api/timeblock/upcoming
+ *
+ * @return {TimeBlockResponse[]} - A list of all the time blocks of upcoming meetings for the user
+ *                      sorted in descending order by start
+ * @throws {403} - If the user is not logged in
+ */
+ router.get(
+  '/upcoming',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? '';
+    const allTimeBlocks = await TimeBlockCollection.findAllByUserAccepted(userId, false);
+    const response = allTimeBlocks.map(util.constructTimeBlockResponse);
+    res.status(200).json(response);
+  }
+);
+
+/**
  * Whether signed in user has access
  *
  * @name GET /api/timeblock/access/
@@ -37,7 +60,7 @@ router.get(
  * @return {Boolean} - Whether of not the user has access
  * @throws {403} - If the user is not logged in
  */
-router.get(
+ router.get(
   '/access/',
   [
     userValidator.isUserLoggedIn
@@ -52,16 +75,16 @@ router.get(
 /**
  * Get all the meetings a user has had
  *
- * @name GET /api/timeblock/occurred
+ * @name GET /api/timeblock/checkoccurred
  *
  * @return {TimeBlockResponse[]} - A list of all the meetings a user has had,
  *                                sorting in descending order by start
  * @throws {403} - If the user is not logged in
  */
- router.get(
-  '/occurred',
+router.get(
+  '/checkoccurred',
   [
-    userValidator.isUserLoggedIn,
+    userValidator.isUserLoggedIn
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? '';
@@ -181,12 +204,22 @@ router.get(
     const {userId} = req.params;
     const totalHoursAccepted = await TimeBlockCollection.findTotalAcceptedByOwner(userId) as number;
     const totalHoursMet = await TimeBlockCollection.findTotalMetByOwner(userId) as number;
+    const months = await TimeBlockCollection.findTotalMonthsByOwner(userId) as number;
+    const averageMonthlyHours = (months) ? totalHoursAccepted / months : 0;
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const hoursThisMonth = await TimeBlockCollection.findTotalAcceptedByOwner(userId, firstDay);
+    const meetingSuccessRate = (totalHoursAccepted) ? totalHoursMet / totalHoursAccepted * 100 : 100;
+    const uniqueUsers = await TimeBlockCollection.findTotalUniqueMetByOwner(userId);
     res.status(200).json({
-      message: 'totalHoursAccepted and meetingSuccessRate were fetched successfully.',
-      statistics: {
-        totalHoursAccepted: totalHoursAccepted,
-        meetingSuccessRate: `${(totalHoursAccepted) ? totalHoursMet / totalHoursAccepted : 0}`,
-      }
+      message: 'Statistics were fetched successfully.',
+      statistics: [
+        {label: 'Total Hours Accepted', value: totalHoursAccepted},
+        {label: 'Average Hours Accepted per Month', value: `${averageMonthlyHours.toFixed(2)}`},
+        {label: 'Total Hours Accepted This Month', value: hoursThisMonth},
+        {label: 'Meeting Success Rate', value: `${Math.round(meetingSuccessRate)}%`},
+        {label: 'Unique Users Met', value: uniqueUsers},
+      ]
     });
   }
 );
@@ -268,6 +301,33 @@ router.patch(
   ],
   async (req: Request, res: Response) => {
     const timeBlock = await TimeBlockCollection.updateOneRequest(req.params.timeBlockId, req.body.userId);
+    res.status(200).json({
+      message: 'Your time block was updated successfully.',
+      timeBlock: util.constructTimeBlockResponse(timeBlock)
+    });
+  }
+);
+
+/**
+ * Modify a time block by unsending a request to meet
+ *
+ * @name PATCH /api/timeblock/request/:id/unsend
+ *
+ * @return {TimeBlockResponse} - the updated time block
+ * @throws {403} - if the user is not logged in or is not the requester of the time block
+ * @throws {404} - If either the time block with given ID does not exist
+ * @throws {409} - If the time block has already passed
+ */
+ router.patch(
+  '/request/:timeBlockId?/unsend',
+  [
+    userValidator.isUserLoggedIn,
+    timeBlockValidator.isBlockExistent,
+    timeBlockValidator.isBlockInFuture,
+    timeBlockValidator.isBlockRequester,
+  ],
+  async (req: Request, res: Response) => {
+    const timeBlock = await TimeBlockCollection.updateOneRequest(req.params.timeBlockId, null);
     res.status(200).json({
       message: 'Your time block was updated successfully.',
       timeBlock: util.constructTimeBlockResponse(timeBlock)

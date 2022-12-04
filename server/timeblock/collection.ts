@@ -81,6 +81,24 @@ class TimeBlockCollection {
   }
 
   /**
+   * Get all the time blocks in the database with a given user as owner or requester that's passed
+   * in order of most to least recent start time
+   *
+   * @param {string} userId - The id of the user
+   * @param {boolean} userOwner - Whether we want time blocks that user owns or all
+   * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the time blocks for a given owner
+   */
+   static async findAllByUserAccepted(userId: Types.ObjectId | string, userOwner: boolean): Promise<Array<HydratedDocument<TimeBlock>>> {
+    // Retrieves time blocks and sorts them from latest to earliest time
+    const now = new Date();
+    if (userOwner) {
+      return TimeBlockModel.find({owner: userId, start: {$gte: now}, accepted: true, met: null}).sort({start: -1}).populate('owner requester');
+    } else {
+      return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}],start: {$gte: now}, accepted: true}).sort({start: -1}).populate('owner requester');
+    }
+  }
+
+  /**
    * Get all the time blocks in the database with a given owner that are unclaimed in the future
    * in order of most to least recent start time
    *
@@ -108,7 +126,7 @@ class TimeBlockCollection {
     if (getSent) {
       return TimeBlockModel.find({requester: userId, accepted: false, start: {$gte: now}}).sort({start: 1}).populate('owner requester');
     } else {
-      return TimeBlockModel.find({owner: userId, requester: {$ne: null}, start: {$gte: now}}).sort({start: 1}).populate('owner requester');
+      return TimeBlockModel.find({owner: userId, accepted: false, requester: {$ne: null}, start: {$gte: now}}).sort({start: 1}).populate('owner requester');
     }
   }
 
@@ -116,10 +134,15 @@ class TimeBlockCollection {
    * Get the number of total meetings that the user has accepted
    * 
    * @param {string} userId - The id of the user
+   * @param {Date} startAfter - The date after which to count timeblocks
    * @return {Promise<Number>} - The number of meetings a user owns and has accepted 
    */
-   static async findTotalAcceptedByOwner(userId: Types.ObjectId | string): Promise<Number> {
-    return TimeBlockModel.find({owner: userId, accepted: true}).count();
+   static async findTotalAcceptedByOwner(userId: Types.ObjectId | string, startAfter: Date = null): Promise<Number> {
+    if (startAfter) {
+      return TimeBlockModel.find({owner: userId, accepted: true, start: {$gte: startAfter}}).count();
+    } else {
+      return TimeBlockModel.find({owner: userId, accepted: true}).count();
+    }
   }
 
   /**
@@ -153,6 +176,37 @@ class TimeBlockCollection {
       }
     }
     return false;
+  }
+  
+  /**
+   * Get the number of total months that the user has been active (e.g. putting time blocks in)
+   * 
+   * @param {string} userId - The id of the user
+   * @return {Promise<Number>} - The number of months since a user put in their first availability
+   */
+  static async findTotalMonthsByOwner(userId: Types.ObjectId | string): Promise<Number> {
+    // month calculation taken from https://stackoverflow.com/a/2536445 
+    const firstTimeBlock = await TimeBlockModel.findOne({owner: userId}).sort({start: 1});
+    if (!firstTimeBlock) {
+      return 0;
+    }
+    const firstStart = firstTimeBlock.start;
+    const today = new Date();
+    var months = (today.getFullYear() - firstStart.getFullYear()) * 12;
+    months -= firstStart.getMonth();
+    months += today.getMonth();
+    return months <= 0 ? 0 : months;
+  }
+
+  /**
+   * Get the number of total unique users that the given owner has met with
+   *
+   * @param {string} ownerId - The id of the owner
+   * @return {Promise<Number>} - The number of unique users that a given owner has met with
+   */
+   static async findTotalUniqueMetByOwner(ownerId: Types.ObjectId | string): Promise<Number> {
+    const distinct = await TimeBlockModel.find({owner: ownerId, accepted: true, met: {$ne: false}}).distinct('requester');
+    return distinct.length;
   }
 
   /**
