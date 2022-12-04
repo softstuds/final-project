@@ -124,7 +124,7 @@ export default {
       this.user = res.user;
     },
     async getTags() {
-      const r = await fetch(`/api/tags/${this.userId}`);
+      const r = await fetch(`/api/tags/users/${this.userId}`);
       const res = await r.json();
       if (!r.ok) {
           throw new Error(res.error);
