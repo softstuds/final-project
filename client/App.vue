@@ -22,6 +22,7 @@ export default {
       this.$store.commit('setUser', user ? user : null);
       this.$store.commit('setUserId', user ? user._id : null);
       this.$store.commit('getUsers');
+      this.$store.commit('updateAccess');
     });
 
     // Clear alerts on page refresh

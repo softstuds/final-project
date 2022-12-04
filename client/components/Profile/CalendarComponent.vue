@@ -42,7 +42,7 @@
                 }}
                 <div>
                   <button 
-                    v-if="userId !== $store.state.userId"
+                    v-if="(userId !== $store.state.userId && $store.state.hasAccess)"
                     @click="requestTimeBlock(block._id)"
                   >
                     Request
@@ -282,6 +282,10 @@ export default {
                 setTimeout(() => this.$delete(this.alerts, e), 3000);
             }
             this.getAvailibilities();
+
+            if (!this.$store.state.hasAccess) {
+              this.$store.commit('updateAccess');
+            }
         },
         async requestTimeBlock(blockId) {            
             const options = {
@@ -321,6 +325,10 @@ export default {
                 setTimeout(() => this.$delete(this.alerts, e), 3000);
             }
             this.getAvailibilities();
+
+            if (this.$store.state.hasAccess) {
+              this.$store.commit('updateAccess');
+            }
         }
     }
 };

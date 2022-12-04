@@ -30,15 +30,15 @@ router.get(
 );
 
 /**
- * Get all the time blocks for a user
+ * Whether signed in user has access
  *
- * @name GET /api/timeblock/access/:userId
+ * @name GET /api/timeblock/access/
  *
  * @return {Boolean} - Whether of not the user has access
  * @throws {403} - If the user is not logged in
  */
 router.get(
-  '/access/:userId',
+  '/access/',
   [
     userValidator.isUserLoggedIn
   ],
