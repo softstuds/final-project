@@ -42,15 +42,25 @@ export default {
                 'Transportation & Logistics',
                 'Wellness & Fitness'
             ],
-            value: 'Unspecified'
+            value: 'Unspecified',
+            filteredIds: []
         }
     },
     methods: {
-        addFilter() {
-
+        addFilter(value) {
+            this.getUsersInIndustry(value);
         },
-        removeFilter() {
-            
+        removeFilter(value) {
+            this.$emit('unfilterUsers');
+        },
+        async getUsersInIndustry(value) {
+            const r = await fetch(`api/industry/${value}`);
+            const res = await r.json();
+            if (!r.ok) {
+                throw new Error(res.error);
+            }
+            this.filteredIds = res.map(user => user.userId);
+            this.$emit('filterUsers', this.filteredIds);
         }
     }
 }

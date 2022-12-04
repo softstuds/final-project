@@ -12,7 +12,10 @@
           @filterUsers="filterUsers"
           @unfilterUsers="unfilterUsers">
         </TagsFilterButton>
-        <IndustryFilter></IndustryFilter>
+        <IndustryFilter
+          @filterUsers="filterUsers"
+          @unfilterUsers="unfilterUsers">
+        </IndustryFilter>
       </section>
     </section>
     <section v-else>
