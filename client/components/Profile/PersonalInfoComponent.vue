@@ -12,6 +12,10 @@
         <i class="flatText">
           Last Active: {{ user.lastActive }}
         </i>
+        <p v-if="(user._id === $store.state.userId)">
+          You <b>{{ $store.state.hasAccess == true ? 'can' : 'can not' }}</b> request meetings with others
+        </p>
+        <hr/>
         <section class="editInfo"
           v-if="user._id === $store.state.userId">
           <button v-if="editingInfo" @click="updateInfo">Save Changes</button>
@@ -156,7 +160,7 @@ export default {
           body: JSON.stringify({graduationYear: parseInt(graduationYear, 10), industry, bio})
       };
       
-      const r = await fetch("api/users/info", options);
+      const r = await fetch("api/users/profile", options);
       const res = await r.json();
       if (!r.ok) {
         throw new Error(res.error);

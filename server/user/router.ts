@@ -178,7 +178,7 @@ router.post(
 );
 
 /**
- * Update a user's profile.
+ * Update a user's email.
  *
  * @name PATCH /api/users/email
  *
@@ -206,7 +206,7 @@ router.patch(
 );
 
 /**
- * Update a user's profile.
+ * Update a user's password.
  *
  * @name PATCH /api/users/password
  *
@@ -232,16 +232,42 @@ router.patch(
 );
 
 /**
- * Update a user's graduation year.
+ * Update a user's meeting link.
  *
- * @name PATCH /api/users/gradYear
+ * @name PATCH /api/users/meetingLink
  *
- * @param {string} gradYear - The user's new gradYear
+ * @param {string} meetingLink - The user's new meetingLink
  * @return {UserResponse} - The updated user
  * @throws {403} - If user is not logged in
  */
 router.patch(
-  '/info',
+  '/meetingLink',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const user = await UserCollection.updateOne(userId, req.body);
+    res.status(200).json({
+      message: 'Your meeting link was updated successfully.',
+      user: util.constructUserResponse(user)
+    });
+  }
+);
+
+/**
+ * Update a user's profile info
+ *
+ * @name PATCH /api/users/profile
+ *
+ * @param {string} gradYear? - The user's new gradYear
+ * @param {string} bio? - The user's new bio
+ * @return {UserResponse} - The updated user
+ * @throws {403} - If user is not logged in
+ * @throws {400} - If graduation year is invalid
+ */
+router.patch(
+  '/profile',
   [
     userValidator.isUserLoggedIn,
     userValidator.isValidGraduationYear
