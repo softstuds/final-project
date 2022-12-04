@@ -6,18 +6,18 @@
       <header>
         <h2>Viewing Users</h2>
       </header>
-      <section
-        class="filterBar">
-        <section>
+      <section>
+        <section class="tags-filter">
           <h1>Filter by Willing To Tags...</h1>
           <TagsFilterButton
             @filterUsers="filterTags"
             @unfilterUsers="unfilterTags">
           </TagsFilterButton>
         </section>
-        <section class="industry-filter">
+        <section>
           <h1>Filter by Industry...</h1>
           <IndustryFilter
+            class="industry-filter-bar"
             @filterUsers="filterIndustry"
             @unfilterUsers="unfilterIndustry">
           </IndustryFilter>
@@ -143,10 +143,11 @@ section .scrollbox {
 
 .filterBar {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
-.industry-filter {
-  margin-left: 40px;
+.industry-filter-bar {
+  width: 300px;
+  margin-bottom: 20px;
 }
 </style>
