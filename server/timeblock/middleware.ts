@@ -187,7 +187,7 @@ const isBlockAccepted = async (req: Request, res: Response, next: NextFunction) 
 };
 
 /**
- * Checks if the time given is in the next seven days
+ * Checks if the time given is in the next 4 weeks
  */
 const isBlockInNextFour = async (req: Request, res: Response, next: NextFunction) => {
   const rangeEnd = new Date();

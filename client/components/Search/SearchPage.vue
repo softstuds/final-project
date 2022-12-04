@@ -22,10 +22,10 @@
     </section>
     <section v-if="$store.state.email">
       <section
-        v-if="users.length"
+        v-if="$store.state.users.length"
       >
         <UserCardComponent
-          v-for="user in users"
+          v-for="user in $store.state.users"
           :key="user.id"
           :user="user"
         />
@@ -45,24 +45,24 @@ import UserCardComponent from '@/components/Search/UserCardComponent.vue';
 export default {
   name: 'SearchPage',
   components: {UserCardComponent},
-  data() {
-    return {
-      users: []
-    }
-  },
-  mounted() {
-    this.getUsers();
-  },
-  methods: {
-    async getUsers() {
-      const r = await fetch("api/users");
-      const res = await r.json();
-      if (!r.ok) {
-        throw new Error(res.error);
-      }
-      this.users = res;
-    }
-  }
+  // data() {
+  //   return {
+  //     users: []
+  //   }
+  // },
+  // mounted() {
+  //   this.getUsers();
+  // },
+  // methods: {
+  //   async getUsers() {
+  //     const r = await fetch("api/users");
+  //     const res = await r.json();
+  //     if (!r.ok) {
+  //       throw new Error(res.error);
+  //     }
+  //     this.users = res;
+  //   }
+  // }
 };
 </script>
 

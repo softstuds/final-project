@@ -24,6 +24,7 @@ const IndustrySchema = new Schema({
     industryType: {
         type: String,
         enum: [
+            'Unspecified',
             'Agriculture',
             'Arts',
             'Construction',

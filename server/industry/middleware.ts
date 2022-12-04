@@ -36,6 +36,7 @@ const isIndustryExistForCreation = async (req: Request, res: Response, next: Nex
  */
 const isValidIndustryValue = async (req: Request, res: Response, next: NextFunction) => {
     const validIndustries = [
+        'Unspecified',
         'Agriculture',
         'Arts',
         'Construction',
@@ -61,7 +62,7 @@ const isValidIndustryValue = async (req: Request, res: Response, next: NextFunct
         'Transportation & Logistics',
         'Wellness & Fitness'
     ];
-    if (!(req.params.industryValue in validIndustries)) {
+    if (!validIndustries.includes(req.params.industryValue)) {
         res.status(400).json({
             error: `Industry given is not a valid industry name.`
           });
@@ -75,6 +76,7 @@ const isValidIndustryValue = async (req: Request, res: Response, next: NextFunct
  */
  const isValidNewIndustry = async (req: Request, res: Response, next: NextFunction) => {
     const validIndustries = [
+        'Unspecified',
         'Agriculture',
         'Arts',
         'Construction',
@@ -100,7 +102,7 @@ const isValidIndustryValue = async (req: Request, res: Response, next: NextFunct
         'Transportation & Logistics',
         'Wellness & Fitness'
     ];
-    if (!(req.body.newIndustry in validIndustries)) {
+    if (!validIndustries.includes(req.body.newIndustry)) {
         res.status(400).json({
             error: `Industry given is not a valid industry name.`
           });

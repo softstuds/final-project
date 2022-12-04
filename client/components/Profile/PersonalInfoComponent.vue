@@ -12,7 +12,8 @@
         <i class="flatText">
           Last Active: {{ user.lastActive }}
         </i>
-        <section class="editInfo">
+        <section class="editInfo"
+          v-if="user._id === $store.state.userId">
           <button v-if="editingInfo" @click="updateInfo">Save Changes</button>
           <button v-else @click="(editingInfo=true)">Edit Info</button>
         </section>
@@ -39,6 +40,10 @@
           <section v-else>{{ user[field.name] }}</section>
         </section>
         <section class="fieldInput">
+          <b class="field">Industry:</b>
+          <IndustryButton></IndustryButton>
+        </section>
+        <section class="fieldInput">
           <b class="field">Willing To:</b>
           <WillingTosSelect 
             v-if="user._id === $store.state.userId"
@@ -63,9 +68,10 @@
 <script>
 import CalendarComponent from '@/components/Profile/CalendarComponent.vue';
 import WillingTosSelect from '@/components/Tags/WillingTosSelect.vue';
+import IndustryButton from '@/components/Industry/IndustryButton.vue';
 
 export default {
-  components: {CalendarComponent, WillingTosSelect},
+  components: {CalendarComponent, WillingTosSelect, IndustryButton},
   props: {
     userId: {
       type: String,
@@ -79,9 +85,14 @@ export default {
       editingInfo: false,
       fields: [
         {'name': 'graduationYear', 'display': 'Class of: '}, 
-        {'name': 'industry', 'display':  'Industry: '},
         {'name': 'bio', 'display':  'Bio: '},
       ],
+    }
+  },
+  watch: {
+    userId: function() {
+      this.getUser();
+      this.getStats();
     }
   },
   mounted() {

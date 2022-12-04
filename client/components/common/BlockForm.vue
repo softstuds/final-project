@@ -69,6 +69,7 @@ export default {
       method: 'GET', // Form request method
       hasBody: false, // Whether or not form request has a body
       setUser: false, // Whether or not stored username should be updated after form submission
+      newUser: false, // if a new user is being created
       refreshUser: false, // Whether or not to refresh user info
       deleteUser: false, // If the user info has been deleted
       alerts: {}, // Displays success/error messages encountered during form submission
@@ -111,6 +112,15 @@ export default {
           };
           const tags = await fetch('/api/tags', options);
           const tagsRes = await tags.json();
+
+          // delete industry when a user is deleted
+          const industryOptions = {
+              method: 'DELETE',
+              headers: {'Content-Type': 'application/json'},
+              credentials: 'same-origin' // Sends express-session credentials with request
+          };
+          const industry = await fetch('/api/industry', options);
+          const industryRes = await industry.json();
         }
 
         const r = await fetch(this.url, options);
@@ -125,20 +135,34 @@ export default {
           const res = text ? JSON.parse(text) : {user: null};
           this.$store.commit('setUser', res.user ? res.user : null);
           this.$store.commit('setUserId', res.user ? res.user._id.toString() : null);
+          this.$store.commit('getUsers');
 
-          // create tags when a new user is created
-          const options = {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            credentials: 'same-origin' // Sends express-session credentials with request
-          };
-          const tags = await fetch('/api/tags', options);
-          const tagsRes = await tags.json();
+          if (this.newUser && res.user) {
+            // create tags when a new user is created
+              const options = {
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/json'},
+                  credentials: 'same-origin' // Sends express-session credentials with request
+              };
+              const tags = await fetch('/api/tags', options);
+              const tagsRes = await tags.json();
+
+              // create an industry object when a new user is created
+              const industryOptions = {
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/json'},
+                  credentials: 'same-origin' // Sends express-session credentials with request
+              };
+              const industry = await fetch('/api/industry', options);
+              const industryRes = await industry.json();
+          }
         }
+
 
         if (this.refreshUser) {
           this.$store.commit('refreshUser');
           this.$store.commit('updateLastActive');
+          this.$store.commit('getUsers');
         }
 
         if (this.callback) {
