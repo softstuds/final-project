@@ -12,7 +12,7 @@ Vue.use(VueRouter);
 const routes = [
   {path: '/', name: 'Home', component: SearchPage},
   {path: '/account', name: 'Account', component: AccountPage},
-  {path: '/meeting/:userId', name: 'Meetings', component: MeetingPage},
+  {path: '/meeting', name: 'Meetings', component: MeetingPage},
   {path: '/profile/:userId', name: 'My Profile', component: ProfilePage},
   {path: '/login', name: 'Login', component: LoginPage},
   {path: '*', name: 'Not Found', component: NotFound}
