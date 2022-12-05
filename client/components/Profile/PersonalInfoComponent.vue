@@ -208,13 +208,13 @@ export default {
 .fieldInput {
   display: flex;
   justify-content: start;
-  max-width: 750px;
   align-items: center;
   margin: 10px;
 }
 
 .field {
-  width: 15%
+  min-width: 120px;
+  
 }
 
 .editInfo {
