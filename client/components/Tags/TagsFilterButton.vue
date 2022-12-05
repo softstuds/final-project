@@ -87,5 +87,6 @@ export default {
     flex-direction: row;
     float: left;
     width: 100%;
+    height: 100%;
 }
 </style>

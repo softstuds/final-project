@@ -5,7 +5,7 @@
     v-if="user !== null"
   >
     <header>
-      <h2>{{ user.firstName }}</h2>
+      <h2>{{ user.firstName }} {{ user.lastName }}</h2>
     </header>
     <section class="info">
       <section>
@@ -54,7 +54,7 @@
             v-if="editingInfo"
             :userId="userId"
           />
-          <section v-else>{{ tags.map(tag => frontEndTags[tag]).join(', ') }}</section>
+          <section v-else>{{ this.tags.length > 0 ? tags.map(tag => frontEndTags[tag]).join(', ') : 'None Selected'}}</section>
         </section>
       </section>
     </section>
@@ -69,6 +69,7 @@
     </section>
     <CalendarComponent 
       :userId="userId"
+      :userName="user.firstName + ' ' + user.lastName"
     />
   </div>
 </template>
