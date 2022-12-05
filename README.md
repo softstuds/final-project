@@ -214,6 +214,10 @@ This renders the `index.html` file that will be used to interact with the backen
 
 #### `PUT /api/tags` - Update a user's tags
 
+**Body**
+
+- `newValue` - The new boolean value of the tag
+
 **Returns**
 
 - A tags object
@@ -233,6 +237,71 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged
 - `409` if the tags do not exist for a particular user
+
+#### `POST /api/industry` - Creates an Industry object
+
+**Returns**
+
+- An Industry object
+
+**Throws**
+
+- `403` if the user is not logged
+- `409` If the industry object already exists for a particular user
+
+#### `PUT /api/industry` - Updates an Industry object
+
+**Body**
+
+- `newIndustry` - the string value of the new industry
+
+**Returns**
+
+- An Industry object
+
+**Throws**
+
+- `403` If user is not logged in
+- `409` If the industry object does not exist
+- `400` If the industry value is valid
+
+#### `GET /api/industry/:industryValue` - Gets all industry objects with a certain industry value
+
+**Body**
+
+- `industryValue` - the string value of the industry
+
+**Returns**
+
+- An array of industry object
+
+**Throws**
+
+- `403` If user is not logged in
+- `400` If the industry value is valid
+
+#### `GET /api/industry/users/:userId` - Gets Industry object for a specific user
+
+**Returns**
+
+- An Industry object
+
+**Throws**
+
+- `403` If user is not logged in
+- `404` If the user does not exist
+
+#### `DELETE /api/industry` - Deletes an Industry object
+
+**Returns**
+
+- A boolean
+
+**Throws**
+
+- `403` If user is not logged in
+- `409` If the industry object does not exist
+
 
 
 ## Installation
