@@ -3,7 +3,22 @@
 <template>
   <div>
     <section class="availability">
-      <h3><b>Availability</b></h3>
+      <section class="availabilityHeader">
+        <div>
+          <h3><b>Availability</b></h3>
+          <i>Times where {{ userName }} is available to meet.</i>
+        </div>
+        <div 
+          v-if="(userId !== $store.state.userId && $store.state.hasAccess == false)"
+          class="tooltip"
+        >
+          Why can't I request availabilities?
+          <span class="tooltiptext">
+            You need to have availabilities on your own profile 
+            in order to request others' availabilities.
+          </span>
+        </div>
+      </section>
       <section>
         <div class="daysOfWeek">
           <section
@@ -79,65 +94,74 @@
           </button>
         </section>
       </section>
-      <section 
-        id="selectDate"
-        class="dateSelector"
-      >
-        <section class="selector">
-          <div><small>Month</small></div>
-          <select id="dateMonth">
-            <option 
-              v-for="i in 12"
-              :key="i"
-              :value="i"
+      <section id="selectDate" class="dateSelectorFooter">
+        <section class="dateSelector">
+          <section class="selector">
+            <div><small>Month</small></div>
+            <select id="dateMonth">
+              <option 
+                v-for="i in 12"
+                :key="i"
+                :value="i"
+              >
+                {{ i }}
+              </option>
+            </select>
+          </section>
+          <section class="selector">
+            <div><small>Day</small></div>
+            <select id="dateDay">
+              <option 
+                v-for="j in 31"
+                :key="j"
+                :value="j"
+              >
+                {{ j }}
+              </option>
+            </select>
+          </section>
+          <section class="selector">
+            <div><small>Time</small></div>
+            <select id="dateTime">
+              <option :value="0">
+                12 am
+              </option>
+              <option 
+                v-for="k in 11"
+                :key="k"
+                :value="k"
+              >
+                {{ k }} am
+              </option>
+              <option :value="12">
+                12 pm
+              </option>
+              <option 
+                v-for="k in 11"
+                :key="k + 12"
+                :value="k + 12"
+              >
+                {{ k }} pm
+              </option>
+            </select>
+          </section>
+          <section class="selector">
+            <button
+              @click="addTimeBlock"
             >
-              {{ i }}
-            </option>
-          </select>
+              Add Availability
+            </button>
+          </section>
         </section>
-        <section class="selector">
-          <div><small>Day</small></div>
-          <select id="dateDay">
-            <option 
-              v-for="j in 31"
-              :key="j"
-              :value="j"
-            >
-              {{ j }}
-            </option>
-          </select>
-        </section>
-        <section class="selector">
-          <div><small>Time</small></div>
-          <select id="dateTime">
-            <option :value="0">
-              12 am
-            </option>
-            <option 
-              v-for="k in 11"
-              :key="k"
-              :value="k"
-            >
-              {{ k }} am
-            </option>
-            <option :value="12">
-              12 pm
-            </option>
-            <option 
-              v-for="k in 11"
-              :key="k + 12"
-              :value="k + 12"
-            >
-              {{ k }} pm
-            </option>
-          </select>
-        </section>
-        <section class="selector">
-          <button
-            @click="addTimeBlock"
+        <section>
+          <div 
+            class="tooltip"
           >
-            Add Availability
-          </button>
+            Having trouble entering availabilities?
+            <span class="tooltiptext">
+              You can only enter times between now and the end of the calendar shown (4 weeks).
+            </span>
+          </div>
         </section>
       </section>
     </section>
@@ -158,8 +182,12 @@ export default {
     name: 'CalendarComponent',
     props: {
         userId: {
-        type: String,
-        required: true
+          type: String,
+          required: true
+        },
+        userName: {
+          type: String,
+          required: true
         }
     },
     data() {
@@ -339,6 +367,14 @@ export default {
     border-top: 1px solid black;
 }
 
+.availabilityHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
 .editFooter {
     display: flex;
     justify-content: end;
@@ -395,12 +431,50 @@ export default {
   justify-content: center;
 }
 
+.dateSelectorFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .selector {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: end;
     margin: 10px
+}
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  color: gray;
+  font-style: italic;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 300px;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -150px;
+  background-color: black;
+  color: #fff;
+  font-style: normal;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }
 
 </style>
