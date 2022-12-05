@@ -162,6 +162,7 @@ export default {
         if (this.refreshUser) {
           this.$store.commit('refreshUser');
           this.$store.commit('updateLastActive');
+          this.$store.commit('updateAccess');
           this.$store.commit('getUsers');
         }
 
