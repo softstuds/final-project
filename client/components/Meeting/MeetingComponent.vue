@@ -3,7 +3,7 @@
 <template>
     <main>
     <section class="timeBlock">
-      <p v-if="type=='outgoing'">Requested meeting with {{typeof owner.name == String ? owner.name : ' '}}</p>
+      <p v-if="type=='outgoing'">Requested meeting with {{owner.name}}</p>
       <p v-else-if="type=='incoming'">Incoming meeting invite from {{requester.name}}</p>
       <p v-if="(type=='upcoming' && this.user._id==meeting.owner)">Upcoming meeting with {{requester.name}}</p>
       <p v-if="(type=='upcoming' && this.user._id==meeting.requester)">Upcoming meeting with {{owner.name}}</p>
