@@ -6,7 +6,8 @@
       <section class="availabilityHeader">
         <div>
           <h3><b>Availability</b></h3>
-          <i>Times where {{ userName }} is available to meet.</i>
+          <i v-if="hasRequestable">Times where {{ userName }} is available to meet.</i>
+          <i v-else>{{ userName }} has no availabilities right now.</i>
         </div>
         <div 
           v-if="(userId !== $store.state.userId && $store.state.hasAccess == false)"
@@ -19,7 +20,7 @@
           </span>
         </div>
       </section>
-      <section>
+      <section v-if="(hasRequestable || editing)">
         <div class="daysOfWeek">
           <section
             v-for="day in daysOfWeek"
@@ -27,7 +28,6 @@
               {{ day }}
           </section>
         </div>
-
         <section class="calendar">
           <div
             v-for="(week, i) in timeBlocks"
@@ -47,14 +47,10 @@
                 :key="block.start.getHours()"
                 class="timeBlock"
               >
-                {{ block.start.getHours() == 12 ?
-                  12 + "pm" :
-                  block.start.getHours() == 0 ?
-                    12 + "am" :
-                    block.start.getHours() > 12 ?
-                      block.start.getHours() - 12 + "pm" : 
-                      block.start.getHours() + "am"
-                }}
+                {{ block.start.getHours() % 12 == 0 ?
+                  12 :
+                  block.start.getHours() % 12
+                }}{{ block.start.getHours() < 12 ? 'am' : 'pm' }}
                 <div>
                   <button 
                     v-if="(userId !== $store.state.userId && $store.state.hasAccess)"
@@ -193,6 +189,7 @@ export default {
     data() {
         return {
             editing: false,
+            hasRequestable: false,
             timeBlocks: [],
             calendarDays: [],
             daysOfWeek: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
@@ -201,6 +198,8 @@ export default {
     },
     watch: {
       userId: function() {
+        this.editing = false;
+        this.hasRequestable = false;
         this.getAvailibilities();
         this.hideDatePicker();
       }
@@ -222,41 +221,45 @@ export default {
             start.setDate(start.getDate() - start.getDay());
 
             const nextFourWeeks = []
-            for (var x = 0; x < 4; x++) {
-              const nextSeven = [];
-              for (var i = 0; i < 7; i++) {
-                const nextDay = new Date(start);
-                nextDay.setDate(start.getDate() + x * 7 + i);
-                nextSeven.push(nextDay);
-              }
-              nextFourWeeks.push(nextSeven);
+            for (var i = 0; i < 29; i++) {
+              const nextDay = new Date(start);
+              nextDay.setDate(start.getDate() + i);
+              nextFourWeeks.push(nextDay);
             }
-            this.calendarDays = nextFourWeeks;
             
-            const timeBlocks = []
-            for (var x = 0; x < 4; x++) {
-              const week = [];
-              for (var i = 0; i < 7; i++) {
-                week.push([]);
-              }
-              timeBlocks.push(week);
+            const timeBlocks = [];
+            for (var j = 0; j < 28; j++) {
+              timeBlocks.push([]);
             }
-
+            
+            const now = Date.now();
+            var foundBlock = false;
             for (var block of res) {
                 block.start = new Date(block.start);
-                for (var j = 0; j < 28; j++) {
-                  const row = Math.floor(j / 7);
-                  const col = j % 7;
-                  const sameMonth = block.start.getMonth() == nextFourWeeks[row][col].getMonth();
-                  const sameDay = block.start.getDate() == nextFourWeeks[row][col].getDate();
-                  if (sameMonth && sameDay) {
-                    timeBlocks[row][col].push(block);
+                if (block.start < now) {
+                  continue;
+                }
+                for (var k = 0; k < 28; k++) {
+                  if (block.start >= nextFourWeeks[k] && block.start < nextFourWeeks[k + 1]) {
+                    timeBlocks[k].push(block);
+                    foundBlock = true;
                     break;
                   }
                 }
             }
 
-            this.timeBlocks = timeBlocks;
+            this.timeBlocks = [];
+            this.calendarDays = [];
+            for (var l = 0; l < 4; l++) {
+              const rangeStart = l * 7;
+              const rangeEnd = (l + 1) * 7;
+              this.calendarDays.push(nextFourWeeks.slice(rangeStart, rangeEnd));
+              this.timeBlocks.push(timeBlocks.slice(rangeStart, rangeEnd));
+            }
+
+            if (foundBlock) {
+              this.hasRequestable = true;
+            }
         },
         showDatePicker() {
             this.editing = true;
@@ -301,7 +304,7 @@ export default {
                 headers: {'Content-Type': 'application/json'},
                 credentials: 'same-origin',
                 body: JSON.stringify({
-                start: date.toString(),
+                  start: date.toString(),
                 })
             };
 
