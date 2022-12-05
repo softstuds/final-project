@@ -91,7 +91,7 @@ const isValidGraduationYear = (req: Request, res: Response, next: NextFunction) 
  * Checks if a meeting link is nonempty
  */
 const isValidMeetingLink = (req: Request, res: Response, next: NextFunction) => {
-  if ((req.body.meetingLink.length == 0)) {
+  if ((req.body.meetingLink.length === 0)) {
     res.status(400).json({
       error: 'Cannot set meeting link to empty.'
     });
