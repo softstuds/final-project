@@ -199,6 +199,12 @@ export default {
             alerts: {}
         }
     },
+    watch: {
+      userId: function() {
+        this.getAvailibilities();
+        this.hideDatePicker();
+      }
+    },
     mounted() {
         this.getAvailibilities();
         this.hideDatePicker();

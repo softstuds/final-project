@@ -302,7 +302,87 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` If user is not logged in
 - `409` If the industry object does not exist
 
+#### `GET /api/users/session` - Get the signed in user
 
+**Returns**
+
+- A user object
+
+#### `POST /api/users/session` - Sign in user
+
+**Body**
+
+- `email` - the users email
+- `password` - the users password
+
+**Returns**
+
+- A user object
+
+**Throws**
+
+- `403` If user is not logged in
+- `400` If email or password is  not in the correct format, or missing in the req
+- `401` If the user login credentials are invalid
+
+#### `DELETE /api/users/session` - Sign out user
+
+**Returns**
+
+- A message
+
+**Throws**
+
+- `403` If user is not logged in
+
+#### `GET /api/users/:userId` - Get a user
+
+**Returns**
+
+- A user object
+
+**Throws**
+
+- `404` If the user exists
+
+#### `GET /api/users/find/:email` - Get a user by email
+
+**Body**
+
+- `email` - the users email
+
+**Returns**
+
+- A user object
+
+**Throws**
+
+- `404` If the user does not exist
+
+#### `GET /api/users` - Get all users
+
+**Returns**
+
+- An array of user objects
+
+#### `POST /api/users` - Create a user account
+
+**Body**
+
+- `email` - the users email
+- `name` - the users name
+- `password` - the users password
+- `graduationYear` - the users graduation year
+
+**Returns**
+
+- A user object
+
+**Throws**
+
+- `403` If there is a user already logged in
+- `409` If email is already taken
+- `400` If password or email is not in correct format
 
 ## Installation
 
