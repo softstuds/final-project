@@ -135,7 +135,7 @@ export default {
       }
 
       this.key = 'reset';
-      this.$emit('refreshRequested');
+      this.$emit('refreshMeetings');
     
     },
     async rejectRequest () {
@@ -154,7 +154,7 @@ export default {
         this.$set(this.alerts, e, 'error');
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
-      this.$emit('refreshRequest');
+      this.$emit('refreshMeetings');
     },
     async acceptRequest () {
       try {
@@ -173,7 +173,7 @@ export default {
         this.$set(this.alerts, e, 'error');
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
-      this.$emit('refreshRequest');
+      this.$emit('refreshMeetings');
     },
     getDate () {
       const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
