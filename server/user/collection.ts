@@ -51,7 +51,7 @@ class UserCollection {
   static async findOneByUserId(userId: Types.ObjectId | string): Promise<HydratedDocument<User>> {
     const user = await UserModel.findOne({_id: userId});
     if (user) {
-      user.populate('industry');
+      await user.populate('industry');
     }
     return user;
   }
@@ -65,7 +65,7 @@ class UserCollection {
   static async findOneByEmail(email: string): Promise<HydratedDocument<User>> {
     const user = await UserModel.findOne({email: new RegExp(`^${email.trim()}$`, 'i')});
     if (user) {
-      user.populate('industry');
+      await user.populate('industry');
     }
     return user;
   }
@@ -78,12 +78,12 @@ class UserCollection {
    * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given email, if any
    */
   static async findOneByEmailAndPassword(email: string, password: string): Promise<HydratedDocument<User>> {
-    const user = UserModel.findOne({
+    const user = await UserModel.findOne({
       email: new RegExp(`^${email.trim()}$`, 'i'),
       password
     });
     if (user) {
-      user.populate('industry');
+      await user.populate('industry');
     }
     return user;
   }
