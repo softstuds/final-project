@@ -356,6 +356,12 @@ router.patch(
   async (req: Request, res: Response) => {
     if (req.body.input) {
       const timeBlock = await TimeBlockCollection.updateOneAccepted(req.params.timeBlockId);
+      // deletes any of a requester's unclaimed time blocks with the same start as the accepted block 
+      const requesterTimeBlocks = await TimeBlockCollection.findAllByOwnerUnclaimed(timeBlock.requester._id);
+      const sameTime = requesterTimeBlocks.filter((block) => block.start.getTime() == timeBlock.start.getTime());
+      if (sameTime) {
+        sameTime.map(async (block) => await TimeBlockCollection.deleteOne(block._id));
+      }
       res.status(200).json({
         message: 'The request was accepted successfully.',
         timeBlock: util.constructTimeBlockResponse(timeBlock)

@@ -65,9 +65,9 @@ const isValidInput = async (req: Request, res: Response, next: NextFunction) => 
  */
 const isBlockNonexistent = async (req: Request, res: Response, next: NextFunction) => {
   const userId = req.session.userId as string;
-  const timeBlocks = await TimeBlockCollection.findAllByUser(userId);
+  const timeBlocks = await TimeBlockCollection.findAllByOwner(userId);
   const start = new Date(req.body.start);
-  const sameStartBlock = timeBlocks.filter(block => block.start == start);
+  const sameStartBlock = timeBlocks.filter((block) => (block.start.getTime() == start.getTime()));
 
   if (sameStartBlock.length > 0) {
     res.status(409).json({
