@@ -3,13 +3,13 @@
 <template>
     <main>
     <section class="timeBlock">
-      <p v-if="type=='outgoing'">Requested meeting with {{meeting.owner}}</p>
-      <p v-else-if="type=='incoming'">Incoming meeting invite from {{meeting.requester}}</p>
-      <p v-if="(type=='upcoming' && this.user.email==meeting.owner)">Upcoming meeting with {{meeting.requester}}</p>
-      <p v-if="(type=='upcoming' && this.user.email==meeting.requester)">Upcoming meeting with {{meeting.owner}}</p>
-      <p v-if="(type=='past' && this.user.email==meeting.owner)">Past meeting with {{meeting.requester}}</p>
-      <p v-if="(type=='past' && this.user.email==meeting.requester)">Past meeting with {{meeting.owner}}</p>
-      <p class="time">{{this.day}} at {{this.hour}}:{{this.minute}} {{this.pm}}</p>
+      <p v-if="type=='outgoing'">Requested meeting with {{typeof owner.name == String ? owner.name : ' '}}</p>
+      <p v-else-if="type=='incoming'">Incoming meeting invite from {{requester.name}}</p>
+      <p v-if="(type=='upcoming' && this.user._id==meeting.owner)">Upcoming meeting with {{requester.name}}</p>
+      <p v-if="(type=='upcoming' && this.user._id==meeting.requester)">Upcoming meeting with {{owner.name}}</p>
+      <p v-if="(type=='past' && this.user._id==meeting.owner)">Past meeting with {{requester.name}}</p>
+      <p v-if="(type=='past' && this.user._id==meeting.requester)">Past meeting with {{owner.name}}</p>
+      <p class="time">{{this.day}} at {{hour}}:{{minute}} {{pm}}</p>
 
       
       <div v-if="type=='outgoing'" class="row">
@@ -22,7 +22,7 @@
         <button @click="acceptRequest" class="column accept">Accept</button>
       </div>
       <div v-else-if="type=='upcoming'" class="row">
-        <p>Meeting Link: {{this.link}}</p>
+        <p>Meeting Link: {{this.link ?? 'nolink'}}</p>
       </div>
       <div v-else-if="(type=='past' && this.feedback==false)">
         <p>Did this meeting successfully occur?</p>
@@ -54,6 +54,14 @@ export default {
   data () {
     return {
       user: this.$store.state.user,
+      owner: {
+        name: ' ',
+        email: ' ',
+      },
+      requester: {
+        name: ' ',
+        email: ' ',
+      },
       feedback: Boolean,
       link: String,
       day: String,
@@ -63,36 +71,50 @@ export default {
     }
   },
   mounted () {
-    this.getMeetingLink();
+    this.getOwnerRequester();
     this.getDate();
     this.needFeedback();
   },
   methods: {
-    async getMeetingLink() {
-      if (this.user) {
-        if (this.user.email == this.meeting.owner) {
-          this.link = this.$store.state.user.meetingLink == '' ? "no link yet" : this.$store.state.user.meetingLink;
-        } else {
-          this.link = `${this.meeting.owner}'s meeting link`
-            // try {
-            //   const r = await fetch('/api/users/find', {
-            //     method: 'GET', 
-            //     headers: {'Content-Type': 'application/json'}
-            //   });
-            //   console.log('hi');
-            //   const res = await r.json();
-            //   if (!r.ok) {
-            //     throw new Error(res.error);
-            //   }
+    async getOwnerRequester() {
+      try {
+        const r = await fetch(`/api/users/${this.meeting.owner}`, {
+          method: 'GET', 
+          headers: {'Content-Type': 'application/json'},
+        });
 
-            //   this.link = res.user.meetingLink == '' ? "no link yet" : this.$store.state.user.meetingLink;
-
-            // } catch (e) {
-            //   this.$set(this.alerts, e, 'error');
-            //   setTimeout(() => this.$delete(this.alerts, e), 3000);
-            // } 
+        const res = await r.json();
+        if (!r.ok) {
+          throw new Error(res.error);
         }
-    }
+
+        this.owner.name = res.user.firstName+res.user.lastName;
+        this.owner.email = res.user.email;
+        this.link = res.user.meetingLink;
+
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$delete(this.alerts, e), 3000);
+      }
+
+      try {
+        const r = await fetch(`/api/users/${this.meeting.requester}`, {
+          method: 'GET', 
+          headers: {'Content-Type': 'application/json'},
+        });
+
+        const res = await r.json();
+        if (!r.ok) {
+          throw new Error(res.error);
+        }
+
+        this.requester.name = `${res.user.firstName} ${res.user.lastName}`;
+        this.requester.email = res.user.email;
+
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$delete(this.alerts, e), 3000);
+      }
       
     },
     async cancelRequest () {
@@ -113,7 +135,7 @@ export default {
       }
 
       this.key = 'reset';
-      this.$emit('refreshMeetings');
+      this.$emit('refreshRequested');
     
     },
     async rejectRequest () {
@@ -132,11 +154,11 @@ export default {
         this.$set(this.alerts, e, 'error');
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
-      this.$emit('refreshMeetings');
+      this.$emit('refreshRequest');
     },
     async acceptRequest () {
       try {
-        const r = await fetch(`/api/timeblock/accepted/${this.meeting._id}`, {
+          const r = await fetch(`/api/timeblock/accepted/${this.meeting._id}`, {
           method: 'PATCH', 
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({input: 'true'})
@@ -151,13 +173,14 @@ export default {
         this.$set(this.alerts, e, 'error');
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
-      this.$emit('refreshMeetings');
+      this.$emit('refreshRequest');
     },
     getDate () {
       const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
       const date = new Date(this.meeting.start);
       var hours = date.getHours();
       var minutes = date.getMinutes();
+
 
       if (hours > 12) {
         this.hour = hours % 12;
@@ -184,7 +207,8 @@ export default {
       }
     },
     async feedbackMet() {
-      try {
+      if (!this.meeting.met) {
+        try {
         const r = await fetch(`/api/timeblock/met/${this.meeting._id}`, {
           method: 'PATCH', 
           headers: {'Content-Type': 'application/json'},
@@ -200,10 +224,14 @@ export default {
         this.$set(this.alerts, e, 'error');
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
-      this.$emit('refreshMeetings');
+      this.needFeedback();
+      this.$emit('reRender');
+    }
+      
     },
     async feedbackNotMet() {
-      try {
+      if (!this.meeting.met) {
+        try {
         const r = await fetch(`/api/timeblock/met/${this.meeting._id}`, {
           method: 'PATCH', 
           headers: {'Content-Type': 'application/json'},
@@ -219,7 +247,12 @@ export default {
         this.$set(this.alerts, e, 'error');
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
-      this.$emit('refreshMeetings');
+      this.feedback = true;
+      this.needFeedback();
+      this.$emit('reRender');
+
+      }
+      
     }
 
 

@@ -34,9 +34,9 @@ const constructTimeBlockResponse = (timeBlock: HydratedDocument<TimeBlock>): Tim
       versionKey: false // Cosmetics; prevents returning of __v property
     })
   };
-  const owner = timeBlockCopy.owner.email;
+  const owner = timeBlockCopy.owner._id.toString();
   delete timeBlockCopy.owner;
-  const requester = (timeBlockCopy.requester) ? timeBlockCopy.requester.email : null;
+  const requester = (timeBlockCopy.requester) ? timeBlockCopy.requester._id.toString() : null;
   return {
     ...timeBlockCopy,
     _id: timeBlockCopy._id.toString(),

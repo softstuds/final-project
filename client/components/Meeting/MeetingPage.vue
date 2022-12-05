@@ -12,10 +12,10 @@
                 class="meeting"
                 >
                 <MeetingComponent
-                :key="block.id"
+                :key="renderkey"
                 :meeting="block"
                 :type="'past'"
-                @refreshMeetings="refreshMeetings"
+                @reRender="reRender"
                  />
                 </section>
             </div>
@@ -29,7 +29,7 @@
                 :key="block.id"
                 :meeting="block"
                 :type="'upcoming'"
-                @refreshMeetings="refreshMeetings"
+                @refreshMeetings="getAllMeetings"
                  />
                 </section>
             </div>
@@ -43,7 +43,7 @@
                 :key="block.id"
                 :meeting="block"
                 :type="'incoming'"
-                @refreshMeetings="refreshMeetings"
+                @refreshMeetings="getAllMeetings"
                  />
                 </section>
             </div>
@@ -57,7 +57,7 @@
                 :key="block.id"
                 :meeting="block"
                 :type="'outgoing'"
-                @refreshMeetings="refreshMeetings"
+                @refreshMeetings="getAllMeetings"
                  />
                 </section>
             </div>
@@ -82,141 +82,45 @@
             incomingRequests: [],
             outgoingRequests: [],
             user: null,
+            renderkey: 0,
         }
     },
     mounted() {
-        // this.getUser();
-        this.getPastMeetings();
-        this.getMeetingsNeedFeedback();
-        this.getUpcomingMeetings();
-        this.getIncomingRequests();
-        this.getOutgoingRequests();
+        this.getAllMeetings();
+
     },
     methods: {
-        async refreshMeetings() {
-          this.getPastMeetings();
-          this.getMeetingsNeedFeedback();
-          this.getUpcomingMeetings();
-          this.getIncomingRequests();
-          this.getOutgoingRequests();
+        reRender() {
+            this.renderkey += 1;
         },
-      async getPastMeetings() {
-          try {
-            const r = await fetch('/api/timeblock/checkoccurred', {
-              method: 'GET', 
-              headers: {'Content-Type': 'application/json'}
-            });
+    async getAllMeetings()  {
 
-            const res = await r.json();
-            if (!r.ok) {
-              throw new Error(res.error);
-            }
+        let that = this;
 
-            var arrayOfBlocks = [];
-            for (var block of res){
-              arrayOfBlocks.push(block);
-            }
-            
-            this.pastMeetings = arrayOfBlocks;
-
-          } catch (e) {
-            this.$set(this.alerts, e, 'error');
-            setTimeout(() => this.$delete(this.alerts, e), 3000);
-          }   
-
-        },
-    async getMeetingsNeedFeedback() {
-      try {
-            const r = await fetch('/api/timeblock/met/check', {
-              method: 'GET', 
-              headers: {'Content-Type': 'application/json'}
-            });
-
-            const res = await r.json();
-            if (!r.ok) {
-              throw new Error(res.error);
-            }
-
-            var arrayOfBlocks = [];
-            for (var block of res){
-              arrayOfBlocks.push(block);
-            }
-            this.meetingsWithoutFeedback = arrayOfBlocks;
-          } catch (e) {
-            this.$set(this.alerts, e, 'error');
-            setTimeout(() => this.$delete(this.alerts, e), 3000);
-          }   
-    },
-    async getUpcomingMeetings()  {
-      try {
-          const r = await fetch('/api/timeblock/upcoming', {
-            method: 'GET', 
-            headers: {'Content-Type': 'application/json'}
-          });
-
-          const res = await r.json();
-          if (!r.ok) {
-            throw new Error(res.error);
-          }
-
-          var arrayOfBlocks = [];
-          for (var block of res){
-            arrayOfBlocks.push(block);
-          }
-
-          this.upcomingMeetings = arrayOfBlocks;
-
-        } catch (e) {
-          this.$set(this.alerts, e, 'error');
-          setTimeout(() => this.$delete(this.alerts, e), 3000);
-        }   
-        },
-    async getIncomingRequests() {
-        try {
-          const r = await fetch('/api/timeblock/requests/received', {
-            method: 'GET', 
-            headers: {'Content-Type': 'application/json'}
-          });
-
-          const res = await r.json();
-          if (!r.ok) {
-            throw new Error(res.error);
-          }
-
-          var arrayOfBlocks = [];
-          for (var block of res){
-            arrayOfBlocks.push(block);
-          }
-          this.incomingRequests = arrayOfBlocks;
-
-        } catch (e) {
-          this.$set(this.alerts, e, 'error');
-          setTimeout(() => this.$delete(this.alerts, e), 3000);
-        }
-
-        },
-    async getOutgoingRequests() {
-        try {
-        const r = await fetch('/api/timeblock/requests/sent', {
-          method: 'GET', 
-          headers: {'Content-Type': 'application/json'}
+        const paramsUpcoming = {method: 'GET', url: '/api/timeblock/upcoming'}
+        this.request(paramsUpcoming).then(function(result) {
+            that.upcomingMeetings = Object.values(result);
         });
 
-        const res = await r.json();
-        if (!r.ok) {
-          throw new Error(res.error);
-        }
+        const paramsPast = {method: 'GET', url: '/api/timeblock/checkoccurred'}
+        this.request(paramsPast).then(function(result) {
+            that.pastMeetings = Object.values(result);
+        });
 
-        var arrayOfBlocks = [];
-        for (var block of res){
-           arrayOfBlocks.push(block);
-        }
-        this.outgoingRequests = arrayOfBlocks;
+        const paramsPastNoFeedback = {method: 'GET', url: '/api/timeblock/checkoccurred'}
+        this.request(paramsPastNoFeedback).then(function(result) {
+            that.meetingsWithoutFeedback = Object.values(result);
+        });
 
-      } catch (e) {
-        this.$set(this.alerts, e, 'error');
-        setTimeout(() => this.$delete(this.alerts, e), 3000);
-      }
+        const paramsOutgoing = {method: 'GET', url: '/api/timeblock/requests/sent'}
+        this.request(paramsOutgoing).then(function(result) {
+            that.outgoingRequests = Object.values(result);
+        });
+        
+        const paramsIncoming = {method: 'GET', url: '/api/timeblock/requests/received'}
+        this.request(paramsIncoming).then(function(result) {
+            that.incomingRequests = Object.values(result);
+        });
 
         },
     async request(params) {
@@ -238,10 +142,12 @@
           throw new Error(res.error);
         }
 
+
         var arrayOfBlocks = [];
         for (var block of res){
           arrayOfBlocks.push(block);
         }
+        
         return arrayOfBlocks;
 
       } catch (e) {
