@@ -73,23 +73,9 @@ export default {
         if (this.user.email == this.meeting.owner) {
           this.link = this.$store.state.user.meetingLink == '' ? "no link yet" : this.$store.state.user.meetingLink;
         } else {
-            try {
-              const r = await fetch(`/api/users/${this.meeting.owner}`, {
-                method: 'GET', 
-                headers: {'Content-Type': 'application/json'},
-              });
 
-              const res = await r.json();
-              if (!r.ok) {
-                throw new Error(res.error);
-              }
-
-              this.link = res.user.meetingLink == '' ? "no link yet" : this.$store.state.user.meetingLink;
-
-            } catch (e) {
-              this.$set(this.alerts, e, 'error');
-              setTimeout(() => this.$delete(this.alerts, e), 3000);
-          } 
+          this.link = `${this.meeting.owner}'s meeting link`
+           
         }
     }
       

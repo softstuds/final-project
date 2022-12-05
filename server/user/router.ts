@@ -107,17 +107,17 @@ router.get(
 /**
  * Get a user by email
  *
- * @name GET /api/users/:email
+ * @name GET /api/users/find/:email
  *
  * @return - specified user
  */
  router.get(
-  '/email/:email',
+  '/find',
   [
     userValidator.isUserExists
   ],
   async (req: Request, res: Response) => {
-    const user = await UserCollection.findOneByEmail(req.params.email);
+    const user = await UserCollection.findOneByEmail(req.body.email);
     res.status(200).json({
       message: `Found user ${user.firstName}`,
       user: util.constructUserResponse(user)
