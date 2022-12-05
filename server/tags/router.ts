@@ -14,6 +14,7 @@ const router = express.Router();
  * @name POST /api/tags
  * 
  * @return {TagsResponse} - The new created tags
+ * @throws {403} - If the user is not logged in
  * @throws {409} - If tags already exist for the user
  */
 router.post(
@@ -36,6 +37,7 @@ router.post(
  * Retrieve a user's tags
  * 
  * @name GET /api/tags/users/:userId
+ * @throws {403} - If the user is not logged in
  * @return {TagsResponse} - The tags for a user
  */
 router.get(
@@ -56,6 +58,7 @@ router.get(
  * 
  * @name GET /api/tags/:tagName
  * @return {TagsResponse[]} - All tags that have the value as true
+ * @throws {403} - If the user is not logged in
  * @throws {400} - If the tag name is not valid
  */
  router.get(
@@ -76,6 +79,7 @@ router.get(
  * 
  * @name PUT /api/tags
  * @return {TagsResponse} - The updated tags
+ * @throws {403} - If the user is not logged in
  * @throws {400} - If the tag name is not valid
  */
  router.put(
@@ -99,6 +103,7 @@ router.get(
  * 
  * @name DELETE /api/tags
  * @return {boolean} - A boolean value indicating if the tags were deleted
+ * @throws {403} - If the user is not logged in
  * @throws {409} - if the tags do not exist for a particular user
  */
  router.delete(

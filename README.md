@@ -20,6 +20,8 @@ The project is structured as follows:
     - `Login/` contains the login/register page and the related forms
     - `Search/` contains the default page shown and how to search for other Users
     - `common/` contains general form components that can be reused across different concepts
+    - `Industry` contains files related to the Industry concept
+    - `Tags` contains files related to the Tags concept
   - `public/` contains base HTML files and static assets (like the default Alumni Connector logo)
   - `router.ts` contains the Vue router
   - `store.ts` contains the Vuex store, which stores application state and persistent data
@@ -177,6 +179,60 @@ This renders the `index.html` file that will be used to interact with the backen
 - `403` if the user is not logged in or user is not owner or requested
 - `404` if either the time block with given ID does not exist or the input is not valid
 - `409` if the time block start has not passed yet or is not an accepted meeting
+
+#### `POST /api/tags` - Create tags for a user
+
+**Returns**
+
+- a tags object
+
+**Throws**
+
+- `403` if the user is not logged
+- `409` if tags already exist for the user
+
+#### `GET /api/tags` - Retrieve a user's tags
+
+**Returns**
+
+- a tags object
+
+**Throws**
+
+- `403` if the user is not logged
+
+#### `GET /api/tags/:tagName` - Retrieve all tags when a specific value is true
+
+**Returns**
+
+- An array of tags objects
+
+**Throws**
+
+- `403` if the user is not logged
+- `400` If the tag name is not valid
+
+#### `PUT /api/tags` - Update a user's tags
+
+**Returns**
+
+- A tags object
+
+**Throws**
+
+- `403` if the user is not logged
+- `400` If the tag name is not valid
+
+#### `DELETE /api/tags` - Delete a user's tags
+
+**Returns**
+
+- A message
+
+**Throws**
+
+- `403` if the user is not logged
+- `409` if the tags do not exist for a particular user
 
 
 ## Installation
