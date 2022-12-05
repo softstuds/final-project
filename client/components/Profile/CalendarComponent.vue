@@ -44,7 +44,7 @@
               </section>
               <section 
                 v-for="block in date"
-                :key="block.start.getHours()"
+                :key="block._id"
                 class="timeBlock"
               >
                 {{ block.start.getHours() % 12 == 0 ?
