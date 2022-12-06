@@ -10,10 +10,10 @@
           <i v-else>{{ userName }} has no availabilities right now.</i>
         </div>
         <div 
-          v-if="(userId !== $store.state.userId && $store.state.hasAccess == false)"
+          v-if="(userId !== $store.state.userId && hasRequestable && $store.state.hasAccess !== true)"
           class="tooltip"
         >
-          Why can't I request availabilities?
+          <p class="tooltipEmphasized">Why can't I request availabilities?</p>
           <span class="tooltiptext">
             You need to have availabilities on your own profile 
             in order to request others' availabilities.
@@ -37,10 +37,10 @@
             <section
               v-for="(date, index) in week"
               :key="index"
-              class="day"
+              :class="calendarDays[i][index].status"
             >
               <section class="dayHeader">
-                {{ calendarDays[i][index].getMonth() + 1 }}/{{ calendarDays[i][index].getDate() }}
+                {{ calendarDays[i][index].day.getMonth() + 1 }}/{{ calendarDays[i][index].day.getDate() }}
               </section>
               <section 
                 v-for="block in date"
@@ -52,14 +52,25 @@
                   block.start.getHours() % 12
                 }}{{ block.start.getHours() < 12 ? 'am' : 'pm' }}
                 <div>
-                  <button 
-                    v-if="(userId !== $store.state.userId && $store.state.hasAccess)"
-                    @click="requestTimeBlock(block._id)"
-                  >
-                    Request
-                  </button>
+                  <section v-if="userId !== $store.state.userId">
+                    <button 
+                      v-if="$store.state.hasAccess === true"
+                      class="activeButton"
+                      @click="requestTimeBlock(block._id)"
+                    >
+                      Request
+                    </button>
+                    <button 
+                      v-else
+                      class="disabledButton"
+                    >
+                      Request
+                    </button>
+                  </section>
+                  
                   <button 
                     v-if="editing"
+                    class="deleteButton"
                     @click="deleteTimeBlock(block._id)"
                   >
                     Delete
@@ -77,7 +88,7 @@
           <button 
             v-if="!editing"
             class="editButton"
-            @click="showDatePicker"
+            @click="startEditing"
           >
             Edit My Availabilities
           </button>
@@ -149,11 +160,11 @@
             </button>
           </section>
         </section>
-        <section>
+        <section class="bottomTooltip">
           <div 
             class="tooltip"
           >
-            Having trouble entering availabilities?
+            <small>Having trouble entering availabilities?</small>
             <span class="tooltiptext">
               You can only enter times between now and the end of the calendar shown (4 weeks).
             </span>
@@ -188,6 +199,7 @@ export default {
     },
     data() {
         return {
+            today: new Date(),
             editing: false,
             hasRequestable: false,
             timeBlocks: [],
@@ -209,6 +221,15 @@ export default {
         this.hideDatePicker();
     },
     methods: {
+        startEditing() { // can only be done on $store.state.user
+          if (!this.$store.state.user.meetingLink) {
+            const e = "Please add a meeting link in your account settings before adding availabilities.";
+            this.$set(this.alerts, e, 'error');
+            setTimeout(() => this.$delete(this.alerts, e), 3000);
+          } else {
+            this.showDatePicker();
+          }
+        },
         async getAvailibilities() {
             const r = await fetch("api/timeblock/unclaimed/" + this.userId);
             const res = await r.json();
@@ -216,6 +237,7 @@ export default {
                 throw new Error(res.error);
             }
 
+            const today = new Date();
             const start = new Date();
             start.setHours(0, 0, 0, 0);
             start.setDate(start.getDate() - start.getDay());
@@ -224,7 +246,15 @@ export default {
             for (var i = 0; i < 29; i++) {
               const nextDay = new Date(start);
               nextDay.setDate(start.getDate() + i);
-              nextFourWeeks.push(nextDay);
+              var status;
+              if (nextDay.getMonth() < today.getMonth() || nextDay.getDate() < today.getDate()) {
+                status = 'pastDay';
+              } else if (nextDay.getMonth() == today.getMonth() && nextDay.getDate() == today.getDate()) {
+                status = 'today';
+              } else {
+                status = 'futureDay';
+              }
+              nextFourWeeks.push({day: nextDay, status});
             }
             
             const timeBlocks = [];
@@ -240,7 +270,7 @@ export default {
                   continue;
                 }
                 for (var k = 0; k < 28; k++) {
-                  if (block.start >= nextFourWeeks[k] && block.start < nextFourWeeks[k + 1]) {
+                  if (block.start >= nextFourWeeks[k].day && block.start < nextFourWeeks[k + 1].day) {
                     timeBlocks[k].push(block);
                     foundBlock = true;
                     break;
@@ -338,6 +368,9 @@ export default {
                 if (!r.ok) {
                     throw new Error(res.error);
                 }
+                const message = 'View requested meeting in Meetings tab!';
+                this.$set(this.alerts, message, 'success');
+                setTimeout(() => this.$delete(this.alerts, message), 3000);
             } catch (e) {
                 this.$set(this.alerts, e, 'error');
                 setTimeout(() => this.$delete(this.alerts, e), 3000);
@@ -372,6 +405,22 @@ export default {
 </script>
 
 <style scoped>
+
+.activeButton {
+  background-color:cornflowerblue
+}
+
+.disabledButton {
+  color:lightgray
+}
+
+.deleteButton {
+  color: red;
+}
+
+.editButton {
+  height: 25px
+}
 .availability {
     border-top: 1px solid black;
 }
@@ -390,9 +439,6 @@ export default {
     margin-top: 10px;
 }
 
-.editButton {
-  height: 25px
-}
 .calendar {
   display: flex;
   flex-direction: column;
@@ -404,7 +450,21 @@ export default {
   width: 100%;
 }
 
-.day {
+.pastDay {
+  width: 100%;
+  border: 1px solid black;
+  min-height: 100px;
+  background-color:lightgray;
+}
+
+.today {
+  width: 100%;
+  border: 1px solid black;
+  min-height: 100px;
+  background-color:rgba(100, 148, 237, 0.381);
+}
+
+.futureDay {
   width: 100%;
   border: 1px solid black;
   min-height: 100px;
@@ -454,6 +514,10 @@ export default {
     margin: 10px
 }
 
+.bottomTooltip {
+  margin-top: 50px;
+}
+
 /* Tooltip container */
 .tooltip {
   position: relative;
@@ -462,19 +526,24 @@ export default {
   font-style: italic;
 }
 
+.tooltipEmphasized {
+  background-color: yellow;
+}
+
 /* Tooltip text */
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 300px;
+  width: 400px;
   bottom: 100%;
   left: 50%;
-  margin-left: -150px;
+  margin-left: -200px;
   background-color: black;
   color: #fff;
   font-style: normal;
   text-align: center;
   padding: 5px;
   border-radius: 6px;
+  font-size: medium;
  
   /* Position the tooltip text - see examples below! */
   position: absolute;

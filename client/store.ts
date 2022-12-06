@@ -14,7 +14,7 @@ const store = new Vuex.Store({
     user: null, // logged in user
     userId: null, // User ID of logged in user
     users: [], // All users
-    hasAccess: false,
+    hasAccess: null,
     alerts: {} // global success/error messages encountered during submissions to non-visible forms
   },
   mutations: {

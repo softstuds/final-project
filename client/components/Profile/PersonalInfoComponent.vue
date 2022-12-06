@@ -13,7 +13,7 @@
           Last Active: {{ user.lastActive }}
         </i>
         <p v-if="(user._id === $store.state.userId)">
-          You <b>{{ $store.state.hasAccess == true ? 'can' : 'can not' }}</b> request meetings with others
+          You <b>{{ $store.state.hasAccess === true ? 'can' : 'can not' }}</b> request meetings with others
         </p>
         <hr/>
         <section class="editInfo"
