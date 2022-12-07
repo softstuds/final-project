@@ -6,20 +6,21 @@
       <section class="availabilityHeader">
         <div>
           <h3><b>Availability</b></h3>
-          <i>Times where {{ userName }} is available to meet.</i>
+          <i v-if="hasRequestable">Times where {{ userName }} is available to meet.</i>
+          <i v-else>{{ userName }} has no availabilities right now.</i>
         </div>
         <div 
-          v-if="(userId !== $store.state.userId && $store.state.hasAccess == false)"
+          v-if="(userId !== $store.state.userId && hasRequestable && $store.state.hasAccess !== true)"
           class="tooltip"
         >
-          Why can't I request availabilities?
+          <p class="tooltipEmphasized">Why can't I request availabilities?</p>
           <span class="tooltiptext">
             You need to have availabilities on your own profile 
             in order to request others' availabilities.
           </span>
         </div>
       </section>
-      <section>
+      <section v-if="(hasRequestable || editing)">
         <div class="daysOfWeek">
           <section
             v-for="day in daysOfWeek"
@@ -27,7 +28,6 @@
               {{ day }}
           </section>
         </div>
-
         <section class="calendar">
           <div
             v-for="(week, i) in timeBlocks"
@@ -37,33 +37,40 @@
             <section
               v-for="(date, index) in week"
               :key="index"
-              class="day"
+              :class="calendarDays[i][index].status"
             >
               <section class="dayHeader">
-                {{ calendarDays[i][index].getMonth() + 1 }}/{{ calendarDays[i][index].getDate() }}
+                {{ calendarDays[i][index].day.getMonth() + 1 }}/{{ calendarDays[i][index].day.getDate() }}
               </section>
               <section 
                 v-for="block in date"
-                :key="block.start.getHours()"
+                :key="block._id"
                 class="timeBlock"
               >
-                {{ block.start.getHours() == 12 ?
-                  12 + "pm" :
-                  block.start.getHours() == 0 ?
-                    12 + "am" :
-                    block.start.getHours() > 12 ?
-                      block.start.getHours() - 12 + "pm" : 
-                      block.start.getHours() + "am"
-                }}
+                {{ block.start.getHours() % 12 == 0 ?
+                  12 :
+                  block.start.getHours() % 12
+                }}{{ block.start.getHours() < 12 ? 'am' : 'pm' }}
                 <div>
-                  <button 
-                    v-if="(userId !== $store.state.userId && $store.state.hasAccess)"
-                    @click="requestTimeBlock(block._id)"
-                  >
-                    Request
-                  </button>
+                  <section v-if="userId !== $store.state.userId">
+                    <button 
+                      v-if="$store.state.hasAccess === true"
+                      class="activeButton"
+                      @click="requestTimeBlock(block._id)"
+                    >
+                      Request
+                    </button>
+                    <button 
+                      v-else
+                      class="disabledButton"
+                    >
+                      Request
+                    </button>
+                  </section>
+                  
                   <button 
                     v-if="editing"
+                    class="deleteButton"
                     @click="deleteTimeBlock(block._id)"
                   >
                     Delete
@@ -81,7 +88,7 @@
           <button 
             v-if="!editing"
             class="editButton"
-            @click="showDatePicker"
+            @click="startEditing"
           >
             Edit My Availabilities
           </button>
@@ -153,11 +160,11 @@
             </button>
           </section>
         </section>
-        <section>
+        <section class="bottomTooltip">
           <div 
             class="tooltip"
           >
-            Having trouble entering availabilities?
+            <small>Having trouble entering availabilities?</small>
             <span class="tooltiptext">
               You can only enter times between now and the end of the calendar shown (4 weeks).
             </span>
@@ -192,7 +199,9 @@ export default {
     },
     data() {
         return {
+            today: new Date(),
             editing: false,
+            hasRequestable: false,
             timeBlocks: [],
             calendarDays: [],
             daysOfWeek: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
@@ -201,6 +210,8 @@ export default {
     },
     watch: {
       userId: function() {
+        this.editing = false;
+        this.hasRequestable = false;
         this.getAvailibilities();
         this.hideDatePicker();
       }
@@ -210,6 +221,15 @@ export default {
         this.hideDatePicker();
     },
     methods: {
+        startEditing() { // can only be done on $store.state.user
+          if (!this.$store.state.user.meetingLink) {
+            const e = "Please add a meeting link in your account settings before adding availabilities.";
+            this.$set(this.alerts, e, 'error');
+            setTimeout(() => this.$delete(this.alerts, e), 3000);
+          } else {
+            this.showDatePicker();
+          }
+        },
         async getAvailibilities() {
             const r = await fetch("api/timeblock/unclaimed/" + this.userId);
             const res = await r.json();
@@ -217,46 +237,59 @@ export default {
                 throw new Error(res.error);
             }
 
+            const today = new Date();
             const start = new Date();
             start.setHours(0, 0, 0, 0);
             start.setDate(start.getDate() - start.getDay());
 
             const nextFourWeeks = []
-            for (var x = 0; x < 4; x++) {
-              const nextSeven = [];
-              for (var i = 0; i < 7; i++) {
-                const nextDay = new Date(start);
-                nextDay.setDate(start.getDate() + x * 7 + i);
-                nextSeven.push(nextDay);
+            for (var i = 0; i < 29; i++) {
+              const nextDay = new Date(start);
+              nextDay.setDate(start.getDate() + i);
+              var status;
+              if (nextDay.getMonth() < today.getMonth() || nextDay.getDate() < today.getDate()) {
+                status = 'pastDay';
+              } else if (nextDay.getMonth() == today.getMonth() && nextDay.getDate() == today.getDate()) {
+                status = 'today';
+              } else {
+                status = 'futureDay';
               }
-              nextFourWeeks.push(nextSeven);
+              nextFourWeeks.push({day: nextDay, status});
             }
-            this.calendarDays = nextFourWeeks;
             
-            const timeBlocks = []
-            for (var x = 0; x < 4; x++) {
-              const week = [];
-              for (var i = 0; i < 7; i++) {
-                week.push([]);
-              }
-              timeBlocks.push(week);
+            const timeBlocks = [];
+            for (var j = 0; j < 28; j++) {
+              timeBlocks.push([]);
             }
-
+            
+            const now = Date.now();
+            var foundBlock = false;
             for (var block of res) {
                 block.start = new Date(block.start);
-                for (var j = 0; j < 28; j++) {
-                  const row = Math.floor(j / 7);
-                  const col = j % 7;
-                  const sameMonth = block.start.getMonth() == nextFourWeeks[row][col].getMonth();
-                  const sameDay = block.start.getDate() == nextFourWeeks[row][col].getDate();
-                  if (sameMonth && sameDay) {
-                    timeBlocks[row][col].push(block);
+                if (block.start < now) {
+                  continue;
+                }
+                for (var k = 0; k < 28; k++) {
+                  if (block.start >= nextFourWeeks[k].day && block.start < nextFourWeeks[k + 1].day) {
+                    timeBlocks[k].push(block);
+                    foundBlock = true;
                     break;
                   }
                 }
             }
 
-            this.timeBlocks = timeBlocks;
+            this.timeBlocks = [];
+            this.calendarDays = [];
+            for (var l = 0; l < 4; l++) {
+              const rangeStart = l * 7;
+              const rangeEnd = (l + 1) * 7;
+              this.calendarDays.push(nextFourWeeks.slice(rangeStart, rangeEnd));
+              this.timeBlocks.push(timeBlocks.slice(rangeStart, rangeEnd));
+            }
+
+            if (foundBlock) {
+              this.hasRequestable = true;
+            }
         },
         showDatePicker() {
             this.editing = true;
@@ -300,9 +333,7 @@ export default {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 credentials: 'same-origin',
-                body: JSON.stringify({
-                start: date.toString(),
-                })
+                body: JSON.stringify({start: date.toString()})
             };
 
             try {
@@ -335,6 +366,9 @@ export default {
                 if (!r.ok) {
                     throw new Error(res.error);
                 }
+                const message = 'View requested meeting in Meetings tab!';
+                this.$set(this.alerts, message, 'success');
+                setTimeout(() => this.$delete(this.alerts, message), 3000);
             } catch (e) {
                 this.$set(this.alerts, e, 'error');
                 setTimeout(() => this.$delete(this.alerts, e), 3000);
@@ -369,6 +403,22 @@ export default {
 </script>
 
 <style scoped>
+
+.activeButton {
+  background-color:cornflowerblue
+}
+
+.disabledButton {
+  color:lightgray
+}
+
+.deleteButton {
+  color: red;
+}
+
+.editButton {
+  height: 25px
+}
 .availability {
     border-top: 1px solid black;
 }
@@ -387,9 +437,6 @@ export default {
     margin-top: 10px;
 }
 
-.editButton {
-  height: 25px
-}
 .calendar {
   display: flex;
   flex-direction: column;
@@ -401,7 +448,21 @@ export default {
   width: 100%;
 }
 
-.day {
+.pastDay {
+  width: 100%;
+  border: 1px solid black;
+  min-height: 100px;
+  background-color:lightgray;
+}
+
+.today {
+  width: 100%;
+  border: 1px solid black;
+  min-height: 100px;
+  background-color:rgba(100, 148, 237, 0.381);
+}
+
+.futureDay {
   width: 100%;
   border: 1px solid black;
   min-height: 100px;
@@ -451,6 +512,10 @@ export default {
     margin: 10px
 }
 
+.bottomTooltip {
+  margin-top: 50px;
+}
+
 /* Tooltip container */
 .tooltip {
   position: relative;
@@ -459,19 +524,24 @@ export default {
   font-style: italic;
 }
 
+.tooltipEmphasized {
+  background-color: yellow;
+}
+
 /* Tooltip text */
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 300px;
+  width: 400px;
   bottom: 100%;
   left: 50%;
-  margin-left: -150px;
+  margin-left: -200px;
   background-color: black;
   color: #fff;
   font-style: normal;
   text-align: center;
   padding: 5px;
   border-radius: 6px;
+  font-size: medium;
  
   /* Position the tooltip text - see examples below! */
   position: absolute;
