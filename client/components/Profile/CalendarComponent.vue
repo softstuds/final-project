@@ -333,9 +333,7 @@ export default {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 credentials: 'same-origin',
-                body: JSON.stringify({
-                  start: date.toString(),
-                })
+                body: JSON.stringify({start: date.toString()})
             };
 
             try {
