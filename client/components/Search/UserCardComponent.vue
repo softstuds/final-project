@@ -7,11 +7,14 @@
     </router-link>
     <div class="otherInfo">
       <i>Class of {{ user.graduationYear }}</i>
-      <p><b>Industry: {{ user.industry !== undefined ? user.industry.industryType : "None" }}</b></p>
+      <div class="specifics">
+        <p><b>Industry: {{ user.industry !== undefined ? user.industry.industryType : "None" }}</b></p>
       <p v-if="tagsDisplayed.length > 0">
         I am willing to: {{ tagsDisplayed.join(', ') }}</p>
         <p v-if="tagsDisplayed.length === 0">
         I am willing to: None selected</p>
+      </div>
+      
     </div>
   </section>
 </template>
@@ -66,18 +69,37 @@ export default {
 </script>
 <style scoped>
 .card {
-    border-top: 1px solid black;
+    border-top: 0.5px solid black;
     padding: 10px;
     padding-top: 20px;
-    margin: 5px;
+    margin: 10px;
+}
+
+b {
+  font-weight: 50;
+  color: grey;
+  margin-top: 0px;
+}
+
+p {
+  margin: 0;
+}
+
+.specifics {
+  margin-top: 12px;
+  font-size: 16px;
 }
 
 .name {
-    font-size: larger
+    font-size: larger;
+    font-weight: 500;
+    text-decoration: none;
+    color: #729e85;
 }
 
 .otherInfo {
-    font-size: medium;
-    margin-top: 10px;
+    font-weight: 50;
+    margin-top: 12px;
+    color: grey;
 }
 </style>

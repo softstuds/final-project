@@ -1,9 +1,9 @@
-<template>
+<template >
   <div id="app">
     <header>
-      <NavBar />
+      <NavBar class="nav" />
     </header>
-    <router-view />
+    <router-view class="body2" />
   </div>
 </template>
 
@@ -42,17 +42,29 @@ export default {
 body {
   height: 100vh;
   flex-direction: column;
+  align-content: center;
   display: flex;
   padding: 0 20;
-  margin: 0;
   font-size: 1.2em;
-  font-family: Montserrat;
+  font-family: "Segoe UI", "Helvetica Neue", "Arial";
 }
 
 main {
   padding: 40px;
-  margin: 0 64px;
   padding-top: 20px;
+}
+
+.nav {
+  margin: 0px !important;
+  width: 100% !important;
+  margin: auto;
+  box-sizing: border-box;
+  position: absolute; 
+}
+
+.body2 {
+  margin: auto !important;
+  width: 1280px;
 }
 
 .alerts {
