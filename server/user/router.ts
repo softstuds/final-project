@@ -138,7 +138,6 @@ router.get(
     userValidator.isValidGraduationYearInParams
   ],
   async (req: Request, res: Response) => {
-    console.log(req.body.graduationYear);
     const users = await UserCollection.findAllByGradYear(parseInt(req.params.graduationYear));
     const response = users.map(util.constructUserResponse);
     res.status(200).json(response);

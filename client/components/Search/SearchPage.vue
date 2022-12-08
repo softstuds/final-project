@@ -32,7 +32,8 @@
         <FindUsersForm 
           v-if="filtering"
             placeholder="🔍 Filter by graduation year"
-            button="🔄 Get Users">
+            button="🔄 Get Users"
+            @filterUsers="filterGradYear">
         </FindUsersForm>
         <button class="filter-button"
           v-if="filtering"
@@ -89,6 +90,7 @@ export default {
       users: [],
       tagsFilteredUsers: new Set(),
       industryFilteredUsers: new Set(),
+      gradYearFilteredUsers: new Set(),
       displayedUsers: [],
       filtering: false
     }
@@ -112,36 +114,37 @@ export default {
       this.filtering = !this.filtering;
 
       if (!this.filtering) {
-        this.unfilterTags();
-        this.unfilterIndustry();
+        this.displayedUsers = this.users;
       }
     },
     filterTags(value) {
       this.tagsFilteredUsers = new Set(value);
-      const filterIntersection = this.getIntersection(this.tagsFilteredUsers, this.industryFilteredUsers)
-      this.displayedUsers = this.displayedUsers.filter(user => filterIntersection.has(user.id));
+      this.getDisplayedUsers();
     },
     filterIndustry(value) {
       this.industryFilteredUsers = new Set(value);
-      const filterIntersection = this.getIntersection(this.tagsFilteredUsers, this.industryFilteredUsers)
-      this.displayedUsers = this.displayedUsers.filter(user => filterIntersection.has(user.id));
+      this.getDisplayedUsers();
+    },
+    filterGradYear(value) {
+      this.gradYearFilteredUsers = new Set(value);
+      this.getDisplayedUsers();
     },
     unfilterTags() {
       this.tagsFilteredUsers = this.getIds();
-      this.displayedUsers = this.users;
-      this.displayedUsers = this.displayedUsers.filter(user => this.industryFilteredUsers.has(user.id));
+      this.getDisplayedUsers();
     },
     unfilterIndustry() {
       this.industryFilteredUsers = this.getIds();
-      this.displayedUsers = this.users;
-      this.displayedUsers = this.displayedUsers.filter(user => this.tagsFilteredUsers.has(user.id));
+      this.getDisplayedUsers();
     },
     getIds() {
       return new Set(this.users.map(user => user.id));
     },
-    getIntersection(setA, setB) {
-      const intersection = new Set([...setA].filter(element => setB.has(element)));
-      return intersection;
+    getDisplayedUsers() {
+      const allFilters = [this.tagsFilteredUsers, this.industryFilteredUsers, this.gradYearFilteredUsers];
+      const filterIntersection = allFilters.reduce((a, b) => new Set([...a].filter(x => b.has(x))));
+      this.displayedUsers = this.users;
+      this.displayedUsers = this.displayedUsers.filter(user => filterIntersection.has(user.id));
     }
   }
 };
