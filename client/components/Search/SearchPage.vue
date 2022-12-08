@@ -29,6 +29,11 @@
             @unfilterUsers="unfilterIndustry">
           </IndustryFilter>
         </section>
+        <FindUsersForm 
+          v-if="filtering"
+            placeholder="🔍 Filter by graduation year"
+            button="🔄 Get Users">
+        </FindUsersForm>
         <button class="filter-button"
           v-if="filtering"
           @click="changeFiltering">
@@ -74,10 +79,11 @@
 import UserCardComponent from '@/components/Search/UserCardComponent.vue';
 import TagsFilterButton from '@/components/Tags/TagsFilterButton.vue';
 import IndustryFilter from '@/components/Industry/IndustryFilter.vue';
+import FindUsersForm from '@/components/Search/FindUsersForm.vue';
 
 export default {
   name: 'SearchPage',
-  components: {UserCardComponent, TagsFilterButton, IndustryFilter},
+  components: {UserCardComponent, TagsFilterButton, IndustryFilter, FindUsersForm},
   data() {
     return {
       users: [],

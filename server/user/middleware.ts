@@ -88,6 +88,28 @@ const isValidGraduationYear = (req: Request, res: Response, next: NextFunction) 
 };
 
 /**
+ * Checks if a email in req.params is valid
+ */
+ const isValidGraduationYearInParams = (req: Request, res: Response, next: NextFunction) => {
+  if (Number.isInteger(req.params.graduationYear)) {
+    res.status(400).json({
+      error: 'Graduation Year must be number.'
+    });
+    return;
+  }
+
+  const gradYear = parseInt(req.params.graduationYear);
+  if (gradYear < 1860 && gradYear > 2026) {
+    res.status(400).json({
+      error: 'Invalid graduation year.'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
  * Checks if a meeting link is nonempty
  */
 const isValidMeetingLink = (req: Request, res: Response, next: NextFunction) => {
@@ -220,5 +242,6 @@ export {
   isValidPassword,
   isValidEmail,
   isValidGraduationYear,
-  isValidMeetingLink
+  isValidMeetingLink,
+  isValidGraduationYearInParams
 };
