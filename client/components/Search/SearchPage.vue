@@ -6,22 +6,23 @@
       <header>
         <h2>Viewing Users</h2>
       </header>
-      <section>
-        <button class="filter-button"
+      <button class="filter-button"
           v-if="!filtering"
           @click="changeFiltering">
           Access Filters
-        </button>
+      </button>
+      <section
+        v-if="filtering"
+        class="filter-section">
         <section 
-          v-if="filtering"
           class="tags-filter">
           <h1>Filter by Willing To Tags...</h1>
           <TagsFilterButton
             @filterUsers="filterTags"
             @unfilterUsers="unfilterTags">
           </TagsFilterButton>
-        <section
-          v-if="filtering">
+        </section>
+        <section class="industry-filter">
           <h1>Filter by Industry...</h1>
           <IndustryFilter
             class="industry-filter-bar"
@@ -29,19 +30,20 @@
             @unfilterUsers="unfilterIndustry">
           </IndustryFilter>
         </section>
-        <FindUsersForm 
-          v-if="filtering"
-            placeholder="🔍 Filter by graduation year"
-            button="🔄 Get Users"
-            @filterUsers="filterGradYear">
-        </FindUsersForm>
-        <button class="filter-button"
+        <section class="grad-year-filter">
+          <h1>Filter by Graduation Year...</h1>
+          <FindUsersForm 
+              placeholder="🔍 Filter by graduation year"
+              button="🔄 Get Users"
+              @filterUsers="filterGradYear">
+          </FindUsersForm>
+        </section>
+      </section>
+      <button class="filter-button"
           v-if="filtering"
           @click="changeFiltering">
           Done Filtering
-        </button>
-      </section>
-    </section>
+      </button>
     </section>
     <section v-else>
       <header>
@@ -185,5 +187,23 @@ section .scrollbox {
 .filter-button {
   width: 15em;
   margin-left: 10px;
+}
+
+.filter-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.grad-year-filter {
+  width:fit-content;
+  height:fit-content;
+  margin-left: 3em;
+}
+
+.industry-filter {
+  width:fit-content;
+  height:fit-content;
 }
 </style>
