@@ -149,6 +149,18 @@ This renders the `index.html` file that will be used to interact with the backen
 - `404` if either the time block or the user with given ID does not exist
 - `409` if the time block has already passed
 
+#### `PATCH /api/timeblock/request/:timeBlockId/unsend` - Modify a time block by unsending a request to meet
+
+**Returns**
+
+- the updated time block
+
+**Throws**
+
+- `403` if the user is not logged in or is not the requester of the time block
+- `404` if the time block with given ID does not exist
+- `409` if the time block has already passed
+
 #### `PATCH /api/timeblock/accepted/:timeBlockId` - Modify a time block by accepting or rejecting it
 
 **Body**

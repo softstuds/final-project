@@ -1,12 +1,12 @@
 import type {HydratedDocument} from 'mongoose';
-import moment from 'moment';
 import type {TimeBlock, PopulatedTimeBlock} from '../timeblock/model';
+import { User } from '../user/model';
 
 // Update this if you add a property to the TimeBlock type!
 type TimeBlockResponse = {
   _id: string;
-  owner: string;
-  requester: string;
+  owner: User;
+  requester: User;
   start: string;
   accepted: boolean;
   met: boolean;
@@ -34,14 +34,9 @@ const constructTimeBlockResponse = (timeBlock: HydratedDocument<TimeBlock>): Tim
       versionKey: false // Cosmetics; prevents returning of __v property
     })
   };
-  const owner = timeBlockCopy.owner.email;
-  delete timeBlockCopy.owner;
-  const requester = (timeBlockCopy.requester) ? timeBlockCopy.requester.email : null;
   return {
     ...timeBlockCopy,
     _id: timeBlockCopy._id.toString(),
-    owner,
-    requester,
     start: formatDate(timeBlockCopy.start)
   };
 };
