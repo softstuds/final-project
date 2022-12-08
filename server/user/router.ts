@@ -126,6 +126,25 @@ router.get(
 );
 
 /**
+ * Get users by a specific grad year
+ *
+ * @name GET /api/users/:gradYear
+ *
+ * @return - the specified users
+ */
+ router.get(
+  '/:graduationYear',
+  [
+    userValidator.isValidGraduationYear
+  ],
+  async (req: Request, res: Response) => {
+    const users = await UserCollection.findAllByGradYear(req.body.graduationYear);
+    const response = users.map(util.constructUserResponse);
+    res.status(200).json(response);
+  }
+);
+
+/**
  * Get all users
  *
  * @name GET /api/users

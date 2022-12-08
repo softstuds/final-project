@@ -89,6 +89,16 @@ class UserCollection {
   }
 
   /**
+   * Find users by their graduation year
+   * 
+   * @param {number} graduationYear - the graduation year to search for
+   */
+  static async findAllByGradYear(graduationYear: number): Promise<Array<HydratedDocument<User>>> {
+    const users = await UserModel.find({graduationYear: graduationYear});
+    return users;
+  }
+
+  /**
    * Update user's information
    *
    * @param {string} userId - The userId of the user to update
