@@ -12,6 +12,7 @@ export type TimeBlock = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   owner: Types.ObjectId;
   requester: Types.ObjectId;
+  message: string;
   start: Date;
   accepted: boolean;
   met: boolean;
@@ -21,6 +22,7 @@ export type PopulatedTimeBlock = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   owner: User;
   requester: User;
+  message: string;
   start: Date;
   accepted: boolean;
   met: boolean;
@@ -44,6 +46,11 @@ const TimeBlockSchema = new Schema<TimeBlock>({
     ref: 'User',
     required: false,
     default: null
+  },
+  // The message a user can send with a meeting request
+  message: {
+    type: String,
+    required: true
   },
   // The start time of the 1hr-long time block
   start: {
