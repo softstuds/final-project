@@ -6,7 +6,7 @@
       <b class="name">{{ user.firstName }} {{ user.lastName }}</b>
     </router-link>
     <div class="otherInfo">
-      <i>Class of {{ user.graduationYear }}</i>
+      <i><b>Class of {{ user.graduationYear }}</b></i>
       <p class="industry-info"><b>Industry: {{ user.industry !== undefined ? user.industry.industryType : "None" }}</b></p>
       <p 
         class="tags-info"
@@ -74,11 +74,12 @@ export default {
 </script>
 <style scoped>
 .card {
-    border-top: 1px solid black;
-    padding: 10px;
-    padding-top: 20px;
-    margin: 5px;
-    position: relative;
+  border: 1px solid #111;
+  border-radius: .30rem;
+  fill-opacity: 10;
+  padding: 20px;
+  position: relative;
+  margin:10px;
 }
 
 .name {
