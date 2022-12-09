@@ -118,6 +118,9 @@ export default {
 
       if (!this.filtering) {
         this.displayedUsers = this.users;
+        this.tagsFilteredUsers = this.getIds();
+        this.industryFilteredUsers = this.getIds();
+        this.gradYearFilteredUsers = this.getIds();
       }
     },
     filterTags(value) {
