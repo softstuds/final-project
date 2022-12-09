@@ -9,7 +9,7 @@ type TimeBlockResponse = {
   requester: User;
   start: string;
   accepted: boolean;
-  met: boolean;
+  status: string;
 };
 
 /**
