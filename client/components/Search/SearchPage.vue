@@ -111,6 +111,7 @@ export default {
       this.displayedUsers = res;
       this.tagsFilteredUsers = this.getIds();
       this.industryFilteredUsers = this.getIds();
+      this.gradYearFilteredUsers = this.getIds();
     },
     changeFiltering() {
       this.filtering = !this.filtering;

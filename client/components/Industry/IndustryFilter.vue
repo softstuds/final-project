@@ -2,7 +2,9 @@
     <multiselect
         v-model="value"
         :options="options"
-        :show-labels="false"
+        :show-labels="true"
+        select-label="Click to select"
+        deselectLabel="Click to unselect"
         @select="addFilter"
         @remove="removeFilter">
     </multiselect>
