@@ -44,7 +44,7 @@ export default {
                 'Transportation & Logistics',
                 'Wellness & Fitness'
             ],
-            value: 'Unspecified',
+            value: '',
             filteredIds: []
         }
     },
