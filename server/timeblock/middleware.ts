@@ -48,6 +48,22 @@ const isValidUserBody = async (req: Request, res: Response, next: NextFunction) 
 };
 
 /**
+ * Checks if the message of the request in req.body is valid, i.e. not more than 300 characters
+ */
+ const isValidMessage = (req: Request, res: Response, next: NextFunction) => {
+  const {message} = req.body as {message: string};
+
+  if (message.trim().length > 300) {
+    res.status(413).json({
+      error: 'Message content must be no more than 300 characters.'
+    });
+    return;
+  }
+
+  next();
+};
+
+/**
  * Checks if an input in req.body is valid
  */
 const isValidInput = async (req: Request, res: Response, next: NextFunction) => {
@@ -226,6 +242,7 @@ export {
   isUserGiven,
   isValidUserParam,
   isValidUserBody,
+  isValidMessage,
   isValidInput,
   isBlockNonexistent,
   isBlockExistent,
