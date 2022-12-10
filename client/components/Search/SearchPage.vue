@@ -123,14 +123,6 @@ export default {
         this.gradYearFilteredUsers = this.getIds();
       }
     },
-    changeFiltering() {
-      this.filtering = !this.filtering;
-
-      if (!this.filtering) {
-        this.unfilterTags();
-        this.unfilterIndustry();
-      }
-    },
     filterTags(value) {
       this.tagsFilteredUsers = new Set(value);
       this.getDisplayedUsers();
