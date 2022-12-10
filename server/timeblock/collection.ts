@@ -121,7 +121,7 @@ class TimeBlockCollection {
   }
 
   /**
-   * Get the number of total meetings that the user has accepted including cancellations
+   * Get the number of total meetings that the user has accepted not including cancellations
    * 
    * @param {string} userId - The id of the user
    * @param {Date} startAfter - The date after which to count timeblocks
@@ -129,9 +129,9 @@ class TimeBlockCollection {
    */
    static async findTotalAcceptedByOwner(userId: Types.ObjectId | string, startAfter: Date = null): Promise<Number> {
     if (startAfter) {
-      return TimeBlockModel.find({owner: userId, accepted: true, start: {$gte: startAfter}}).count();
+      return TimeBlockModel.find({owner: userId, accepted: true, status: {$ne: 'CANCELED'}, start: {$gte: startAfter}}).count();
     } else {
-      return TimeBlockModel.find({owner: userId, accepted: true}).count();
+      return TimeBlockModel.find({owner: userId, accepted: true, status: {$ne: 'CANCELED'}}).count();
     }
   }
 
