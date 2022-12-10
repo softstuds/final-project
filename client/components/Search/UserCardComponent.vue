@@ -6,12 +6,20 @@
       <b class="name">{{ user.firstName }} {{ user.lastName }}</b>
     </router-link>
     <div class="otherInfo">
-      <i>Class of {{ user.graduationYear }}</i>
-      <p><b>Industry: {{ user.industry !== undefined ? user.industry.industryType : "None" }}</b></p>
-      <p v-if="tagsDisplayed.length > 0">
-        I am willing to: {{ tagsDisplayed.join(', ') }}</p>
-        <p v-if="tagsDisplayed.length === 0">
-        I am willing to: None selected</p>
+      <i><b>Class of {{ user.graduationYear }}</b></i>
+      <p class="industry-info"><b>Industry: {{ user.industry !== undefined ? user.industry.industryType : "None" }}</b></p>
+      <p 
+        class="tags-info"
+        v-if="tagsDisplayed.length > 0">
+        I am willing to:
+        <li class="tags-list"
+        v-for="tag in tagsDisplayed">{{ tag }}</li>
+      </p>
+      <p 
+        class="tags-info"
+        v-if="tagsDisplayed.length === 0">
+        I am willing to: Unspecified
+      </p>
     </div>
   </section>
 </template>
@@ -66,18 +74,37 @@ export default {
 </script>
 <style scoped>
 .card {
-    border-top: 1px solid black;
-    padding: 10px;
-    padding-top: 20px;
-    margin: 5px;
+  border: 1px solid #111;
+  border-radius: .30rem;
+  fill-opacity: 10;
+  padding: 20px;
+  position: relative;
+  margin:10px;
 }
 
 .name {
     font-size: larger
 }
-
 .otherInfo {
     font-size: medium;
     margin-top: 10px;
+}
+
+.tags-info {
+  font-size: 14px;
+  width: 40%;
+  line-height: 2px;
+}
+
+.tags-list {
+  font-size: 14px;
+  margin-bottom: 0px;
+}
+
+.industry-info {
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  font-size: 16px;
 }
 </style>
