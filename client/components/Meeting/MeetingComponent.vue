@@ -21,19 +21,20 @@
         <button @click="rejectRequest" class="column">Reject</button>
         <button @click="acceptRequest" class="column accept">Accept</button>
       </div>
-      <div v-else-if="type=='upcoming'" class="row">
+      <div v-else-if="type=='upcoming'">
         <p>Meeting Link: {{this.link ?? 'nolink'}}</p>
+        <button @click="cancelRequest" >Cancel Meeting</button>
       </div>
       <div v-else-if="(type=='past' && this.feedback==false)">
-        <p>Did this meeting successfully occur?</p>
+        <p>Did {{this.requester.name}} attend this meeting?</p>
         <div class="row">
           <button @click="feedbackNotMet" class="column">No</button>
           <button @click="feedbackMet" class="column accept">Yes</button>
         </div>
       </div>
       <div v-else-if="(type=='past' && this.feedback==true)">
-        <p v-if="(meeting.met==true)" class="met">You marked this meeting as met</p>
-        <p v-else class="notAccepted">You marked this meeting as not met</p>
+        <p v-if="(meeting.met==true)" class="met">You marked {{this.requester.name}} as attended</p>
+        <p v-else class="notAccepted">You marked {{this.requester.name}} as not attended</p>
       </div>
 
     </section>
@@ -270,7 +271,8 @@ section, p {
 button {
   padding: 0px;
   margin: 12px 24px 12px 0px;
-  width: 4px;
+  width: 50%;
+  height: 24px;
   border: 0.5px solid black;
   background-color: white;
   border-radius: 4px;

@@ -32,10 +32,11 @@
                 @refreshMeetings="getAllMeetings"
                  />
                 </section>
+               
             </div>
             <div class="column">
                 <h2>Incoming Requests</h2>
-                <section
+                <section 
                 class="meeting"
                 >
                 <MeetingComponent
@@ -46,6 +47,7 @@
                 @refreshMeetings="getAllMeetings"
                  />
                 </section>
+
             </div>
             <div class="column">
                 <h2>Outgoing Requests</h2>
@@ -115,11 +117,14 @@
         const paramsOutgoing = {method: 'GET', url: '/api/timeblock/requests/sent'}
         this.request(paramsOutgoing).then(function(result) {
             that.outgoingRequests = Object.values(result);
+            console.log(that.outgoingRequests, typeof that.outgoingRequests)
         });
         
         const paramsIncoming = {method: 'GET', url: '/api/timeblock/requests/received'}
         this.request(paramsIncoming).then(function(result) {
             that.incomingRequests = Object.values(result);
+            console.log(that.incomingRequests, typeof that.incomingRequests)
+
         });
 
         },
