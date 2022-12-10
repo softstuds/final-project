@@ -55,15 +55,15 @@ export default {
     return {
       user: this.$store.state.user,
       owner: {
-        name: ' ',
-        email: ' ',
+        name: `${this.meeting.owner.firstName} ${this.meeting.owner.lastName}`,
+        email: this.meeting.owner.email,
       },
       requester: {
-        name: ' ',
-        email: ' ',
+        name: `${this.meeting.requester.firstName} ${this.meeting.requester.lastName}`,
+        email: this.meeting.requester.email,
       },
+      link: this.meeting.owner.meetingLink,
       feedback: Boolean,
-      link: String,
       day: String,
       hour: String,
       minute: String,
@@ -71,52 +71,40 @@ export default {
     }
   },
   mounted () {
-    this.getOwnerRequester();
     this.getDate();
     this.needFeedback();
   },
   methods: {
-    async getOwnerRequester() {
-      console.log(this.meeting.owner, typeof this.meeting.owner)
-      // try {
-      //   const r = await fetch(`/api/users/${this.meeting.owner}`, {
-      //     method: 'GET', 
-      //     headers: {'Content-Type': 'application/json'},
-      //   });
+    getDate () {
+      const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+      const date = new Date(this.meeting.start);
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
 
-      //   const res = await r.json();
-      //   if (!r.ok) {
-      //     throw new Error(res.error);
-      //   }
 
-        this.owner.name = this.meeting.owner.firstName +' '+ this.meeting.owner.lastName;
-        this.owner.email = this.meeting.owner.email;
-        this.link = this.meeting.owner.meetingLink;
+      if (hours > 12) {
+        this.hour = hours % 12;
+        this.pm = 'pm';
+      } else {
+        this.hour = hours;
+        this.pm = 'am';
+      }
 
-      // } catch (e) {
-      //   this.$set(this.alerts, e, 'error');
-      //   setTimeout(() => this.$delete(this.alerts, e), 3000);
-      // }
+      if (minutes < 10) {
+        const strminutes = '0' + minutes.toString();
+        this.minute = strminutes;
+      } else {
+        this.minute = minutes;
+      }
+      this.day = date.toLocaleDateString('en-us', options)
 
-      // try {
-      //   const r = await fetch(`/api/users/${this.meeting.requester}`, {
-      //     method: 'GET', 
-      //     headers: {'Content-Type': 'application/json'},
-      //   });
-
-      //   const res = await r.json();
-      //   if (!r.ok) {
-      //     throw new Error(res.error);
-      //   }
-
-        this.requester.name = `${this.meeting.requester.firstName} ${this.meeting.requester.lastName}`;
-        this.requester.email = this.meeting.requester.email;
-
-      // } catch (e) {
-      //   this.$set(this.alerts, e, 'error');
-      //   setTimeout(() => this.$delete(this.alerts, e), 3000);
-      // }
-      
+    },
+    needFeedback() {
+      if (this.meeting.met == null) {
+        this.feedback = false;
+      } else {
+        this.feedback = true;
+      }
     },
     async cancelRequest () {
       try {
@@ -175,37 +163,6 @@ export default {
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
       this.$emit('refreshMeetings');
-    },
-    getDate () {
-      const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
-      const date = new Date(this.meeting.start);
-      var hours = date.getHours();
-      var minutes = date.getMinutes();
-
-
-      if (hours > 12) {
-        this.hour = hours % 12;
-        this.pm = 'pm';
-      } else {
-        this.hour = hours;
-        this.pm = 'am';
-      }
-
-      if (minutes < 10) {
-        const strminutes = '0' + minutes.toString();
-        this.minute = strminutes;
-      } else {
-        this.minute = minutes;
-      }
-      this.day = date.toLocaleDateString('en-us', options)
-
-    },
-    needFeedback() {
-      if (this.meeting.met == null) {
-        this.feedback = false;
-      } else {
-        this.feedback = true;
-      }
     },
     async feedbackMet() {
       if (!this.meeting.met) {
