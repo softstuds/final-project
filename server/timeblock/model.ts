@@ -60,8 +60,8 @@ const TimeBlockSchema = new Schema<TimeBlock>({
   status: {
     type: String,
     required: false,
-    enum: ['UNOCCURRED', 'MET', 'REQUESTER_MET', 'OWNER_MET', 'CANCELED'],
-    default: 'UNOCCURRED'
+    enum: ['NO_RESPONSE', 'MET', 'REQUESTER_MET', 'OWNER_MET', 'CANCELED'],
+    default: 'NO_RESPONSE'
   }
 });
 
