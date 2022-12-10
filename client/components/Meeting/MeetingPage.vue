@@ -12,7 +12,7 @@
                 class="meeting"
                 >
                 <MeetingComponent
-                :key="renderkey"
+                :key="block.id"
                 :meeting="block"
                 :type="'past'"
                 @reRender="reRender"
