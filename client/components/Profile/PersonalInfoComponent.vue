@@ -13,7 +13,7 @@
           Last Active: {{ user.lastActive }}
         </i>
         <p v-if="(user._id === $store.state.userId)">
-          You <b>{{ $store.state.hasAccess == true ? 'can' : 'can not' }}</b> request meetings with others
+          You <b>{{ $store.state.hasAccess === true ? 'can' : 'can not' }}</b> request meetings with others
         </p>
         <hr/>
         <section class="editInfo"
@@ -208,13 +208,13 @@ export default {
 .fieldInput {
   display: flex;
   justify-content: start;
-  max-width: 750px;
   align-items: center;
   margin: 10px;
 }
 
 .field {
-  width: 15%
+  min-width: 120px;
+  
 }
 
 .editInfo {

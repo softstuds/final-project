@@ -20,6 +20,8 @@ The project is structured as follows:
     - `Login/` contains the login/register page and the related forms
     - `Search/` contains the default page shown and how to search for other Users
     - `common/` contains general form components that can be reused across different concepts
+    - `Industry` contains files related to the Industry concept
+    - `Tags` contains files related to the Tags concept
   - `public/` contains base HTML files and static assets (like the default Alumni Connector logo)
   - `router.ts` contains the Vue router
   - `store.ts` contains the Vuex store, which stores application state and persistent data
@@ -147,6 +149,18 @@ This renders the `index.html` file that will be used to interact with the backen
 - `404` if either the time block or the user with given ID does not exist
 - `409` if the time block has already passed
 
+#### `PATCH /api/timeblock/request/:timeBlockId/unsend` - Modify a time block by unsending a request to meet
+
+**Returns**
+
+- the updated time block
+
+**Throws**
+
+- `403` if the user is not logged in or is not the requester of the time block
+- `404` if the time block with given ID does not exist
+- `409` if the time block has already passed
+
 #### `PATCH /api/timeblock/accepted/:timeBlockId` - Modify a time block by accepting or rejecting it
 
 **Body**
@@ -178,6 +192,209 @@ This renders the `index.html` file that will be used to interact with the backen
 - `404` if either the time block with given ID does not exist or the input is not valid
 - `409` if the time block start has not passed yet or is not an accepted meeting
 
+#### `POST /api/tags` - Create tags for a user
+
+**Returns**
+
+- a tags object
+
+**Throws**
+
+- `403` if the user is not logged
+- `409` if tags already exist for the user
+
+#### `GET /api/tags` - Retrieve a user's tags
+
+**Returns**
+
+- a tags object
+
+**Throws**
+
+- `403` if the user is not logged
+
+#### `GET /api/tags/:tagName` - Retrieve all tags when a specific value is true
+
+**Returns**
+
+- An array of tags objects
+
+**Throws**
+
+- `403` if the user is not logged
+- `400` If the tag name is not valid
+
+#### `PUT /api/tags` - Update a user's tags
+
+**Body**
+
+- `newValue` - The new boolean value of the tag
+
+**Returns**
+
+- A tags object
+
+**Throws**
+
+- `403` if the user is not logged
+- `400` If the tag name is not valid
+
+#### `DELETE /api/tags` - Delete a user's tags
+
+**Returns**
+
+- A message
+
+**Throws**
+
+- `403` if the user is not logged
+- `409` if the tags do not exist for a particular user
+
+#### `POST /api/industry` - Creates an Industry object
+
+**Returns**
+
+- An Industry object
+
+**Throws**
+
+- `403` if the user is not logged
+- `409` If the industry object already exists for a particular user
+
+#### `PUT /api/industry` - Updates an Industry object
+
+**Body**
+
+- `newIndustry` - the string value of the new industry
+
+**Returns**
+
+- An Industry object
+
+**Throws**
+
+- `403` If user is not logged in
+- `409` If the industry object does not exist
+- `400` If the industry value is valid
+
+#### `GET /api/industry/:industryValue` - Gets all industry objects with a certain industry value
+
+**Body**
+
+- `industryValue` - the string value of the industry
+
+**Returns**
+
+- An array of industry object
+
+**Throws**
+
+- `403` If user is not logged in
+- `400` If the industry value is valid
+
+#### `GET /api/industry/users/:userId` - Gets Industry object for a specific user
+
+**Returns**
+
+- An Industry object
+
+**Throws**
+
+- `403` If user is not logged in
+- `404` If the user does not exist
+
+#### `DELETE /api/industry` - Deletes an Industry object
+
+**Returns**
+
+- A boolean
+
+**Throws**
+
+- `403` If user is not logged in
+- `409` If the industry object does not exist
+
+#### `GET /api/users/session` - Get the signed in user
+
+**Returns**
+
+- A user object
+
+#### `POST /api/users/session` - Sign in user
+
+**Body**
+
+- `email` - the users email
+- `password` - the users password
+
+**Returns**
+
+- A user object
+
+**Throws**
+
+- `403` If user is not logged in
+- `400` If email or password is  not in the correct format, or missing in the req
+- `401` If the user login credentials are invalid
+
+#### `DELETE /api/users/session` - Sign out user
+
+**Returns**
+
+- A message
+
+**Throws**
+
+- `403` If user is not logged in
+
+#### `GET /api/users/:userId` - Get a user
+
+**Returns**
+
+- A user object
+
+**Throws**
+
+- `404` If the user exists
+
+#### `GET /api/users/find/:email` - Get a user by email
+
+**Body**
+
+- `email` - the users email
+
+**Returns**
+
+- A user object
+
+**Throws**
+
+- `404` If the user does not exist
+
+#### `GET /api/users` - Get all users
+
+**Returns**
+
+- An array of user objects
+
+#### `POST /api/users` - Create a user account
+
+**Body**
+
+- `email` - the users email
+- `name` - the users name
+- `password` - the users password
+- `graduationYear` - the users graduation year
+
+**Returns**
+
+- A user object
+
+**Throws**
+
+- `403` If there is a user already logged in
+- `409` If email is already taken
+- `400` If password or email is not in correct format
 
 ## Installation
 

@@ -12,6 +12,8 @@ const router = express.Router();
  * Creates an Industry object
  * 
  * @name POST /api/industry
+ * @throws {403} - If user is not logged in
+ * @throws {409} - If the industry object already exists
  */
 router.post(
     '/',
@@ -33,6 +35,9 @@ router.post(
  * Updates an Industry object
  * 
  * @name PUT /api/industry
+ * @throws {403} - If user is not logged in
+ * @throws {409} - If the industry object does not exist
+ * @throws {400} - If the industry value is valid
  */
  router.put(
     '/',
@@ -55,6 +60,8 @@ router.post(
  * Gets all industry objects with a certain industry value
  * 
  * @name GET /api/industry/:industryValue
+ * @throws {403} - If user is not logged in
+ * @throws {400} - If the industry value is valid
  */
  router.get(
     '/:industryValue?',
@@ -73,6 +80,9 @@ router.post(
  * Gets Industry object for a specific user
  * 
  * @name GET /api/industry/users/:userId
+ * 
+ * @throws {403} - If user is not logged in
+ * @throws {404} - If the user does not exist
  */
  router.get(
     '/users/:userId?',
@@ -93,6 +103,8 @@ router.post(
  * Deletes an Industry object
  * 
  * @name DELETE /api/industry
+ * @throws {403} - If user is not logged in
+ * @throws {409} - If the industry object does not exist
  */
  router.delete(
     '/',

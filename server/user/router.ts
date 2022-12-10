@@ -243,7 +243,8 @@ router.patch(
 router.patch(
   '/meetingLink',
   [
-    userValidator.isUserLoggedIn
+    userValidator.isUserLoggedIn,
+    userValidator.isValidMeetingLink
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
