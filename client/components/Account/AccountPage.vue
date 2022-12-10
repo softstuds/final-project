@@ -39,3 +39,13 @@ export default {
   }
 };
 </script>
+
+
+<style scoped>
+
+h2 {
+  font-weight: 180;
+  font-size: 36px;
+}
+
+</style>

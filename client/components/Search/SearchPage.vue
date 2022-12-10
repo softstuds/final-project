@@ -7,7 +7,7 @@
         <h2>Welcome to Alumni Connector!</h2>
       </header>
       <section>
-        <h1>Viewing Users</h1>
+        <h3>Viewing Users</h3>
         <section class="tags-filter">
           <h1>Filter by Willing To Tags...</h1>
           <TagsFilterButton
@@ -138,12 +138,18 @@ button {
 
 h1 {
   font-size: larger;
-  font-weight: 500;
+  font-weight: 400;
   text-decoration: none;
   color: #212529;
-  margin: 12 0px;
+  margin: 8 0px;
 }
 
+
+h3 {
+  margin: 4px 0px;
+  font-size: 36px;
+  font-weight: 180;
+}
 
 section .scrollbox {
   flex: 1 0 50vh;

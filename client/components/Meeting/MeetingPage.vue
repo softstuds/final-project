@@ -4,6 +4,7 @@
 <template>
     <main>
       <section>
+        <h1>Your Meetings</h1>
         <div class="row">
             <div class="column">
                 <h2>Past Meetings</h2>
@@ -272,9 +273,16 @@ main .column {
     padding: 0;
 }
 
+h1 {
+  font-size: 36px;
+  font-weight: 180;
+  margin-top: 12px
+}
+
 h2, h2 > * {
     text-align: center;
     justify-content: center;
+    font-weight: 400;
 }
 
 h3 {
@@ -285,7 +293,6 @@ h3 {
   display: flex;
   /* align-items: center;
   justify-content: space-between; */
-  padding: 24px 0px 0px 0px;
 }
 .timeBlock {
     border: 0.5px solid black;

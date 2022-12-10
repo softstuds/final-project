@@ -91,8 +91,9 @@ p {
 }
 
 .name {
-    font-size: larger;
-    font-weight: 500;
+    font-size: 32px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: 600;
     text-decoration: none;
     color: #729e85;
 }
