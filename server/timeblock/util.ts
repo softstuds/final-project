@@ -7,6 +7,7 @@ type TimeBlockResponse = {
   _id: string;
   owner: User;
   requester: User;
+  message: string;
   start: string;
   accepted: boolean;
   status: string;

@@ -261,11 +261,13 @@ router.delete(
  * @name PATCH /api/timeblock/request/:id
  *
  * @param {string} userId - the userId of the requester
+ * @param {string} message - the message the requester wants to send with the request
  * @return {TimeBlockResponse} - the updated time block
  * @throws {400} - If the user is not given
  * @throws {403} - if the user is not logged in or is already the owner of the time block
  * @throws {404} - If either the time block or the user with given ID does not exist
  * @throws {409} - If the time block has already passed
+ * @throws {413} - If the message is more than 300 characters long
  */
 router.patch(
   '/request/:timeBlockId?',
@@ -273,12 +275,13 @@ router.patch(
     userValidator.isUserLoggedIn,
     timeBlockValidator.isUserGiven,
     timeBlockValidator.isValidUserBody,
+    timeBlockValidator.isValidMessage,
     timeBlockValidator.isBlockExistent,
     timeBlockValidator.isBlockInFuture,
     timeBlockValidator.isBlockNotOwner
   ],
   async (req: Request, res: Response) => {
-    const timeBlock = await TimeBlockCollection.updateOneRequest(req.params.timeBlockId, req.body.userId);
+    const timeBlock = await TimeBlockCollection.updateOneRequest(req.params.timeBlockId, req.body.userId, req.body.message.trim());
     res.status(200).json({
       message: 'Your time block was updated successfully.',
       timeBlock: util.constructTimeBlockResponse(timeBlock)
@@ -305,7 +308,7 @@ router.patch(
     timeBlockValidator.isBlockRequester,
   ],
   async (req: Request, res: Response) => {
-    const timeBlock = await TimeBlockCollection.updateOneRequest(req.params.timeBlockId, null);
+    const timeBlock = await TimeBlockCollection.updateOneRequest(req.params.timeBlockId, null, '');
     res.status(200).json({
       message: 'Your time block was updated successfully.',
       timeBlock: util.constructTimeBlockResponse(timeBlock)
@@ -345,8 +348,8 @@ router.patch(
         timeBlock: util.constructTimeBlockResponse(timeBlock)
       });
     } else {
-      // Keep accepted false, change claimed to false and requester to null
-      const timeBlock = await TimeBlockCollection.updateOneRequest(req.params.timeBlockId, null);
+      // reset time block to be as if the request was unsent
+      const timeBlock = await TimeBlockCollection.updateOneRequest(req.params.timeBlockId, null, '');
       res.status(200).json({
         message: 'The request was rejected successfully.',
         timeBlock: util.constructTimeBlockResponse(timeBlock)
