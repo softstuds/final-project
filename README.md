@@ -137,6 +137,7 @@ This renders the `index.html` file that will be used to interact with the backen
 **Body**
 
 - `userId` _{string}_ - The userId of the requester
+- `message` _{string}_ - The message the requester wants to send with the request
 
 **Returns**
 
@@ -147,6 +148,19 @@ This renders the `index.html` file that will be used to interact with the backen
 - `400` if the user is not given
 - `403` if the user is not logged in or is already the owner of the time block
 - `404` if either the time block or the user with given ID does not exist
+- `409` if the time block has already passed
+- `413` if the message is more than 300 characters long
+
+#### `PATCH /api/timeblock/request/:timeBlockId/unsend` - Modify a time block by unsending a request to meet
+
+**Returns**
+
+- the updated time block
+
+**Throws**
+
+- `403` if the user is not logged in or is not the requester of the time block
+- `404` if the time block with given ID does not exist
 - `409` if the time block has already passed
 
 #### `PATCH /api/timeblock/accepted/:timeBlockId` - Modify a time block by accepting or rejecting it

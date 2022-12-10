@@ -107,7 +107,7 @@ router.get(
 /**
  * Get a user by email
  *
- * @name GET /api/users/find/:email
+ * @name GET /api/users/find/
  *
  * @return - specified user
  */

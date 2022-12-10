@@ -215,11 +215,13 @@ class TimeBlockCollection {
    *
    * @param {string} timeBlockId - The id of the time block to be updated
    * @param {string} requesterId - The userId of the requester
+   * @param {string} message - The message the requester wants to send with the request
    * @return {Promise<HydratedDocument<TimeBlock>>} - The newly updated time block
    */
-  static async updateOneRequest(timeBlockId: Types.ObjectId | string, requesterId: Types.ObjectId | string = null): Promise<HydratedDocument<TimeBlock>> {
+  static async updateOneRequest(timeBlockId: Types.ObjectId | string, requesterId: Types.ObjectId | string = null, message: string = ''): Promise<HydratedDocument<TimeBlock>> {
     const timeBlock = await TimeBlockModel.findOne({_id: timeBlockId});
     timeBlock.requester = requesterId ? requesterId as Types.ObjectId : null;
+    timeBlock.message = message;
     await timeBlock.save();
     return timeBlock.populate('owner requester');
   }
