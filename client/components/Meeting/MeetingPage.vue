@@ -102,7 +102,7 @@
         },
       async getPastMeetings() {
           try {
-            const r = await fetch('/api/timeblock/checkoccurred', {
+            const r = await fetch('/api/timeblock/met/check', {
               method: 'GET', 
               headers: {'Content-Type': 'application/json'}
             });
