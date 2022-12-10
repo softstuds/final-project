@@ -60,7 +60,7 @@ const TimeBlockSchema = new Schema<TimeBlock>({
   status: {
     type: String,
     required: false,
-    enum: ['MET', 'REQUESTER_MET', 'OWNER_MET', 'CANCELLED'],
+    enum: ['MET', 'REQUESTER_MET', 'OWNER_MET', 'CANCELED'],
     default: null
   }
 });
