@@ -77,44 +77,45 @@ export default {
   },
   methods: {
     async getOwnerRequester() {
-      try {
-        const r = await fetch(`/api/users/${this.meeting.owner}`, {
-          method: 'GET', 
-          headers: {'Content-Type': 'application/json'},
-        });
+      console.log(this.meeting.owner, typeof this.meeting.owner)
+      // try {
+      //   const r = await fetch(`/api/users/${this.meeting.owner}`, {
+      //     method: 'GET', 
+      //     headers: {'Content-Type': 'application/json'},
+      //   });
 
-        const res = await r.json();
-        if (!r.ok) {
-          throw new Error(res.error);
-        }
+      //   const res = await r.json();
+      //   if (!r.ok) {
+      //     throw new Error(res.error);
+      //   }
 
-        this.owner.name = res.user.firstName+res.user.lastName;
-        this.owner.email = res.user.email;
-        this.link = res.user.meetingLink;
+        this.owner.name = this.meeting.owner.firstName +' '+ this.meeting.owner.lastName;
+        this.owner.email = this.meeting.owner.email;
+        this.link = this.meeting.owner.meetingLink;
 
-      } catch (e) {
-        this.$set(this.alerts, e, 'error');
-        setTimeout(() => this.$delete(this.alerts, e), 3000);
-      }
+      // } catch (e) {
+      //   this.$set(this.alerts, e, 'error');
+      //   setTimeout(() => this.$delete(this.alerts, e), 3000);
+      // }
 
-      try {
-        const r = await fetch(`/api/users/${this.meeting.requester}`, {
-          method: 'GET', 
-          headers: {'Content-Type': 'application/json'},
-        });
+      // try {
+      //   const r = await fetch(`/api/users/${this.meeting.requester}`, {
+      //     method: 'GET', 
+      //     headers: {'Content-Type': 'application/json'},
+      //   });
 
-        const res = await r.json();
-        if (!r.ok) {
-          throw new Error(res.error);
-        }
+      //   const res = await r.json();
+      //   if (!r.ok) {
+      //     throw new Error(res.error);
+      //   }
 
-        this.requester.name = `${res.user.firstName} ${res.user.lastName}`;
-        this.requester.email = res.user.email;
+        this.requester.name = `${this.meeting.requester.firstName} ${this.meeting.requester.lastName}`;
+        this.requester.email = this.meeting.requester.email;
 
-      } catch (e) {
-        this.$set(this.alerts, e, 'error');
-        setTimeout(() => this.$delete(this.alerts, e), 3000);
-      }
+      // } catch (e) {
+      //   this.$set(this.alerts, e, 'error');
+      //   setTimeout(() => this.$delete(this.alerts, e), 3000);
+      // }
       
     },
     async cancelRequest () {
