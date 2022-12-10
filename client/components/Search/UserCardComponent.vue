@@ -6,15 +6,20 @@
       <b class="name">{{ user.firstName }} {{ user.lastName }}</b>
     </router-link>
     <div class="otherInfo">
-      <i>Class of {{ user.graduationYear }}</i>
-      <div class="specifics">
-        <p><b>Industry: {{ user.industry !== undefined ? user.industry.industryType : "None" }}</b></p>
-      <p v-if="tagsDisplayed.length > 0">
-        I am willing to: {{ tagsDisplayed.join(', ') }}</p>
-        <p v-if="tagsDisplayed.length === 0">
-        I am willing to: None selected</p>
-      </div>
-      
+      <i><b>Class of {{ user.graduationYear }}</b></i>
+      <p class="industry-info"><b>Industry: {{ user.industry !== undefined ? user.industry.industryType : "None" }}</b></p>
+      <p 
+        class="tags-info"
+        v-if="tagsDisplayed.length > 0">
+        I am willing to:
+        <li class="tags-list"
+        v-for="tag in tagsDisplayed">{{ tag }}</li>
+      </p>
+      <p 
+        class="tags-info"
+        v-if="tagsDisplayed.length === 0">
+        I am willing to: Unspecified
+      </p>
     </div>
   </section>
 </template>
@@ -97,10 +102,27 @@ p {
     text-decoration: none;
     color: #729e85;
 }
-
 .otherInfo {
     font-weight: 50;
     margin-top: 12px;
     color: grey;
+}
+
+.tags-info {
+  font-size: 14px;
+  width: 40%;
+  line-height: 2px;
+}
+
+.tags-list {
+  font-size: 14px;
+  margin-bottom: 0px;
+}
+
+.industry-info {
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  font-size: 16px;
 }
 </style>

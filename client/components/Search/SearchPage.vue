@@ -7,15 +7,21 @@
         <h2>Welcome to Alumni Connector!</h2>
       </header>
       <section>
-        <h3>Viewing Users</h3>
-        <section class="tags-filter">
+        <button class="filter-button"
+          v-if="!filtering"
+          @click="changeFiltering">
+          Access Filters
+        </button>
+        <section 
+          v-if="filtering"
+          class="tags-filter">
           <h1>Filter by Willing To Tags...</h1>
           <TagsFilterButton
             @filterUsers="filterTags"
             @unfilterUsers="unfilterTags">
           </TagsFilterButton>
-        </section>
-        <section>
+        <section
+          v-if="filtering">
           <h1>Filter by Industry...</h1>
           <IndustryFilter
             class="industry-filter-bar"
@@ -23,7 +29,13 @@
             @unfilterUsers="unfilterIndustry">
           </IndustryFilter>
         </section>
+        <button class="filter-button"
+          v-if="filtering"
+          @click="changeFiltering">
+          Done Filtering
+        </button>
       </section>
+    </section>
     </section>
     <section v-else>
       <header>
@@ -71,7 +83,8 @@ export default {
       users: [],
       tagsFilteredUsers: new Set(),
       industryFilteredUsers: new Set(),
-      displayedUsers: []
+      displayedUsers: [],
+      filtering: false
     }
   },
   mounted() {
@@ -88,6 +101,14 @@ export default {
       this.displayedUsers = res;
       this.tagsFilteredUsers = this.getIds();
       this.industryFilteredUsers = this.getIds();
+    },
+    changeFiltering() {
+      this.filtering = !this.filtering;
+
+      if (!this.filtering) {
+        this.unfilterTags();
+        this.unfilterIndustry();
+      }
     },
     filterTags(value) {
       this.tagsFilteredUsers = new Set(value);
@@ -172,5 +193,10 @@ h2 {
 .industry-filter-bar {
   width: 300px;
   margin: 20px 0px;
+}
+
+.filter-button {
+  width: 15em;
+  margin-left: 10px;
 }
 </style>
