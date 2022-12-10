@@ -211,11 +211,12 @@ section .scrollbox {
 .grad-year-filter {
   width:fit-content;
   height:fit-content;
-  margin-left: 3em;
+  margin-bottom: 2em;
 }
 
 .industry-filter {
   width:fit-content;
   height:fit-content;
+  margin-left: 3em;
 }
 </style>

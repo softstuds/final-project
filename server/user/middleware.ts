@@ -91,15 +91,22 @@ const isValidGraduationYear = (req: Request, res: Response, next: NextFunction) 
  * Checks if a email in req.params is valid
  */
  const isValidGraduationYearInParams = (req: Request, res: Response, next: NextFunction) => {
-  if (Number.isInteger(req.params.graduationYear)) {
+  if (isNaN(+req.params.graduationYear)) {
     res.status(400).json({
-      error: 'Graduation Year must be number.'
+      error: 'Graduation Year must be an integer.'
     });
     return;
   }
 
-  const gradYear = parseInt(req.params.graduationYear);
-  if (gradYear < 1860 && gradYear > 2026) {
+  const gradYearNumber = Number(req.params.graduationYear);
+  if (!(Math.round(gradYearNumber) === gradYearNumber)) {
+    res.status(400).json({
+      error: 'Graduation Year must be an integer.'
+    });
+    return;
+  }
+
+  if (gradYearNumber < 1860 || gradYearNumber > 2026) {
     res.status(400).json({
       error: 'Invalid graduation year.'
     });

@@ -4,7 +4,7 @@
         :options="options"
         :show-labels="true"
         select-label="Click to select"
-        deselectLabel="Click to unselect"
+        deselect-label="Click to unselect"
         @select="addFilter"
         @remove="removeFilter">
     </multiselect>
