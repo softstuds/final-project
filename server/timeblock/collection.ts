@@ -67,12 +67,17 @@ class TimeBlockCollection {
    * in order of most to least recent start time, not including canceled ones
    *
    * @param {string} userId - The id of the user
+   * @param {boolean} checkMet - Whether we want to get the ones with no response status
    * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the time blocks for a given owner
    */
-   static async findAllByUserOccurred(userId: Types.ObjectId | string): Promise<Array<HydratedDocument<TimeBlock>>> {
+   static async findAllByUserOccurred(userId: Types.ObjectId | string, checkMet: boolean): Promise<Array<HydratedDocument<TimeBlock>>> {
     // Retrieves time blocks and sorts them from latest to earliest time
     const now = new Date();
-    return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}],start: {$lte: now}, accepted: true, status: 'NO_RESPONSE'}).sort({start: -1}).populate('owner requester');
+    if (checkMet) {
+      return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}],start: {$lte: now}, accepted: true, status: 'NO_RESPONSE'}).sort({start: -1}).populate('owner requester');
+    } else {
+      return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}],start: {$lte: now}, accepted: true, status: {$ne: 'CANCELED'}}).sort({start: -1}).populate('owner requester');
+    }
   }
 
   /**
