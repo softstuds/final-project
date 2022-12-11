@@ -20,6 +20,10 @@ export default {
         refreshCount: {
             type: Number,
             required: true
+        },
+        initialValue: {
+            type: String,
+            required: true
         }
     },
     data() {
@@ -50,7 +54,7 @@ export default {
                 'Transportation & Logistics',
                 'Wellness & Fitness'
             ],
-            value: '',
+            value: this.initialValue,
             filteredIds: []
         }
     },
@@ -74,7 +78,7 @@ export default {
             }
             this.filteredIds = res.map(user => user.userId);
             this.$emit('unfilterUsers');
-            this.$emit('filterUsers', this.filteredIds);
+            this.$emit('filterUsers', this.filteredIds, value);
         }
     }
 }

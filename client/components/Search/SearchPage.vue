@@ -26,7 +26,8 @@
           <TagsFilterButton
             @filterUsers="filterTags"
             @unfilterUsers="unfilterTags"
-            :refreshCount="refreshCount">
+            :refreshCount="refreshCount"
+            :initialValue="initialTags">
           </TagsFilterButton>
         </section>
         <section class="industry-filter">
@@ -35,7 +36,8 @@
             class="industry-filter-bar"
             @filterUsers="filterIndustry"
             @unfilterUsers="unfilterIndustry"
-            :refreshCount="refreshCount">
+            :refreshCount="refreshCount"
+            :initialValue="initialIndustry">
           </IndustryFilter>
         </section>
         <section class="grad-year-filter">
@@ -51,7 +53,8 @@
           <h1>Filter by User Availability...</h1>
           <AvailabilityFilter
             @filterUsers="filterAvailable"
-            @unfilterUsers="unfilterAvailable">
+            @unfilterUsers="unfilterAvailable"
+            :refreshCount="refreshCount">
           </AvailabilityFilter>
         </section>
       </section>
@@ -105,7 +108,7 @@ import TagsFilterButton from '@/components/Tags/TagsFilterButton.vue';
 import IndustryFilter from '@/components/Industry/IndustryFilter.vue';
 import FindUsersForm from '@/components/Search/FindUsersForm.vue';
 import SearchUsersForm from '@/components/Search/SearchUsersForm.vue';
-import AvailabilityFilter from '@/components/Availability/AvailabilityFilter.vue'
+import AvailabilityFilter from '@/components/Availability/AvailabilityFilter.vue';
 
 export default {
   name: 'SearchPage',
@@ -118,6 +121,10 @@ export default {
       gradYearFilteredUsers: new Set(),
       searchFilteredUsers: new Set(),
       availableFilteredUsers: new Set(),
+      initialTags: '',
+      initialIndustry: '',
+      initialgradYear: null,
+      initialAvailable: null,
       displayedUsers: [],
       filtering: false,
       refreshCount: 0
@@ -146,13 +153,15 @@ export default {
     },
     clearFiltering() {
       this.refreshCount += 1;
+      this.clearInitials();
       this.tagsFilteredUsers = this.getIds();
       this.industryFilteredUsers = this.getIds();
       this.gradYearFilteredUsers = this.getIds();
       this.availableFilteredUsers = this.getIds();
       this.getDisplayedUsers();
     },
-    filterTags(value) {
+    filterTags(value, tagsSelected) {
+      this.initialTags = tagsSelected;
       this.tagsFilteredUsers = new Set(value);
       this.getDisplayedUsers();
     },
@@ -160,7 +169,8 @@ export default {
       this.searchFilteredUsers = new Set(value);
       this.getDisplayedUsers();
     },
-    filterIndustry(value) {
+    filterIndustry(value, industrySelected) {
+      this.initialIndustry = industrySelected;
       this.industryFilteredUsers = new Set(value);
       this.getDisplayedUsers();
     },
@@ -178,10 +188,12 @@ export default {
     },
     unfilterTags() {
       this.tagsFilteredUsers = this.getIds();
+      this.initialTags = '';
       this.getDisplayedUsers();
     },
     unfilterIndustry() {
       this.industryFilteredUsers = this.getIds();
+      this.initialIndustry = '';
       this.getDisplayedUsers();
     },
     getIds() {
@@ -196,6 +208,10 @@ export default {
       const filterIntersection = allFilters.reduce((a, b) => new Set([...a].filter(x => b.has(x))));
       this.displayedUsers = this.users;
       this.displayedUsers = this.displayedUsers.filter(user => filterIntersection.has(user.id));
+    },
+    clearInitials() {
+      this.initialIndustry = '';
+      this.initialTags = '';
     }
   }
 };
@@ -244,12 +260,6 @@ h2 {
   font-size: 48px;
 }
 
-.filterBar {
-  display: flex;
-  flex-direction: column;
-  margin: 20px 0px;
-}
-
 .industry-filter-bar {
   width: 300px;
   margin: 20px 0px;
@@ -284,6 +294,7 @@ h2 {
   flex-direction: row;
   justify-content: flex-start;
   flex-wrap: wrap;
+  margin: 12px 24px 12px 12px;
 }
 
 .grad-year-filter {

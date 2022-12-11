@@ -2,6 +2,7 @@
     <label class="container">Has availability to meet
         <input 
             type="checkbox"
+            id="checkbox"
             @change="checkChanged">
         <span class="checkmark"></span>
     </label>
@@ -9,10 +10,23 @@
 <script>
 export default {
     name: 'AvailabilityFilter',
+    props: {
+        refreshCount: {
+            type: Number,
+            required: true
+        }
+    },
     data() {
         return {
             filteredIds: [],
             checked: false
+        }
+    },
+    watch: {
+        refreshCount: function(val) {
+            const checkBox = document.getElementById('checkbox');
+            checkBox.checked = false;
+            this.checked = false;
         }
     },
     methods: {
@@ -78,7 +92,7 @@ export default {
 
 /* When the checkbox is checked, add a blue background */
 .container input:checked ~ .checkmark {
-  background-color: #2196F3;
+  background-color: #729e85;;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
