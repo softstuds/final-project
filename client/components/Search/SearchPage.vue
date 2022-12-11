@@ -38,6 +38,10 @@
               @filterUsers="filterGradYear">
           </FindUsersForm>
         </section>
+        <section>
+          <h1>Filter by User Availability...</h1>
+          <AvailabilityFilter></AvailabilityFilter>
+        </section>
       </section>
       <button class="filter-button"
           v-if="filtering"
@@ -83,10 +87,11 @@ import UserCardComponent from '@/components/Search/UserCardComponent.vue';
 import TagsFilterButton from '@/components/Tags/TagsFilterButton.vue';
 import IndustryFilter from '@/components/Industry/IndustryFilter.vue';
 import FindUsersForm from '@/components/Search/FindUsersForm.vue';
+import AvailabilityFilter from '@/components/Availability/AvailabilityFilter.vue'
 
 export default {
   name: 'SearchPage',
-  components: {UserCardComponent, TagsFilterButton, IndustryFilter, FindUsersForm},
+  components: {UserCardComponent, TagsFilterButton, IndustryFilter, FindUsersForm, AvailabilityFilter},
   data() {
     return {
       users: [],

@@ -4,6 +4,7 @@ import TimeBlockCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as timeBlockValidator from '../timeblock/middleware';
 import * as util from './util';
+import UserCollection from '../user/collection';
 
 const router = express.Router();
 
@@ -96,21 +97,21 @@ router.get(
 /**
  * Whether user has claimable availabilities
  *
- * @name GET /api/timeblock/availability/:userId
+ * @name GET /api/timeblock/availability/users
  *
- * @return {Boolean} - Whether of not the user has access
+ * @return {Array<Users>} - Users who have availabilities
  * @throws {403} - If the user is not logged in
  */
 router.get(
-  '/availability/:userId',
+  '/availability/users',
   [
     userValidator.isUserLoggedIn,
     timeBlockValidator.isValidUserParam
   ],
   async (req: Request, res: Response) => {
-    const {userId} = req.params;
-    const hasAvailability = await TimeBlockCollection.findAvailabilityStatus(userId);
-    res.status(200).json({hasAvailability});
+    const users = await UserCollection.findAll();
+    const usersWithAvailability = users.filter(async user => await TimeBlockCollection.findAvailabilityStatus(user.id));
+    res.status(200).json({usersWithAvailability});
   }
 );
 
