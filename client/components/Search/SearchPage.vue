@@ -6,6 +6,12 @@
       <header>
         <h2>Welcome to Alumni Connector!</h2>
       </header>
+      <SearchUsersForm 
+          class="users-search-form"
+          placeholder="🔍 Search for users"
+          button="🔄 Search Users"
+          @filterUsers="searchUsers">
+      </SearchUsersForm >
       <button class="filter-button"
           v-if="!filtering"
           @click="changeFiltering">
@@ -83,16 +89,18 @@ import UserCardComponent from '@/components/Search/UserCardComponent.vue';
 import TagsFilterButton from '@/components/Tags/TagsFilterButton.vue';
 import IndustryFilter from '@/components/Industry/IndustryFilter.vue';
 import FindUsersForm from '@/components/Search/FindUsersForm.vue';
+import SearchUsersForm from '@/components/Search/SearchUsersForm.vue';
 
 export default {
   name: 'SearchPage',
-  components: {UserCardComponent, TagsFilterButton, IndustryFilter, FindUsersForm},
+  components: {UserCardComponent, TagsFilterButton, IndustryFilter, FindUsersForm, SearchUsersForm},
   data() {
     return {
       users: [],
       tagsFilteredUsers: new Set(),
       industryFilteredUsers: new Set(),
       gradYearFilteredUsers: new Set(),
+      searchFilteredUsers: new Set(),
       displayedUsers: [],
       filtering: false
     }
@@ -112,19 +120,24 @@ export default {
       this.tagsFilteredUsers = this.getIds();
       this.industryFilteredUsers = this.getIds();
       this.gradYearFilteredUsers = this.getIds();
+      this.searchFilteredUsers = this.getIds();
     },
     changeFiltering() {
       this.filtering = !this.filtering;
 
       if (!this.filtering) {
-        this.displayedUsers = this.users;
         this.tagsFilteredUsers = this.getIds();
         this.industryFilteredUsers = this.getIds();
         this.gradYearFilteredUsers = this.getIds();
+        this.getDisplayedUsers();
       }
     },
     filterTags(value) {
       this.tagsFilteredUsers = new Set(value);
+      this.getDisplayedUsers();
+    },
+    searchUsers(value) {
+      this.searchFilteredUsers = new Set(value);
       this.getDisplayedUsers();
     },
     filterIndustry(value) {
@@ -147,7 +160,10 @@ export default {
       return new Set(this.users.map(user => user.id));
     },
     getDisplayedUsers() {
-      const allFilters = [this.tagsFilteredUsers, this.industryFilteredUsers, this.gradYearFilteredUsers];
+      const allFilters = [this.tagsFilteredUsers, 
+                          this.industryFilteredUsers, 
+                          this.gradYearFilteredUsers, 
+                          this.searchFilteredUsers];
       const filterIntersection = allFilters.reduce((a, b) => new Set([...a].filter(x => b.has(x))));
       this.displayedUsers = this.users;
       this.displayedUsers = this.displayedUsers.filter(user => filterIntersection.has(user.id));
@@ -232,12 +248,15 @@ h2 {
 .grad-year-filter {
   width:fit-content;
   height:fit-content;
-  margin-bottom: 2em;
+  margin-left: 3em;
 }
 
 .industry-filter {
   width:fit-content;
   height:fit-content;
-  margin-left: 3em;
+}
+
+.users-search-form {
+  margin: 12px 24px 12px 12px;
 }
 </style>
