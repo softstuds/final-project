@@ -7,8 +7,9 @@
         <h2>Welcome to Alumni Connector!</h2>
       </header>
       <SearchUsersForm 
+          class="users-search-form"
           placeholder="🔍 Search for users"
-          button="🔄 Get Users"
+          button="🔄 Search Users"
           @filterUsers="searchUsers">
       </SearchUsersForm >
       <button class="filter-button"
@@ -253,5 +254,9 @@ h2 {
 .industry-filter {
   width:fit-content;
   height:fit-content;
+}
+
+.users-search-form {
+  margin: 12px 24px 12px 12px;
 }
 </style>

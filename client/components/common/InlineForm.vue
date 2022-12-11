@@ -8,7 +8,7 @@
       type="text"
       :placeholder="placeholder"
     >
-    <button
+    <button class="submit-button"
       type="submit"
     >
       {{ button }}
@@ -53,5 +53,14 @@ form {
 input {
     padding: 0 5px;
     min-width: 200px;
+}
+
+.submit-button {
+  position: relative;
+  height: 36px;
+  background-color: #729e85;
+  border-radius:6px;
+  border: 0px;
+  color: white;
 }
 </style>
