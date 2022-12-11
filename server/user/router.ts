@@ -164,34 +164,48 @@ router.get(
 );
 
 /**
- * Get all users with a specific first name
+ * Get all users with a specific first name and last name
  * 
- * @name GET /api/users?firstName=:firstName&lastName=:lastName
+ * @name GET /api/users/search/:firstName-:lastName
  * 
  * @return users
  */
 router.get(
-  '/',
+  '/search/:firstName-:lastName',
   [],
   async (req: Request, res: Response) => {
     const firstName = req.params.firstName;
     const lastName = req.params.lastName;
 
-    let users:Array<HydratedDocument<User>> = []
-    if (firstName && lastName) {
-      users = await UserCollection.findAllByFullName(firstName, lastName);
-    } else if (firstName) {
-      const usersFirst = await UserCollection.findAllByFirstName(firstName);
-      const usersLast = await UserCollection.findAllByLastName(firstName);
-      users = usersFirst.concat(usersLast);
-      const usersSet = new Set(users);
-      users = [...usersSet];
-    }
+    const users = await UserCollection.findAllByFullName(firstName, lastName);
+    const response = users.map(util.constructUserResponse);
+    res.status(200).json(response);
+  }
+);
+
+/**
+ * Get all users with a specific first name
+ * 
+ * @name GET /api/users/search/:firstName
+ * 
+ * @return users
+ */
+ router.get(
+  '/search/:firstName',
+  [],
+  async (req: Request, res: Response) => {
+    const firstName = req.params.firstName;
+    console.log('here');
+    const usersFirst = await UserCollection.findAllByFirstName(firstName);
+    const usersLast = await UserCollection.findAllByLastName(firstName);
+    let users = usersFirst.concat(usersLast);
+    const usersSet = new Set(users);
+    users = [...usersSet];
 
     const response = users.map(util.constructUserResponse);
     res.status(200).json(response);
   }
-)
+);
 
 
 /**

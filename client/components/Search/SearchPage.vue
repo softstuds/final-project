@@ -6,6 +6,10 @@
       <header>
         <h2>Welcome to Alumni Connector!</h2>
       </header>
+      <SearchUsersForm 
+          placeholder="🔍 Search for users"
+          button="🔄 Get Users">
+      </SearchUsersForm >
       <button class="filter-button"
           v-if="!filtering"
           @click="changeFiltering">
@@ -83,10 +87,11 @@ import UserCardComponent from '@/components/Search/UserCardComponent.vue';
 import TagsFilterButton from '@/components/Tags/TagsFilterButton.vue';
 import IndustryFilter from '@/components/Industry/IndustryFilter.vue';
 import FindUsersForm from '@/components/Search/FindUsersForm.vue';
+import SearchUsersForm from '@/components/Search/SearchUsersForm.vue';
 
 export default {
   name: 'SearchPage',
-  components: {UserCardComponent, TagsFilterButton, IndustryFilter, FindUsersForm},
+  components: {UserCardComponent, TagsFilterButton, IndustryFilter, FindUsersForm, SearchUsersForm},
   data() {
     return {
       users: [],
