@@ -8,8 +8,8 @@
       </header>
       <SearchUsersForm 
           class="users-search-form"
-          placeholder="🔍 Search for users"
-          button="🔄 Search Users"
+          placeholder="Search for users"
+          button="Submit"
           @filterUsers="searchUsers">
       </SearchUsersForm >
       <button class="filter-button"
@@ -39,8 +39,8 @@
         <section class="grad-year-filter">
           <h1>Filter by Graduation Year...</h1>
           <FindUsersForm 
-              placeholder="🔍 Filter by graduation year"
-              button="🔄 Get Users"
+              placeholder="Filter by graduation year"
+              button="Submit"
               @filterUsers="filterGradYear">
           </FindUsersForm>
         </section>
@@ -224,7 +224,10 @@ h2 {
 
 .industry-filter-bar {
   width: 300px;
-  margin: 20px 0px;
+  height: fit-content;
+  margin: 0px 0px 24px;
+  border: 0.5px solid black;
+  border-radius: 4px;
 }
 
 .filter-button {
@@ -242,13 +245,14 @@ h2 {
 .filter-section {
   display: flex;
   flex-direction: row;
+  margin-left: 12px;
   justify-content: flex-start;
   flex-wrap: wrap;
 }
 
 .grad-year-filter {
   width:fit-content;
-  height:fit-content;
+  height: fit-content;
   margin-left: 3em;
 }
 
