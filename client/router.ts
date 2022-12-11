@@ -4,13 +4,15 @@ import SearchPage from './components/Search/SearchPage.vue';
 import AccountPage from './components/Account/AccountPage.vue';
 import ProfilePage from './components/Profile/ProfilePage.vue';
 import MeetingPage from './components/Meeting/MeetingPage.vue';
+import HomePage from './components/Home/HomePage.vue';
 import LoginPage from './components/Login/LoginPage.vue';
 import NotFound from './NotFound.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
-  {path: '/', name: 'Home', component: SearchPage},
+  {path: '/', name: 'Home', component: HomePage},
+  {path: '/search', name: 'Search', component: SearchPage},
   {path: '/account', name: 'Account', component: AccountPage},
   {path: '/meeting', name: 'Meetings', component: MeetingPage},
   {path: '/profile/:userId', name: 'My Profile', component: ProfilePage},
