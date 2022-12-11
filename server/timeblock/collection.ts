@@ -40,14 +40,14 @@ class TimeBlockCollection {
 
   /**
    * Get all the time blocks in the database with a given user as owner
-   * in order of most to least recent start time
+   * in order of most to least recent start time, uncanceled
    *
    * @param {string} ownerId - The id of the owner
    * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the time blocks for a given owner
    */
   static async findAllByOwner(ownerId: Types.ObjectId | string): Promise<Array<HydratedDocument<TimeBlock>>> {
     // Retrieves time blocks and sorts them from latest to earliest time
-    return TimeBlockModel.find({owner: ownerId}).sort({start: -1}).populate('owner requester');
+    return TimeBlockModel.find({owner: ownerId, status: {$ne: 'CANCELED'}}).sort({start: -1}).populate('owner requester');
   }
 
   /**
@@ -64,38 +64,28 @@ class TimeBlockCollection {
 
   /**
    * Get all the time blocks in the database with a given user as owner or requester that's passed
-   * in order of most to least recent start time
+   * in order of most to least recent start time, not including canceled ones
    *
    * @param {string} userId - The id of the user
-   * @param {boolean} getUnmarked - Whether we want only unmarked past meetings or all
    * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the time blocks for a given owner
    */
-   static async findAllByUserOccurred(userId: Types.ObjectId | string, getUnmarked: boolean): Promise<Array<HydratedDocument<TimeBlock>>> {
+   static async findAllByUserOccurred(userId: Types.ObjectId | string): Promise<Array<HydratedDocument<TimeBlock>>> {
     // Retrieves time blocks and sorts them from latest to earliest time
     const now = new Date();
-    if (getUnmarked) {
-      return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}],start: {$lte: now}, accepted: true, met: null}).sort({start: -1}).populate('owner requester');
-    } else {
-      return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}],start: {$lte: now}, accepted: true}).sort({start: -1}).populate('owner requester');
-    }
+    return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}],start: {$lte: now}, accepted: true, status: 'NO_RESPONSE'}).sort({start: -1}).populate('owner requester');
   }
 
   /**
    * Get all the time blocks in the database with a given user as owner or requester that's passed
-   * in order of most to least recent start time
+   * in order of most to least recent start time, not including cancellations
    *
    * @param {string} userId - The id of the user
-   * @param {boolean} userOwner - Whether we want time blocks that user owns or all
    * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the time blocks for a given owner
    */
-   static async findAllByUserAccepted(userId: Types.ObjectId | string, userOwner: boolean): Promise<Array<HydratedDocument<TimeBlock>>> {
+   static async findAllByUserAccepted(userId: Types.ObjectId | string): Promise<Array<HydratedDocument<TimeBlock>>> {
     // Retrieves time blocks and sorts them from latest to earliest time
     const now = new Date();
-    if (userOwner) {
-      return TimeBlockModel.find({owner: userId, start: {$gte: now}, accepted: true, met: null}).sort({start: -1}).populate('owner requester');
-    } else {
-      return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}],start: {$gte: now}, accepted: true}).sort({start: -1}).populate('owner requester');
-    }
+    return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}],start: {$gte: now}, accepted: true, status: {$ne: 'CANCELED'}}).sort({start: -1}).populate('owner requester');
   }
 
   /**
@@ -131,7 +121,7 @@ class TimeBlockCollection {
   }
 
   /**
-   * Get the number of total meetings that the user has accepted
+   * Get the number of total meetings that the user has accepted not including cancellations
    * 
    * @param {string} userId - The id of the user
    * @param {Date} startAfter - The date after which to count timeblocks
@@ -139,9 +129,9 @@ class TimeBlockCollection {
    */
    static async findTotalAcceptedByOwner(userId: Types.ObjectId | string, startAfter: Date = null): Promise<Number> {
     if (startAfter) {
-      return TimeBlockModel.find({owner: userId, accepted: true, start: {$gte: startAfter}}).count();
+      return TimeBlockModel.find({owner: userId, accepted: true, status: {$ne: 'CANCELED'}, start: {$gte: startAfter}}).count();
     } else {
-      return TimeBlockModel.find({owner: userId, accepted: true}).count();
+      return TimeBlockModel.find({owner: userId, accepted: true, status: {$ne: 'CANCELED'}}).count();
     }
   }
 
@@ -153,7 +143,7 @@ class TimeBlockCollection {
    * @return {Promise<Number>} - The number of meetings a user owns, has accepted, and has attended 
    */
   static async findTotalMetByOwner(userId: Types.ObjectId | string): Promise<Number> {
-    return TimeBlockModel.find({owner: userId, accepted: true, met: {$ne: false}}).count();
+    return TimeBlockModel.find({owner: userId, accepted: true, status: {$ne: ['CANCELED', 'REQUESTER_MET']}}).count();
   }
 
   /**
@@ -163,7 +153,7 @@ class TimeBlockCollection {
    * @return {Promise<Boolean>} - The number of meetings a user owns, has accepted, and has attended 
    */
   static async findAccessStatus(userId: Types.ObjectId | string): Promise<Boolean> {
-    const userBlocks = await TimeBlockModel.find({owner: userId}).sort({start: -1}).populate('owner requester');
+    const userBlocks = await TimeBlockModel.find({owner: userId, status: {$ne: 'CANCELED'}}).sort({start: -1}).populate('owner requester');
     const today = new Date();
     const rangeEnd = new Date();
     rangeEnd.setHours(0, 0, 0, 0);
@@ -206,7 +196,7 @@ class TimeBlockCollection {
    */
    static async findTotalUniqueMetByOwner(ownerId: Types.ObjectId | string): Promise<Number> {
     const now = new Date();
-    const distinct = await TimeBlockModel.find({owner: ownerId, accepted: true, start: {$lte: now}, met: {$ne: false}}).distinct('requester');
+    const distinct = await TimeBlockModel.find({owner: ownerId, accepted: true, start: {$lte: now}, status: {$ne: ['CANCELED', 'REQUESTER_MET']}}).distinct('requester');
     return distinct.length;
   }
 
@@ -243,14 +233,36 @@ class TimeBlockCollection {
    * Update a time block with met
    *
    * @param {string} timeBlockId - The id of the time block to be updated
+   * @param {string} responderId - The id of the responder
    * @param {boolean} met - Whether the meeting should be marked as met or not
    * @return {Promise<HydratedDocument<TimeBlock>>} - The newly updated time block
    */
-     static async updateOneMet(timeBlockId: Types.ObjectId | string, met: boolean): Promise<HydratedDocument<TimeBlock>> {
-        const timeBlock = await TimeBlockModel.findOne({_id: timeBlockId});
-        timeBlock.met = met;
-        await timeBlock.save();
-        return timeBlock.populate('owner requester');
+  static async updateOneMet(timeBlockId: Types.ObjectId | string, responderId: Types.ObjectId | string, met: boolean): Promise<HydratedDocument<TimeBlock>> {
+    const timeBlock = await TimeBlockModel.findOne({_id: timeBlockId});
+    if (met) {
+      timeBlock.status = 'MET';
+    }
+    else if (responderId === timeBlock.owner._id) {
+      timeBlock.status = 'OWNER_MET';
+    }
+    else if (responderId === timeBlock.requester._id) {
+      timeBlock.status = 'REQUESTER_MET';
+    }
+    await timeBlock.save();
+    return timeBlock.populate('owner requester');
+  }
+
+  /**
+   * Update a time block with cancel
+   *
+   * @param {string} timeBlockId - The id of the time block to be updated
+   * @return {Promise<HydratedDocument<TimeBlock>>} - The newly updated time block
+   */
+   static async updateOneCancel(timeBlockId: Types.ObjectId | string): Promise<HydratedDocument<TimeBlock>> {
+    const timeBlock = await TimeBlockModel.findOne({_id: timeBlockId});
+    timeBlock.status = 'CANCELED';
+    await timeBlock.save();
+    return timeBlock.populate('owner requester');
   }
 
   /**
