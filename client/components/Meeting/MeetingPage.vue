@@ -79,7 +79,6 @@
     data () {
         return {
             pastMeetings: [],
-            meetingsWithoutFeedback: [],
             upcomingMeetings: [],
             incomingRequests: [],
             outgoingRequests: [],
@@ -108,11 +107,6 @@
         this.request(paramsPast).then(function(result) {
             that.pastMeetings = Object.values(result);
         });
-
-        // const paramsPastNoFeedback = {method: 'GET', url: '/api/timeblock/met/check'}
-        // this.request(paramsPastNoFeedback).then(function(result) {
-        //     that.meetingsWithoutFeedback = Object.values(result);
-        // });
 
         const paramsOutgoing = {method: 'GET', url: '/api/timeblock/requests/sent'}
         this.request(paramsOutgoing).then(function(result) {
