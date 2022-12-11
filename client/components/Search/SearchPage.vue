@@ -41,8 +41,8 @@
         <section class="grad-year-filter">
           <h1>Filter by Graduation Year...</h1>
           <FindUsersForm 
-              placeholder="🔍 Filter by graduation year"
-              button="🔄 Get Users"
+              placeholder="Filter by graduation year"
+              button="Submit"
               @filterUsers="filterGradYear">
           </FindUsersForm>
         </section>
