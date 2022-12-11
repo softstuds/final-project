@@ -4,7 +4,6 @@
 <template>
     <main>
       <section>
-        <h1>Your Meetings</h1>
         <div class="row">
             <div class="column">
                 <h2>Past Meetings</h2>
@@ -33,10 +32,11 @@
                 @refreshMeetings="getAllMeetings"
                  />
                 </section>
+               
             </div>
             <div class="column">
                 <h2>Incoming Requests</h2>
-                <section
+                <section 
                 class="meeting"
                 >
                 <MeetingComponent
@@ -47,6 +47,7 @@
                 @refreshMeetings="getAllMeetings"
                  />
                 </section>
+
             </div>
             <div class="column">
                 <h2>Outgoing Requests</h2>
@@ -88,6 +89,7 @@
     },
     mounted() {
         this.getAllMeetings();
+
     },
     methods: {
         reRender() {
@@ -115,11 +117,13 @@
         const paramsOutgoing = {method: 'GET', url: '/api/timeblock/requests/sent'}
         this.request(paramsOutgoing).then(function(result) {
             that.outgoingRequests = Object.values(result);
+            console.log(that.outgoingRequests, typeof that.outgoingRequests)
         });
         
         const paramsIncoming = {method: 'GET', url: '/api/timeblock/requests/received'}
         this.request(paramsIncoming).then(function(result) {
             that.incomingRequests = Object.values(result);
+
         });
 
         },
@@ -178,16 +182,11 @@ main .column {
     padding: 0;
 }
 
-h1 {
-  font-size: 36px;
-  font-weight: 180;
-  margin-top: 12px
-}
-
 h2, h2 > * {
     text-align: center;
     justify-content: center;
-    font-weight: 400;
+    font-weight: 300;
+    
 }
 
 h3 {
@@ -198,6 +197,7 @@ h3 {
   display: flex;
   /* align-items: center;
   justify-content: space-between; */
+  padding: 24px 0px 0px 0px;
 }
 .timeBlock {
     border: 0.5px solid black;

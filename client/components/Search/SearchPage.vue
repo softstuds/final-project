@@ -197,6 +197,13 @@ h2 {
 
 .filter-button {
   width: 15em;
-  margin-left: 10px;
+  padding: 0px;
+  margin: 12px 24px 12px 12px;
+  height: 28px;
+  border: 0.5px solid black;
+  background-color: white;
+  border-radius: 4px;
+  color: black;
+  cursor: pointer;
 }
 </style>

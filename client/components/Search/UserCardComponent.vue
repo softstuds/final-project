@@ -87,12 +87,14 @@ b {
 }
 
 p {
-  margin: 0;
+  margin: 8px 0px 0px 0px;
+  font-size: 16px;
+  line-height: 32px;
 }
 
 .specifics {
   margin-top: 12px;
-  font-size: 16px;
+  font-size: 24px;
 }
 
 .name {
@@ -109,20 +111,20 @@ p {
 }
 
 .tags-info {
-  font-size: 14px;
-  width: 40%;
-  line-height: 2px;
+  font-size: 18px;
+  margin: 4 4;
 }
 
 .tags-list {
-  font-size: 14px;
+  font-size: 18px;
   margin-bottom: 0px;
 }
 
 .industry-info {
-  position: absolute;
+  /* position: absolute; */
+  padding: 0 5;
   top: 0px;
   right: 10px;
-  font-size: 16px;
+  font-size: 18px;
 }
 </style>
