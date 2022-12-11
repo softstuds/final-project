@@ -61,6 +61,8 @@ input {
   background-color: #729e85;
   border-radius:6px;
   border: 0px;
+  margin: 0 8px;
+  padding: 0 8px;
   color: white;
 }
 </style>
