@@ -73,6 +73,27 @@ router.get(
 );
 
 /**
+ * Get all the time blocks that have occurred
+ *
+ * @name GET /api/timeblock/met
+ *
+ * @return {TimeBlockResponse[]} - A list of all the time blocks that have occurred
+ * @throws {403} - If the user is not logged in
+ */
+router.get(
+  '/met',
+  [
+    userValidator.isUserLoggedIn,
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? '';
+    const unMarkedTimeBlocks = await TimeBlockCollection.findAllByUserOccurred(userId, false);
+    const response = unMarkedTimeBlocks.map(util.constructTimeBlockResponse);
+    res.status(200).json(response);
+  }
+);
+
+/**
  * Get all the time blocks that a user needs to mark as met/not
  *
  * @name GET /api/timeblock/met/check
@@ -88,7 +109,7 @@ router.get(
     ],
     async (req: Request, res: Response) => {
       const userId = (req.session.userId as string) ?? '';
-      const unMarkedTimeBlocks = await TimeBlockCollection.findAllByUserOccurred(userId);
+      const unMarkedTimeBlocks = await TimeBlockCollection.findAllByUserOccurred(userId, true);
       const response = unMarkedTimeBlocks.map(util.constructTimeBlockResponse);
       res.status(200).json(response);
     }

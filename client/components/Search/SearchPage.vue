@@ -6,22 +6,29 @@
       <header>
         <h2>Welcome to Alumni Connector!</h2>
       </header>
-      <section>
-        <button class="filter-button"
+      <SearchUsersForm 
+          class="users-search-form"
+          placeholder="🔍 Search for users"
+          button="🔄 Search Users"
+          @filterUsers="searchUsers">
+      </SearchUsersForm >
+      <button class="filter-button"
           v-if="!filtering"
           @click="changeFiltering">
           Access Filters
-        </button>
+      </button>
+      <section
+        v-if="filtering"
+        class="filter-section">
         <section 
-          v-if="filtering"
           class="tags-filter">
           <h1>Filter by Willing To Tags...</h1>
           <TagsFilterButton
             @filterUsers="filterTags"
             @unfilterUsers="unfilterTags">
           </TagsFilterButton>
-        <section
-          v-if="filtering">
+        </section>
+        <section class="industry-filter">
           <h1>Filter by Industry...</h1>
           <IndustryFilter
             class="industry-filter-bar"
@@ -29,13 +36,20 @@
             @unfilterUsers="unfilterIndustry">
           </IndustryFilter>
         </section>
-        <button class="filter-button"
+        <section class="grad-year-filter">
+          <h1>Filter by Graduation Year...</h1>
+          <FindUsersForm 
+              placeholder="🔍 Filter by graduation year"
+              button="🔄 Get Users"
+              @filterUsers="filterGradYear">
+          </FindUsersForm>
+        </section>
+      </section>
+      <button class="filter-button"
           v-if="filtering"
           @click="changeFiltering">
           Done Filtering
-        </button>
-      </section>
-    </section>
+      </button>
     </section>
     <section v-else>
       <header>
@@ -74,15 +88,19 @@
 import UserCardComponent from '@/components/Search/UserCardComponent.vue';
 import TagsFilterButton from '@/components/Tags/TagsFilterButton.vue';
 import IndustryFilter from '@/components/Industry/IndustryFilter.vue';
+import FindUsersForm from '@/components/Search/FindUsersForm.vue';
+import SearchUsersForm from '@/components/Search/SearchUsersForm.vue';
 
 export default {
   name: 'SearchPage',
-  components: {UserCardComponent, TagsFilterButton, IndustryFilter},
+  components: {UserCardComponent, TagsFilterButton, IndustryFilter, FindUsersForm, SearchUsersForm},
   data() {
     return {
       users: [],
       tagsFilteredUsers: new Set(),
       industryFilteredUsers: new Set(),
+      gradYearFilteredUsers: new Set(),
+      searchFilteredUsers: new Set(),
       displayedUsers: [],
       filtering: false
     }
@@ -101,41 +119,54 @@ export default {
       this.displayedUsers = res;
       this.tagsFilteredUsers = this.getIds();
       this.industryFilteredUsers = this.getIds();
+      this.gradYearFilteredUsers = this.getIds();
+      this.searchFilteredUsers = this.getIds();
     },
     changeFiltering() {
       this.filtering = !this.filtering;
 
       if (!this.filtering) {
-        this.unfilterTags();
-        this.unfilterIndustry();
+        this.tagsFilteredUsers = this.getIds();
+        this.industryFilteredUsers = this.getIds();
+        this.gradYearFilteredUsers = this.getIds();
+        this.getDisplayedUsers();
       }
     },
     filterTags(value) {
       this.tagsFilteredUsers = new Set(value);
-      const filterIntersection = this.getIntersection(this.tagsFilteredUsers, this.industryFilteredUsers)
-      this.displayedUsers = this.displayedUsers.filter(user => filterIntersection.has(user.id));
+      this.getDisplayedUsers();
+    },
+    searchUsers(value) {
+      this.searchFilteredUsers = new Set(value);
+      this.getDisplayedUsers();
     },
     filterIndustry(value) {
       this.industryFilteredUsers = new Set(value);
-      const filterIntersection = this.getIntersection(this.tagsFilteredUsers, this.industryFilteredUsers)
-      this.displayedUsers = this.displayedUsers.filter(user => filterIntersection.has(user.id));
+      this.getDisplayedUsers();
+    },
+    filterGradYear(value) {
+      this.gradYearFilteredUsers = new Set(value);
+      this.getDisplayedUsers();
     },
     unfilterTags() {
       this.tagsFilteredUsers = this.getIds();
-      this.displayedUsers = this.users;
-      this.displayedUsers = this.displayedUsers.filter(user => this.industryFilteredUsers.has(user.id));
+      this.getDisplayedUsers();
     },
     unfilterIndustry() {
       this.industryFilteredUsers = this.getIds();
-      this.displayedUsers = this.users;
-      this.displayedUsers = this.displayedUsers.filter(user => this.tagsFilteredUsers.has(user.id));
+      this.getDisplayedUsers();
     },
     getIds() {
       return new Set(this.users.map(user => user.id));
     },
-    getIntersection(setA, setB) {
-      const intersection = new Set([...setA].filter(element => setB.has(element)));
-      return intersection;
+    getDisplayedUsers() {
+      const allFilters = [this.tagsFilteredUsers, 
+                          this.industryFilteredUsers, 
+                          this.gradYearFilteredUsers, 
+                          this.searchFilteredUsers];
+      const filterIntersection = allFilters.reduce((a, b) => new Set([...a].filter(x => b.has(x))));
+      this.displayedUsers = this.users;
+      this.displayedUsers = this.displayedUsers.filter(user => filterIntersection.has(user.id));
     }
   }
 };
@@ -205,5 +236,27 @@ h2 {
   border-radius: 4px;
   color: black;
   cursor: pointer;
+}
+
+.filter-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.grad-year-filter {
+  width:fit-content;
+  height:fit-content;
+  margin-left: 3em;
+}
+
+.industry-filter {
+  width:fit-content;
+  height:fit-content;
+}
+
+.users-search-form {
+  margin: 12px 24px 12px 12px;
 }
 </style>

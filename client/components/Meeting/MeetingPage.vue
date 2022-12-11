@@ -104,7 +104,7 @@
             that.upcomingMeetings = Object.values(result);
         });
 
-        const paramsPast = {method: 'GET', url: '/api/timeblock/checkoccurred'}
+        const paramsPast = {method: 'GET', url: '/api/timeblock/met'}
         this.request(paramsPast).then(function(result) {
             that.pastMeetings = Object.values(result);
         });

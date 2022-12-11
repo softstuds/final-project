@@ -4,6 +4,7 @@
             v-model="value" 
             label="name" 
             track-by="name" 
+            placeholder="Select options"
             :options="options" 
             :multiple="true" 
             :hideSelected="true"

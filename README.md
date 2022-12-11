@@ -54,6 +54,17 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if user is not logged in
 
+#### `GET /api/timeblock/met` - Get all the time blocks that have occurred for a user
+
+**Returns**
+
+- A list of all the time blocks that have occurred
+
+**Throws**
+
+- `403` if user is not logged in
+
+
 #### `GET /api/timeblock/met/check` - Get all the time blocks that a user needs to mark as met/not
 
 **Returns**

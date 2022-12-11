@@ -1,5 +1,7 @@
 import type {Request, Response} from 'express';
 import express from 'express';
+import type {HydratedDocument, Types} from 'mongoose';
+import type {User} from './model';
 import UserCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as util from './util';
@@ -126,6 +128,25 @@ router.get(
 );
 
 /**
+ * Get users by a specific grad year
+ *
+ * @name GET /api/users/graduationYear/:graduationYear
+ *
+ * @return - the specified users
+ */
+ router.get(
+  '/graduationYear/:graduationYear',
+  [
+    userValidator.isValidGraduationYearInParams
+  ],
+  async (req: Request, res: Response) => {
+    const users = await UserCollection.findAllByGradYear(parseInt(req.params.graduationYear));
+    const response = users.map(util.constructUserResponse);
+    res.status(200).json(response);
+  }
+);
+
+/**
  * Get all users
  *
  * @name GET /api/users
@@ -141,6 +162,50 @@ router.get(
     res.status(200).json(response);
   }
 );
+
+/**
+ * Get all users with a specific first name and last name
+ * 
+ * @name GET /api/users/search/:firstName-:lastName
+ * 
+ * @return users
+ */
+router.get(
+  '/search/:firstName-:lastName',
+  [userValidator.isUserLoggedIn],
+  async (req: Request, res: Response) => {
+    const firstName = req.params.firstName;
+    const lastName = req.params.lastName;
+
+    const users = await UserCollection.findAllByFullName(firstName, lastName);
+    const response = users.map(util.constructUserResponse);
+    res.status(200).json(response);
+  }
+);
+
+/**
+ * Get all users with a specific first name
+ * 
+ * @name GET /api/users/search/:firstName
+ * 
+ * @return users
+ */
+ router.get(
+  '/search/:firstOrLastName',
+  [userValidator.isUserLoggedIn],
+  async (req: Request, res: Response) => {
+    const firstOrLastName = req.params.firstOrLastName;
+    const usersFirst = await UserCollection.findAllByFirstName(firstOrLastName);
+    const usersLast = await UserCollection.findAllByLastName(firstOrLastName);
+    let users = usersFirst.concat(usersLast);
+    const usersSet = new Set(users);
+    users = [...usersSet];
+
+    const response = users.map(util.constructUserResponse);
+    res.status(200).json(response);
+  }
+);
+
 
 /**
  * Create a user account.

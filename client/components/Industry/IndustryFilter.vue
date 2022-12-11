@@ -2,7 +2,9 @@
     <multiselect
         v-model="value"
         :options="options"
-        :show-labels="false"
+        :show-labels="true"
+        select-label="Click to select"
+        deselect-label="Click to unselect"
         @select="addFilter"
         @remove="removeFilter">
     </multiselect>
@@ -42,7 +44,7 @@ export default {
                 'Transportation & Logistics',
                 'Wellness & Fitness'
             ],
-            value: 'Unspecified',
+            value: '',
             filteredIds: []
         }
     },
