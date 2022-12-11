@@ -99,6 +99,30 @@ class UserCollection {
   }
 
   /**
+   * Find all users by their first name
+   */
+  static async findAllByFirstName(firstName: string): Promise<Array<HydratedDocument<User>>> {
+    const users = await UserModel.find({firstName: {$regex : firstName}});
+    return users;
+  }
+
+  /**
+   * Find all users by their last name
+   */
+   static async findAllByLastName(firstName: string): Promise<Array<HydratedDocument<User>>> {
+    const users = await UserModel.find({lastName: {$regex : firstName}});
+    return users;
+  }
+
+  /**
+   * Find all users by their full name
+   */
+   static async findAllByFullName(firstName: string, lastName: string): Promise<Array<HydratedDocument<User>>> {
+    const users = await UserModel.find({firstName: {$regex : firstName}, lastName: {$regex : firstName}});
+    return users;
+  }
+
+  /**
    * Update user's information
    *
    * @param {string} userId - The userId of the user to update

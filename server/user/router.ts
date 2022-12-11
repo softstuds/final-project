@@ -1,5 +1,7 @@
 import type {Request, Response} from 'express';
 import express from 'express';
+import type {HydratedDocument, Types} from 'mongoose';
+import type {User} from './model';
 import UserCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as util from './util';
@@ -160,6 +162,37 @@ router.get(
     res.status(200).json(response);
   }
 );
+
+/**
+ * Get all users with a specific first name
+ * 
+ * @name GET /api/users?firstName=:firstName&lastName=:lastName
+ * 
+ * @return users
+ */
+router.get(
+  '/',
+  [],
+  async (req: Request, res: Response) => {
+    const firstName = req.params.firstName;
+    const lastName = req.params.lastName;
+
+    let users:Array<HydratedDocument<User>> = []
+    if (firstName && lastName) {
+      users = await UserCollection.findAllByFullName(firstName, lastName);
+    } else if (firstName) {
+      const usersFirst = await UserCollection.findAllByFirstName(firstName);
+      const usersLast = await UserCollection.findAllByLastName(firstName);
+      users = usersFirst.concat(usersLast);
+      const usersSet = new Set(users);
+      users = [...usersSet];
+    }
+
+    const response = users.map(util.constructUserResponse);
+    res.status(200).json(response);
+  }
+)
+
 
 /**
  * Create a user account.

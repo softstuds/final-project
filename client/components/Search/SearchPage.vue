@@ -232,12 +232,11 @@ h2 {
 .grad-year-filter {
   width:fit-content;
   height:fit-content;
-  margin-bottom: 2em;
+  margin-left: 3em;
 }
 
 .industry-filter {
   width:fit-content;
   height:fit-content;
-  margin-left: 3em;
 }
 </style>
