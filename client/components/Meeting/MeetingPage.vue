@@ -87,7 +87,6 @@
     },
     mounted() {
         this.getAllMeetings();
-
     },
     methods: {
         reRender() {

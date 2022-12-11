@@ -68,7 +68,7 @@ This renders the `index.html` file that will be used to interact with the backen
 
 **Returns**
 
-- A list of all the time blocks for the user to mark as met, sorted in descending order by start
+- A list of all the time blocks that are unclaimed for the user, sorted in descending order by start
 
 **Throws**
 
@@ -177,6 +177,18 @@ This renders the `index.html` file that will be used to interact with the backen
 
 - `403` if the user is not logged in or is not the owner of the time block
 - `404` if either the time block with given ID does not exist or the input is not valid
+
+#### `PATCH /api/timeblock/cancel/:timeBlockId` - Modify a time block by canceling a meeting
+
+**Returns**
+
+- the updated time block
+
+**Throws**
+
+- `403` if the user is not logged in or user is not owner or requester
+- `404` if the time block with given ID does not exist
+- `409` if the time block is not an accepted meeting
 
 #### `PATCH /api/timeblock/met/:timeBlockId` - Modify a time block by marking a meeting as met or not
 

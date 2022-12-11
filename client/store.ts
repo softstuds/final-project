@@ -52,7 +52,7 @@ const store = new Vuex.Store({
       /**
        * Request the server for the currently available freets.
        */
-      const url = state.filter=='Past Meetings' ? `/api/timeblock/checkoccurred` : '/api/timeblock';
+      const url = state.filter=='Past Meetings' ? `/api/timeblock/met/check` : '/api/timeblock';
       const res = await fetch(url).then(async r => r.json());
       state.timeblocks = res;
     },

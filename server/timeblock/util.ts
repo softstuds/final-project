@@ -10,7 +10,7 @@ type TimeBlockResponse = {
   message: string;
   start: string;
   accepted: boolean;
-  met: boolean;
+  status: string;
 };
 
 /**
