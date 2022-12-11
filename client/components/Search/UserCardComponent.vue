@@ -1,10 +1,16 @@
 <template>
   <section class="card">
-    <router-link 
-      :to="'/profile/'+ user._id"
-    >
+    <section>
       <b class="name">{{ user.firstName }} {{ user.lastName }}</b>
-    </router-link>
+      <router-link 
+        :to="'/profile/'+ user._id"
+      >
+        <button
+          class="profile-nav-button">
+          See {{ user.firstName }}'s availabilities on their profile
+        </button>
+      </router-link>
+    </section>
     <div class="otherInfo">
       <i><b>Class of {{ user.graduationYear }}</b></i>
       <p class="industry-info"><b>Industry: {{ user.industry !== undefined ? user.industry.industryType : "None" }}</b></p>
@@ -121,10 +127,24 @@ p {
 }
 
 .industry-info {
-  /* position: absolute; */
   padding: 0 5;
   top: 0px;
   right: 10px;
   font-size: 18px;
+}
+
+.profile-nav-button {
+  float: right;
+  position: relative;
+  height: 36px;
+  background-color: #729e85;
+  border-radius:6px;
+  border: 0px;
+  color: white;
+}
+
+.profile-nav-button:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0 4px 12px;
+  cursor: pointer;
 }
 </style>
