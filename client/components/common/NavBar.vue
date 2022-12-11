@@ -16,6 +16,12 @@
       </router-link>
       <router-link
         v-if="$store.state.userId"
+        to="/search"
+      >
+        Search
+      </router-link>
+      <router-link
+        v-if="$store.state.userId"
         to="/meeting"
       >
         Meetings
