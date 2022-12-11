@@ -8,7 +8,8 @@
       </header>
       <SearchUsersForm 
           placeholder="🔍 Search for users"
-          button="🔄 Get Users">
+          button="🔄 Get Users"
+          @filterUsers="searchUsers">
       </SearchUsersForm >
       <button class="filter-button"
           v-if="!filtering"
@@ -98,6 +99,7 @@ export default {
       tagsFilteredUsers: new Set(),
       industryFilteredUsers: new Set(),
       gradYearFilteredUsers: new Set(),
+      searchFilteredUsers: new Set(),
       displayedUsers: [],
       filtering: false
     }
@@ -117,19 +119,24 @@ export default {
       this.tagsFilteredUsers = this.getIds();
       this.industryFilteredUsers = this.getIds();
       this.gradYearFilteredUsers = this.getIds();
+      this.searchFilteredUsers = this.getIds();
     },
     changeFiltering() {
       this.filtering = !this.filtering;
 
       if (!this.filtering) {
-        this.displayedUsers = this.users;
         this.tagsFilteredUsers = this.getIds();
         this.industryFilteredUsers = this.getIds();
         this.gradYearFilteredUsers = this.getIds();
+        this.getDisplayedUsers();
       }
     },
     filterTags(value) {
       this.tagsFilteredUsers = new Set(value);
+      this.getDisplayedUsers();
+    },
+    searchUsers(value) {
+      this.searchFilteredUsers = new Set(value);
       this.getDisplayedUsers();
     },
     filterIndustry(value) {
@@ -152,7 +159,10 @@ export default {
       return new Set(this.users.map(user => user.id));
     },
     getDisplayedUsers() {
-      const allFilters = [this.tagsFilteredUsers, this.industryFilteredUsers, this.gradYearFilteredUsers];
+      const allFilters = [this.tagsFilteredUsers, 
+                          this.industryFilteredUsers, 
+                          this.gradYearFilteredUsers, 
+                          this.searchFilteredUsers];
       const filterIntersection = allFilters.reduce((a, b) => new Set([...a].filter(x => b.has(x))));
       this.displayedUsers = this.users;
       this.displayedUsers = this.displayedUsers.filter(user => filterIntersection.has(user.id));

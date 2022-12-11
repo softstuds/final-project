@@ -172,7 +172,7 @@ router.get(
  */
 router.get(
   '/search/:firstName-:lastName',
-  [],
+  [userValidator.isUserLoggedIn],
   async (req: Request, res: Response) => {
     const firstName = req.params.firstName;
     const lastName = req.params.lastName;
@@ -192,10 +192,9 @@ router.get(
  */
  router.get(
   '/search/:firstName',
-  [],
+  [userValidator.isUserLoggedIn],
   async (req: Request, res: Response) => {
     const firstName = req.params.firstName;
-    console.log('here');
     const usersFirst = await UserCollection.findAllByFirstName(firstName);
     const usersLast = await UserCollection.findAllByLastName(firstName);
     let users = usersFirst.concat(usersLast);
