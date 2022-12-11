@@ -23,7 +23,8 @@
       </div>
       <div v-else-if="type=='upcoming'">
         <p>Meeting Link: {{this.link ?? 'nolink'}}</p>
-        <button @click="cancelMeeting">Cancel Meeting</button>
+        <button v-if="meeting.status !== 'CANCELED'" @click="cancelMeeting">Cancel Meeting</button>
+        <p v-else class="canceled">This meeting has been canceled.</p>
       </div>
       <div v-else-if="(type=='past' && this.feedback==false)">
         <p>Did this meeting successfully occur?</p>
@@ -275,6 +276,10 @@ section, p {
   background-color: forestgreen;
   color: white;
   border: none;
+}
+
+.canceled {
+  color: indianred;
 }
 
 .row {
