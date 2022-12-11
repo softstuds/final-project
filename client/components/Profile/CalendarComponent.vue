@@ -50,7 +50,8 @@
                 {{ block.start.getHours() % 12 == 0 ?
                   12 :
                   block.start.getHours() % 12
-                }}{{ block.start.getHours() < 12 ? 'am' : 'pm' }}
+                }}:{{ block.start.getMinutes() == 0 ? '00' : block.start.getMinutes() }}
+                {{ block.start.getHours() < 12 ? 'am' : 'pm' }}
                 <div class="row">
                   <section class="column" v-if="userId !== $store.state.userId">
                     <button 
