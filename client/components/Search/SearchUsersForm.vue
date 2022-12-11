@@ -12,7 +12,7 @@ export default {
     methods: {
         async submit() {
             try {
-                const names = this.value.split(' ');
+                const names = this.value.split(' ').filter(name => name.length > 0);
                 let url = '/api/users';
                 if (names.length > 2) {
                     const message = 'You have entered more than a first and last name'
@@ -20,10 +20,10 @@ export default {
                     setTimeout(() => this.$delete(this.alerts, e), 3000);
                     return;
                 }
-
+    
                 if (names.length === 2) {
                     url = `/api/users/search/${names[0]}-${names[1]}`;
-                } else if (names.length === 1 && names[0].length > 0) {
+                } else if (names.length === 1) {
                     url = `/api/users/search/${names[0]}`;
                 }
                 const r = await fetch(url);

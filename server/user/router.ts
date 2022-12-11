@@ -191,12 +191,12 @@ router.get(
  * @return users
  */
  router.get(
-  '/search/:firstName',
+  '/search/:firstOrLastName',
   [userValidator.isUserLoggedIn],
   async (req: Request, res: Response) => {
-    const firstName = req.params.firstName;
-    const usersFirst = await UserCollection.findAllByFirstName(firstName);
-    const usersLast = await UserCollection.findAllByLastName(firstName);
+    const firstOrLastName = req.params.firstOrLastName;
+    const usersFirst = await UserCollection.findAllByFirstName(firstOrLastName);
+    const usersLast = await UserCollection.findAllByLastName(firstOrLastName);
     let users = usersFirst.concat(usersLast);
     const usersSet = new Set(users);
     users = [...usersSet];
