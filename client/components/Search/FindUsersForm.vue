@@ -4,9 +4,20 @@ import InlineForm from '@/components/common/InlineForm.vue';
 export default {
     name: 'FindUsersForm',
     mixins: [InlineForm],
+    props: {
+        refreshCount: {
+            type: Number,
+            required: true
+        }
+    },
     data() {
         return {
             value:""
+        }
+    },
+    watch: {
+        refreshCount: function(val) {
+            this.value = "";
         }
     },
     methods: {

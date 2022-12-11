@@ -250,8 +250,8 @@ export default {
             }
 
             const today = new Date();
-            const start = new Date();
-            start.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+            const start = new Date(today);
             start.setDate(start.getDate() - start.getDay());
 
             const nextFourWeeks = []

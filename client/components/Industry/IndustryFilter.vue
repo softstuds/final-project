@@ -16,6 +16,12 @@ import Multiselect from 'vue-multiselect';
 export default {
     name: 'IndustryFilter',
     components: {Multiselect},
+    props: {
+        refreshCount: {
+            type: Number,
+            required: true
+        }
+    },
     data() {
         return {
             options: [
@@ -46,6 +52,11 @@ export default {
             ],
             value: '',
             filteredIds: []
+        }
+    },
+    watch: {
+        refreshCount: function(val) {
+            this.value = "";
         }
     },
     methods: {
