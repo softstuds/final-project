@@ -201,21 +201,21 @@ router.get(
   ],
   async (req: Request, res: Response) => {
     const {userId} = req.params;
-    const totalHoursAccepted = await TimeBlockCollection.findTotalAcceptedByOwner(userId) as number;
-    const totalHoursMet = await TimeBlockCollection.findTotalMetByOwner(userId) as number;
-    const months = await TimeBlockCollection.findTotalMonthsByOwner(userId) as number;
-    const averageMonthlyHours = (months) ? totalHoursAccepted / months : 0;
+    const totalHoursAccepted = await TimeBlockCollection.findTotalMeetingsByUser(userId) as number;
+    const totalHoursMet = await TimeBlockCollection.findTotalMetByUser(userId) as number;
+    const months = await TimeBlockCollection.findTotalMonthsByUser(userId) as number;
+    const averageMonthlyHours = totalHoursAccepted / months;
     const now = new Date();
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-    const hoursThisMonth = await TimeBlockCollection.findTotalAcceptedByOwner(userId, firstDay);
+    const hoursThisMonth = await TimeBlockCollection.findTotalMeetingsByUser(userId, firstDay);
     const meetingSuccessRate = (totalHoursAccepted) ? totalHoursMet / totalHoursAccepted * 100 : 100;
-    const uniqueUsers = await TimeBlockCollection.findTotalUniqueMetByOwner(userId);
+    const uniqueUsers = await TimeBlockCollection.findTotalUniqueMetByUser(userId);
     res.status(200).json({
       message: 'Statistics were fetched successfully.',
       statistics: [
-        {label: 'Total Hours Accepted', value: totalHoursAccepted},
-        {label: 'Average Hours Accepted per Month', value: `${averageMonthlyHours.toFixed(2)}`},
-        {label: 'Total Hours Accepted This Month', value: hoursThisMonth},
+        {label: 'Total Meetings Had', value: totalHoursAccepted},
+        {label: 'Average Meetings Had per Month', value: `${averageMonthlyHours.toFixed(2)}`},
+        {label: 'Total Meetings Had This Month', value: hoursThisMonth},
         {label: 'Meeting Success Rate', value: `${Math.round(meetingSuccessRate)}%`},
         {label: 'Unique Users Met', value: uniqueUsers},
       ]
