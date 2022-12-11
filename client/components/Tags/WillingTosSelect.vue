@@ -22,7 +22,6 @@ export default {
     name: "WillingTosSelect",
     components: {Multiselect},
     props: {
-        // freet being added
         userId: {
             type: String,
             required: true

@@ -218,7 +218,7 @@ router.get(
  *
  * @name GET /api/timeblock/stats/:userId
  *
- * @return {TimeBlockResponse[]} - An object of all the statistics available for users to see
+ * @return {Object} - An object of all the statistics available for users to see
  * @throws {403} - If the user is not logged in
  * @throws {404} - If the userId is not a valid one
  */
@@ -258,7 +258,9 @@ router.get(
  * @name PUT /api/timeblock
  *
  * @param {string} start - The start time of the time block
- * @return {TimeBlockResponse} - The created time block
+ * @param {string} end - The end time of the time block
+ * @return {TimeBlockResponse[]} - The created time block(s)
+ * @throws {400} - If end time is not given
  * @throws {403} - If the user is not logged in
  * @throws {409} - If the user already has a time block with the given start time 
  *                or if the start time has already passed
@@ -272,12 +274,16 @@ router.put(
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const timeBlock = await TimeBlockCollection.addOne(userId, req.body.start);
-
-    res.status(201).json({
-      message: 'Your time block was created successfully.',
-      timeBlock: util.constructTimeBlockResponse(timeBlock)
-    });
+    var start = new Date(req.body.start);
+    const end = req.body.end ? new Date(req.body.end) : new Date(start.getTime() + 1000*60*30);
+    const created = [];
+    while (start < end) {
+      const timeBlock = await TimeBlockCollection.addOne(userId, start);
+      created.push(timeBlock);
+      start = new Date(start.getTime() + 1000*60*30); //adds half an hour to start
+    }
+    const response = created.map(util.constructTimeBlockResponse);
+    res.status(200).json(response);
   }
 );
 

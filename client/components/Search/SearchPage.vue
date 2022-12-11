@@ -4,7 +4,7 @@
   <main>
     <section v-if="$store.state.user">
       <header>
-        <h2>Welcome to Alumni Connector!</h2>
+        <h2>Search for Users</h2>
       </header>
       <SearchUsersForm 
           class="users-search-form"
@@ -15,7 +15,7 @@
       <button class="filter-button"
           v-if="!filtering"
           @click="changeFiltering">
-          Access Filters
+          Show Filters
       </button>
       <section
         v-if="filtering"
@@ -25,7 +25,8 @@
           <h1>Filter by Willing To Tags...</h1>
           <TagsFilterButton
             @filterUsers="filterTags"
-            @unfilterUsers="unfilterTags">
+            @unfilterUsers="unfilterTags"
+            :refreshCount="refreshCount">
           </TagsFilterButton>
         </section>
         <section class="industry-filter">
@@ -33,7 +34,8 @@
           <IndustryFilter
             class="industry-filter-bar"
             @filterUsers="filterIndustry"
-            @unfilterUsers="unfilterIndustry">
+            @unfilterUsers="unfilterIndustry"
+            :refreshCount="refreshCount">
           </IndustryFilter>
         </section>
         <section class="grad-year-filter">
@@ -41,7 +43,8 @@
           <FindUsersForm 
               placeholder="🔍 Filter by graduation year"
               button="🔄 Get Users"
-              @filterUsers="filterGradYear">
+              @filterUsers="filterGradYear"
+              :refreshCount="refreshCount">
           </FindUsersForm>
         </section>
         <section class="availability-filter">
@@ -52,10 +55,15 @@
           </AvailabilityFilter>
         </section>
       </section>
+      <button class="clear-filter-button"
+          v-if="filtering"
+          @click="clearFiltering">
+          Clear all Filters
+      </button>
       <button class="filter-button"
           v-if="filtering"
           @click="changeFiltering">
-          Done Filtering
+          Hide Filters
       </button>
     </section>
     <section v-else>
@@ -111,7 +119,8 @@ export default {
       searchFilteredUsers: new Set(),
       availableFilteredUsers: new Set(),
       displayedUsers: [],
-      filtering: false
+      filtering: false,
+      refreshCount: 0
     }
   },
   mounted() {
@@ -134,14 +143,14 @@ export default {
     },
     changeFiltering() {
       this.filtering = !this.filtering;
-
-      if (!this.filtering) {
-        this.tagsFilteredUsers = this.getIds();
-        this.industryFilteredUsers = this.getIds();
-        this.gradYearFilteredUsers = this.getIds();
-        this.availableFilteredUsers = this.getIds();
-        this.getDisplayedUsers();
-      }
+    },
+    clearFiltering() {
+      this.refreshCount += 1;
+      this.tagsFilteredUsers = this.getIds();
+      this.industryFilteredUsers = this.getIds();
+      this.gradYearFilteredUsers = this.getIds();
+      this.availableFilteredUsers = this.getIds();
+      this.getDisplayedUsers();
     },
     filterTags(value) {
       this.tagsFilteredUsers = new Set(value);
@@ -206,6 +215,7 @@ header, header > * {
 
 button {
     margin-right: 10px;
+    margin-left: 10px;
 }
 
 h1 {
@@ -230,8 +240,7 @@ section .scrollbox {
 }
 
 h2 {
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  color: #729e85;
+  font-weight: 300;
   font-size: 48px;
 }
 
@@ -253,6 +262,18 @@ h2 {
   height: 28px;
   border: 0.5px solid black;
   background-color: white;
+  border-radius: 4px;
+  color: black;
+  cursor: pointer;
+}
+
+.clear-filter-button {
+  width: 15em;
+  padding: 0px;
+  margin: 12px 24px 12px 12px;
+  height: 28px;
+  border: 0.5px solid black;
+  background-color: #c46345;
   border-radius: 4px;
   color: black;
   cursor: pointer;

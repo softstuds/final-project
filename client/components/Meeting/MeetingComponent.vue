@@ -5,10 +5,10 @@
     <section class="timeBlock">
       <p v-if="type=='outgoing'">Requested meeting with {{owner.name}}</p>
       <p v-else-if="type=='incoming'">Incoming meeting invite from {{requester.name}}</p>
-      <p v-if="(type=='upcoming' && this.user._id==meeting.owner)">Upcoming meeting with {{requester.name}}</p>
-      <p v-if="(type=='upcoming' && this.user._id==meeting.requester)">Upcoming meeting with {{owner.name}}</p>
-      <p v-if="(type=='past' && this.user._id==meeting.owner)">Past meeting with {{requester.name}}</p>
-      <p v-if="(type=='past' && this.user._id==meeting.requester)">Past meeting with {{owner.name}}</p>
+      <p v-if="(type=='upcoming' && this.user._id==meeting.owner._id)">Upcoming meeting with {{requester.name}}</p>
+      <p v-if="(type=='upcoming' && this.user._id==meeting.requester._id)">Upcoming meeting with {{owner.name}}</p>
+      <p v-if="(type=='past' && this.user._id==meeting.owner._id)">Past meeting with {{requester.name}}</p>
+      <p v-if="(type=='past' && this.user._id==meeting.requester._id)">Past meeting with {{owner.name}}</p>
       <p class="time">{{this.day}} at {{hour}}:{{minute}} {{pm}}</p>
 
       
@@ -27,15 +27,16 @@
         <p v-else class="canceled">This meeting has been canceled.</p>
       </div>
       <div v-else-if="(type=='past' && this.feedback==false)">
-        <p>Did this meeting successfully occur?</p>
+        <p v-if="(this.user._id==meeting.owner._id)">Did {{requester.name}} attend the meeting?</p>
+        <p v-else>Did {{owner.name}} attend the meeting?</p>
         <div class="row">
           <button @click="feedbackNotMet" class="column">No</button>
           <button @click="feedbackMet" class="column accept">Yes</button>
         </div>
       </div>
       <div v-else-if="(type=='past' && this.feedback==true)">
-        <p v-if="(meeting.met==true)" class="met">You marked this meeting as met</p>
-        <p v-else class="notAccepted">You marked this meeting as not met</p>
+        <p v-if="(meeting.met==true)" class="met">You marked {{otherParty}} as attended.</p>
+        <p v-else class="notAccepted">You marked {{otherParty}} as did not attend.</p>
       </div>
 
     </section>
@@ -56,6 +57,7 @@ export default {
   data () {
     return {
       user: this.$store.state.user,
+      otherParty: String,
       owner: {
         name: `${this.meeting.owner.firstName} ${this.meeting.owner.lastName}`,
         email: this.meeting.owner.email,
@@ -75,8 +77,17 @@ export default {
   mounted () {
     this.getDate();
     this.needFeedback();
+    this.getOtherParty();
   },
   methods: {
+    getOtherParty() {
+      console.log(typeof this.meeting.status);
+        if (this.user._id == this.meeting.owner) {
+          this.otherParty = this.requester.name;
+        } else {
+          this.otherParty = this.owner.name;
+        }
+    },
     getDate () {
       const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
       const date = new Date(this.meeting.start);
@@ -102,7 +113,7 @@ export default {
 
     },
     needFeedback() {
-      if (this.meeting.met == null) {
+      if (this.meeting.status == 'NO_RESPONSE') {
         this.feedback = false;
       } else {
         this.feedback = true;

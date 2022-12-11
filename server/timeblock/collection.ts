@@ -15,14 +15,13 @@ class TimeBlockCollection {
    * Add a time block to the collection
    *
    * @param {string} ownerId - The id of the owner of the time block
-   * @param {string} start - The start time of the time block
+   * @param {Date} start - The start time of the time block
    * @return {Promise<HydratedDocument<TimeBlock>>} - The newly created tim eblock
    */
-  static async addOne(ownerId: Types.ObjectId | string, start: string): Promise<HydratedDocument<TimeBlock>> {
-    const time = new Date(start);
+  static async addOne(ownerId: Types.ObjectId | string, start: Date): Promise<HydratedDocument<TimeBlock>> {
     const timeBlock = new TimeBlockModel({
       owner: ownerId,
-      start: time
+      start: start
     });
     await timeBlock.save(); // Saves time block to MongoDB
     return timeBlock.populate('owner');
@@ -90,8 +89,8 @@ class TimeBlockCollection {
    static async findAllByUserAccepted(userId: Types.ObjectId | string): Promise<Array<HydratedDocument<TimeBlock>>> {
     // Retrieves time blocks and sorts them from latest to earliest time
     const now = new Date();
-    const uncanceled = await TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}], start: {$gte: now}, accepted: true, status: 'NO_RESPONSE'}).sort({start: -1}).populate('owner requester');
-    const canceled = await TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}], start: {$gte: now}, accepted: true, status: 'CANCELED'}).sort({start: -1}).populate('owner requester');
+    const uncanceled = await TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}], start: {$gte: now}, accepted: true, status: 'NO_RESPONSE'}).sort({start: 1}).populate('owner requester');
+    const canceled = await TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}], start: {$gte: now}, accepted: true, status: 'CANCELED'}).sort({start: 1}).populate('owner requester');
     return uncanceled.concat(canceled);
   }
 
