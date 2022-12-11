@@ -4,6 +4,8 @@
 <template>
   <form @submit.prevent="submit">
     <h3>{{ title }}</h3>
+    <div class="row">
+      <div class="column">
     <article
       v-if="fields.length"
     >
@@ -39,11 +41,13 @@
     <article v-else>
       <p>{{ content }}</p>
     </article>
-    <button
+  </div>
+    <button class="columnform"
       type="submit"
     >
       {{ title }}
     </button>
+    </div>
     <section class="alerts">
       <article
         v-for="(status, alert, index) in alerts"
@@ -181,9 +185,10 @@ export default {
 
 <style scoped>
 form {
-  border: 1px solid #111;
+  border: 0px solid #111;
   padding: 0.5rem;
   display: flex;
+  width: 840px;
   flex-direction: column;
   justify-content: space-between;
   margin-bottom: 14px;
@@ -205,11 +210,42 @@ form > * {
 }
 
 form h3 {
-  margin-top: 0;
+  margin-top: 4px;
 }
 
 textarea {
    font-family: inherit;
    font-size: inherit;
+   padding: 10px 0px;
+}
+
+input {
+  padding: 10px 8px;
+  font-size: 16px;
+  margin: 4px 12px 0px 0px;
+}
+
+button {
+  width: 20%;
+  position: relative;
+  top: 26px;
+  margin: 4px 12px;
+  height: 36px;
+  background-color: #729e85;
+  border-radius:6px;
+  border: 0px;
+  color: white;
+}
+
+.row {
+  display: flex;
+}
+
+.column {
+  flex: 2;
+}
+
+.columnform {
+  flex: 0.4;
 }
 </style>

@@ -217,6 +217,19 @@ export default {
   
 }
 
+h2 {
+  font-weight: 180;
+  font-size: 48px;
+}
+
+p b {
+  font-weight: 400;
+}
+
+p {
+  font-weight: 300;
+}
+
 .editInfo {
   display: flex;
   justify-content: flex-end;

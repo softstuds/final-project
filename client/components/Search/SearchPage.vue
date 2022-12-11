@@ -4,7 +4,7 @@
   <main>
     <section v-if="$store.state.user">
       <header>
-        <h2>Viewing Users</h2>
+        <h2>Welcome to Alumni Connector!</h2>
       </header>
       <section>
         <button class="filter-button"
@@ -157,24 +157,53 @@ button {
     margin-right: 10px;
 }
 
+h1 {
+  font-size: larger;
+  font-weight: 400;
+  text-decoration: none;
+  color: #212529;
+  margin: 8 0px;
+}
+
+
+h3 {
+  margin: 4px 0px;
+  font-size: 36px;
+  font-weight: 180;
+}
+
 section .scrollbox {
   flex: 1 0 50vh;
   padding: 3%;
   overflow-y: scroll;
 }
 
+h2 {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  color: #729e85;
+  font-size: 48px;
+}
+
 .filterBar {
   display: flex;
   flex-direction: column;
+  margin: 20px 0px;
 }
 
 .industry-filter-bar {
   width: 300px;
-  margin-bottom: 20px;
+  margin: 20px 0px;
 }
 
 .filter-button {
   width: 15em;
-  margin-left: 10px;
+  padding: 0px;
+  margin: 12px 24px 12px 12px;
+  height: 28px;
+  border: 0.5px solid black;
+  background-color: white;
+  border-radius: 4px;
+  color: black;
+  cursor: pointer;
 }
 </style>

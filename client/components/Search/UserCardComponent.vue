@@ -74,37 +74,57 @@ export default {
 </script>
 <style scoped>
 .card {
-  border: 1px solid #111;
-  border-radius: .30rem;
-  fill-opacity: 10;
-  padding: 20px;
-  position: relative;
-  margin:10px;
+    border-top: 0.5px solid black;
+    padding: 10px;
+    padding-top: 20px;
+    margin: 10px;
+}
+
+b {
+  font-weight: 50;
+  color: grey;
+  margin-top: 0px;
+}
+
+p {
+  margin: 8px 0px 0px 0px;
+  font-size: 16px;
+  line-height: 32px;
+}
+
+.specifics {
+  margin-top: 12px;
+  font-size: 24px;
 }
 
 .name {
-    font-size: larger
+    font-size: 32px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: 600;
+    text-decoration: none;
+    color: #729e85;
 }
 .otherInfo {
-    font-size: medium;
-    margin-top: 10px;
+    font-weight: 50;
+    margin-top: 12px;
+    color: grey;
 }
 
 .tags-info {
-  font-size: 14px;
-  width: 40%;
-  line-height: 2px;
+  font-size: 18px;
+  margin: 4 4;
 }
 
 .tags-list {
-  font-size: 14px;
+  font-size: 18px;
   margin-bottom: 0px;
 }
 
 .industry-info {
-  position: absolute;
+  /* position: absolute; */
+  padding: 0 5;
   top: 0px;
   right: 10px;
-  font-size: 16px;
+  font-size: 18px;
 }
 </style>

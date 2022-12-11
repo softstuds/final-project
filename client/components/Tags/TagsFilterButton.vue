@@ -72,14 +72,21 @@ export default {
 
 <style scoped>
 .active{
-  background-color:green;
+  background-color: rgb(113,158,133) !important;
+  color: white !important;
+  border: 0px !important;
 }
 
 .filter-button {
-    margin: 3px;
-    border-radius: 12px;
-    float: left;
-    font-size: 18px;
+  padding: 0px 18px;
+  margin: 12px 8px 12px 0px;
+  font-size: 16px;
+  height: 28px;
+  border: 0.5px solid black;
+  background-color: white;
+  border-radius: 4px;
+  color: black;
+  cursor: pointer;
 }
 
 .flex-buttons {

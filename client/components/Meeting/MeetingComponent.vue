@@ -21,8 +21,9 @@
         <button @click="rejectRequest" class="column">Reject</button>
         <button @click="acceptRequest" class="column accept">Accept</button>
       </div>
-      <div v-else-if="type=='upcoming'" class="row">
+      <div v-else-if="type=='upcoming'">
         <p>Meeting Link: {{this.link ?? 'nolink'}}</p>
+        <button @click="cancelMeeting">Cancel Meeting</button>
       </div>
       <div v-else-if="(type=='past' && this.feedback==false)">
         <p>Did this meeting successfully occur?</p>
@@ -109,6 +110,27 @@ export default {
     async cancelRequest () {
       try {
         const r = await fetch(`/api/timeblock/request/${this.meeting._id}/unsend`, {
+          method: 'PATCH', 
+          headers: {'Content-Type': 'application/json'}
+        });
+
+        const res = await r.json();
+        if (!r.ok) {
+          throw new Error(res.error);
+        }
+
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$delete(this.alerts, e), 3000);
+      }
+
+      this.key = 'reset';
+      this.$emit('refreshMeetings');
+    
+    },
+    async cancelMeeting () {
+      try {
+        const r = await fetch(`/api/timeblock/cancel/${this.meeting._id}`, {
           method: 'PATCH', 
           headers: {'Content-Type': 'application/json'}
         });
@@ -270,7 +292,8 @@ section, p {
 button {
   padding: 0px;
   margin: 12px 24px 12px 0px;
-  width: 4px;
+  width: 60%;
+  height: 28px;
   border: 0.5px solid black;
   background-color: white;
   border-radius: 4px;

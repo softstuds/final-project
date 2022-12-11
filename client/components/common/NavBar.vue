@@ -54,6 +54,7 @@
 <style scoped>
 nav {
     padding: 1.5vw 2vw;
+    margin: 0;
     background-color: white;
     display: flex;
     justify-content: space-between;
@@ -66,6 +67,7 @@ nav {
 .title {
     font-size: 32px;
     margin: 0 5px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
 }
 
 img {
