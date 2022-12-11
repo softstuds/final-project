@@ -82,7 +82,7 @@ class TimeBlockCollection {
 
   /**
    * Get all the time blocks in the database with a given user as owner or requester that's passed
-   * in order of most to least recent start time, not including cancellations
+   * in order of most to least recent start time, including cancellations but at the bottom
    *
    * @param {string} userId - The id of the user
    * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the time blocks for a given owner
@@ -90,7 +90,9 @@ class TimeBlockCollection {
    static async findAllByUserAccepted(userId: Types.ObjectId | string): Promise<Array<HydratedDocument<TimeBlock>>> {
     // Retrieves time blocks and sorts them from latest to earliest time
     const now = new Date();
-    return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}],start: {$gte: now}, accepted: true, status: {$ne: 'CANCELED'}}).sort({start: -1}).populate('owner requester');
+    const uncanceled = await TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}], start: {$gte: now}, accepted: true, status: 'NO_RESPONSE'}).sort({start: -1}).populate('owner requester');
+    const canceled = await TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}], start: {$gte: now}, accepted: true, status: 'CANCELED'}).sort({start: -1}).populate('owner requester');
+    return uncanceled.concat(canceled);
   }
 
   /**
