@@ -240,8 +240,8 @@ export default {
             }
 
             const today = new Date();
-            const start = new Date();
-            start.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+            const start = new Date(today);
             start.setDate(start.getDate() - start.getDay());
 
             const nextFourWeeks = []
@@ -249,7 +249,7 @@ export default {
               const nextDay = new Date(start);
               nextDay.setDate(start.getDate() + i);
               var status;
-              if (nextDay.getMonth() < today.getMonth() || nextDay.getDate() < today.getDate()) {
+              if (nextDay < today) {
                 status = 'pastDay';
               } else if (nextDay.getMonth() == today.getMonth() && nextDay.getDate() == today.getDate()) {
                 status = 'today';

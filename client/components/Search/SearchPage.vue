@@ -15,7 +15,7 @@
       <button class="filter-button"
           v-if="!filtering"
           @click="changeFiltering">
-          Access Filters
+          Show Filters
       </button>
       <section
         v-if="filtering"
@@ -25,7 +25,8 @@
           <h1>Filter by Willing To Tags...</h1>
           <TagsFilterButton
             @filterUsers="filterTags"
-            @unfilterUsers="unfilterTags">
+            @unfilterUsers="unfilterTags"
+            :refreshCount="refreshCount">
           </TagsFilterButton>
         </section>
         <section class="industry-filter">
@@ -33,22 +34,28 @@
           <IndustryFilter
             class="industry-filter-bar"
             @filterUsers="filterIndustry"
-            @unfilterUsers="unfilterIndustry">
+            @unfilterUsers="unfilterIndustry"
+            :refreshCount="refreshCount">
           </IndustryFilter>
         </section>
         <section class="grad-year-filter">
           <h1>Filter by Graduation Year...</h1>
           <FindUsersForm 
-              placeholder="Filter by graduation year"
-              button="Submit"
+              placeholder="🔍 Filter by graduation year"
+              button="🔄 Get Users"
               @filterUsers="filterGradYear">
           </FindUsersForm>
         </section>
       </section>
+      <button class="clear-filter-button"
+          v-if="filtering"
+          @click="clearFiltering">
+          Clear all Filters
+      </button>
       <button class="filter-button"
           v-if="filtering"
           @click="changeFiltering">
-          Done Filtering
+          Hide Filters
       </button>
     </section>
     <section v-else>
@@ -102,7 +109,8 @@ export default {
       gradYearFilteredUsers: new Set(),
       searchFilteredUsers: new Set(),
       displayedUsers: [],
-      filtering: false
+      filtering: false,
+      refreshCount: 0
     }
   },
   mounted() {
@@ -124,13 +132,13 @@ export default {
     },
     changeFiltering() {
       this.filtering = !this.filtering;
-
-      if (!this.filtering) {
-        this.tagsFilteredUsers = this.getIds();
-        this.industryFilteredUsers = this.getIds();
-        this.gradYearFilteredUsers = this.getIds();
-        this.getDisplayedUsers();
-      }
+    },
+    clearFiltering() {
+      this.refreshCount += 1;
+      this.tagsFilteredUsers = this.getIds();
+      this.industryFilteredUsers = this.getIds();
+      this.gradYearFilteredUsers = this.getIds();
+      this.getDisplayedUsers();
     },
     filterTags(value) {
       this.tagsFilteredUsers = new Set(value);
@@ -236,6 +244,18 @@ h2 {
   height: 28px;
   border: 0.5px solid black;
   background-color: white;
+  border-radius: 4px;
+  color: black;
+  cursor: pointer;
+}
+
+.clear-filter-button {
+  width: 15em;
+  padding: 0px;
+  margin: 12px 24px 12px 12px;
+  height: 28px;
+  border: 0.5px solid black;
+  background-color: #c46345;
   border-radius: 4px;
   color: black;
   cursor: pointer;

@@ -12,6 +12,12 @@
 <script>
 export default {
     name: 'TagsFilterButton',
+    props: {
+        refreshCount: {
+            type: Number,
+            required: true
+        }
+    },
     data() {
         return {
             frontEndTags: {
@@ -24,12 +30,17 @@ export default {
             },
             backEndTags: {},
             active: {},
-            filteredIds: []
+            filteredIds: [],
         }
     },
     mounted() {
         this.backEndTags = this.inverse(this.frontEndTags);
         this.active = this.initializeActive(this.frontEndTags);
+    },
+    watch: {
+        refreshCount: function(val) {
+            this.active = this.initializeActive(this.active);
+        }
     },
     methods: {
         toggleActive(value) {
