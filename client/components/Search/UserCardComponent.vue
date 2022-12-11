@@ -1,10 +1,16 @@
 <template>
   <section class="card">
-    <router-link 
-      :to="'/profile/'+ user._id"
-    >
+    <section>
       <b class="name">{{ user.firstName }} {{ user.lastName }}</b>
-    </router-link>
+      <router-link 
+        :to="'/profile/'+ user._id"
+      >
+        <button
+          class="profile-nav-button">
+          See {{ user.firstName }}'s availabilities on their profile
+        </button>
+      </router-link>
+    </section>
     <div class="otherInfo">
       <i><b>Class of {{ user.graduationYear }}</b></i>
       <p class="industry-info"><b>Industry: {{ user.industry !== undefined ? user.industry.industryType : "None" }}</b></p>
@@ -20,9 +26,6 @@
         v-if="tagsDisplayed.length === 0">
         I am willing to: Unspecified
       </p>
-    </div>
-    <div>
-      {{ user.firstName }} {{( hasAvailability === true ? 'has' : 'does not have')}} availabilities. 
     </div>
   </section>
 </template>
@@ -53,7 +56,6 @@ export default {
     },
     mounted() {
       this.getTags();
-      this.getAvailabilityStatus();
     },
     watch: {
       tags: function(val) {
@@ -73,14 +75,6 @@ export default {
             throw new Error(res.error);
         }
         this.tags = res.tags;
-      },
-      async getAvailabilityStatus() {
-        const r = await fetch(`/api/timeblock/availability/${this.user._id}`);
-        const res = await r.json();
-        if (!r.ok) {
-            throw new Error(res.error);
-        }
-        this.hasAvailability = res.hasAvailability;
       }
     }
 }
@@ -134,10 +128,24 @@ p {
 }
 
 .industry-info {
-  /* position: absolute; */
   padding: 0 5;
   top: 0px;
   right: 10px;
   font-size: 18px;
+}
+
+.profile-nav-button {
+  float: right;
+  position: relative;
+  height: 36px;
+  background-color: #729e85;
+  border-radius:6px;
+  border: 0px;
+  color: white;
+}
+
+.profile-nav-button:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0 4px 12px;
+  cursor: pointer;
 }
 </style>

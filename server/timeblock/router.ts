@@ -105,12 +105,19 @@ router.get(
 router.get(
   '/availability/users',
   [
-    userValidator.isUserLoggedIn,
-    timeBlockValidator.isValidUserParam
+    userValidator.isUserLoggedIn
   ],
   async (req: Request, res: Response) => {
     const users = await UserCollection.findAll();
-    const usersWithAvailability = users.filter(async user => await TimeBlockCollection.findAvailabilityStatus(user.id));
+    const availabilities = users.map(user => TimeBlockCollection.findAvailabilityStatus(user._id));
+    const availabilityResults = await Promise.all(availabilities);
+    const usersWithAvailability = [];
+    
+    for (const userNum in users) {
+      if (availabilityResults[userNum]) {
+        usersWithAvailability.push(users[userNum]);
+      }
+    }
     res.status(200).json({usersWithAvailability});
   }
 );
@@ -324,7 +331,7 @@ router.patch(
     timeBlockValidator.isBlockNotOwner
   ],
   async (req: Request, res: Response) => {
-    const timeBlock = await TimeBlockCollection.updateOneRequest(req.params.timeBlockId, req.body.userId, req.body.message.trim());
+    const timeBlock = await TimeBlockCollection.updateOneRequest(req.params.timeBlockId, req.body.userId, req.body.message ? req.body.message.trim() : '');
     res.status(200).json({
       message: 'Your time block was updated successfully.',
       timeBlock: util.constructTimeBlockResponse(timeBlock)
