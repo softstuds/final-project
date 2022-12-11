@@ -186,6 +186,7 @@ header, header > * {
 
 button {
     margin-right: 10px;
+    margin-left: 10px;
 }
 
 h1 {
