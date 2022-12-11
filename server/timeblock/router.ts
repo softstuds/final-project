@@ -302,7 +302,7 @@ router.patch(
     timeBlockValidator.isBlockNotOwner
   ],
   async (req: Request, res: Response) => {
-    const timeBlock = await TimeBlockCollection.updateOneRequest(req.params.timeBlockId, req.body.userId, req.body.message.trim());
+    const timeBlock = await TimeBlockCollection.updateOneRequest(req.params.timeBlockId, req.body.userId, req.body.message ? req.body.message.trim() : '');
     res.status(200).json({
       message: 'Your time block was updated successfully.',
       timeBlock: util.constructTimeBlockResponse(timeBlock)

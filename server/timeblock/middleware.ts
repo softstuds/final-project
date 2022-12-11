@@ -51,7 +51,7 @@ const isValidUserBody = async (req: Request, res: Response, next: NextFunction) 
  * Checks if the message of the request in req.body is valid, i.e. not more than 300 characters
  */
  const isValidMessage = (req: Request, res: Response, next: NextFunction) => {
-  const {message} = req.body as {message: string};
+  const message = req.body.message ?? '';
 
   if (message.trim().length > 300) {
     res.status(413).json({
