@@ -4,7 +4,7 @@
   <main>
     <section v-if="$store.state.user">
       <header>
-        <h2>Welcome to Alumni Connector!</h2>
+        <h2>Search for Users</h2>
       </header>
       <SearchUsersForm 
           class="users-search-form"
@@ -210,8 +210,7 @@ section .scrollbox {
 }
 
 h2 {
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  color: #729e85;
+  font-weight: 300;
   font-size: 48px;
 }
 
