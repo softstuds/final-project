@@ -314,7 +314,7 @@ export default {
             const startTime = document.getElementById('startTime');
             startTime.selectedIndex = 18;
             const endTime = document.getElementById('endTime');
-            startTime.selectedIndex = 19;
+            endTime.selectedIndex = 19;
         },
         hideTimeSelector() {
             this.editing = false;
@@ -323,7 +323,6 @@ export default {
         },
         updateEndTime() {
           const startTime = document.getElementById('startTime');
-
           const endTime = document.getElementById('endTime');
           endTime.selectedIndex = startTime.selectedIndex + 1;
         },
