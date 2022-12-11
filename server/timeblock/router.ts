@@ -61,7 +61,7 @@ router.get(
  * @throws {403} - If the user is not logged in
  */
  router.get(
-  '/access/',
+  '/access',
   [
     userValidator.isUserLoggedIn
   ],
@@ -90,6 +90,27 @@ router.get(
     const unMarkedTimeBlocks = await TimeBlockCollection.findAllByUserOccurred(userId, false);
     const response = unMarkedTimeBlocks.map(util.constructTimeBlockResponse);
     res.status(200).json(response);
+  }
+);
+
+/**
+ * Whether user has claimable availabilities
+ *
+ * @name GET /api/timeblock/availability/:userId
+ *
+ * @return {Boolean} - Whether of not the user has access
+ * @throws {403} - If the user is not logged in
+ */
+router.get(
+  '/availability/:userId',
+  [
+    userValidator.isUserLoggedIn,
+    timeBlockValidator.isValidUserParam
+  ],
+  async (req: Request, res: Response) => {
+    const {userId} = req.params;
+    const hasAvailability = await TimeBlockCollection.findAvailabilityStatus(userId);
+    res.status(200).json({hasAvailability});
   }
 );
 
