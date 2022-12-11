@@ -67,8 +67,18 @@ nav {
     align-items: center;
     position: relative;
     text-decoration: none;
-    color: black;
+    font-weight:300;
+    color: black !important;
 }
+
+a:hover { text-decoration: none; color:#729e85; }
+a:visited { text-decoration: underline; color:black; }
+a:focus { 
+  text-decoration: underline;
+  color:#729e85;
+  font-weight: 500;
+}
+a:active { text-decoration: underline; color:#729e85; }
 
 .title {
     font-size: 32px;
