@@ -240,14 +240,13 @@ router.put(
   '/',
   [
     userValidator.isUserLoggedIn,
-    timeBlockValidator.isEndGiven,
     timeBlockValidator.isBlockNonexistent,
     timeBlockValidator.isBlockInNextFour
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     var start = new Date(req.body.start);
-    const end = new Date(req.body.end);
+    const end = req.body.end ? new Date(req.body.end) : new Date(start.getTime() + 1000*60*30);
     const created = [];
     while (start < end) {
       const timeBlock = await TimeBlockCollection.addOne(userId, start);

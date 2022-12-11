@@ -3,19 +3,6 @@ import TimeBlockCollection from '../timeblock/collection';
 import UserCollection from '../user/collection';
 
 /**
- * Checks if an end time is given in req.body
- */
-const isEndGiven = async (req: Request, res: Response, next: NextFunction) => {
-  const {end} = req.body as {end: string};
-  if (!end) {
-    res.status(400).json({error: 'Missing end time.'});
-    return;
-  }
-
-  next();
-};
-
-/**
  * Checks if a userId is given in req.body
  */
 const isUserGiven = async (req: Request, res: Response, next: NextFunction) => {
@@ -252,7 +239,6 @@ const isBlockInNextFour = async (req: Request, res: Response, next: NextFunction
 };
 
 export {
-  isEndGiven,
   isUserGiven,
   isValidUserParam,
   isValidUserBody,
