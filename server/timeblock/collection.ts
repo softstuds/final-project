@@ -15,14 +15,13 @@ class TimeBlockCollection {
    * Add a time block to the collection
    *
    * @param {string} ownerId - The id of the owner of the time block
-   * @param {string} start - The start time of the time block
+   * @param {Date} start - The start time of the time block
    * @return {Promise<HydratedDocument<TimeBlock>>} - The newly created tim eblock
    */
-  static async addOne(ownerId: Types.ObjectId | string, start: string): Promise<HydratedDocument<TimeBlock>> {
-    const time = new Date(start);
+  static async addOne(ownerId: Types.ObjectId | string, start: Date): Promise<HydratedDocument<TimeBlock>> {
     const timeBlock = new TimeBlockModel({
       owner: ownerId,
-      start: time
+      start: start
     });
     await timeBlock.save(); // Saves time block to MongoDB
     return timeBlock.populate('owner');
