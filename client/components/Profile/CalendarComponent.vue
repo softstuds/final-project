@@ -51,8 +51,8 @@
                   12 :
                   block.start.getHours() % 12
                 }}{{ block.start.getHours() < 12 ? 'am' : 'pm' }}
-                <div>
-                  <section v-if="userId !== $store.state.userId">
+                <div class="row">
+                  <section class="column" v-if="userId !== $store.state.userId">
                     <button 
                       v-if="$store.state.hasAccess === true"
                       class="activeButton"
@@ -67,14 +67,15 @@
                       Request
                     </button>
                   </section>
-                  
-                  <button 
+
+                    <button
                     v-if="editing"
-                    class="deleteButton"
+                    class="deleteButton column"
                     @click="deleteTimeBlock(block._id)"
                   >
                     Delete
                   </button>
+                 
                 </div>
               </section>
             </section>
@@ -413,7 +414,13 @@ export default {
 }
 
 .deleteButton {
-  color: red;
+  width: 100%;
+  margin: 4px 0px;
+  height: 24px;
+  background-color: #c46345;
+  border-radius:6px;
+  border: 0px;
+  color: white;
 }
 
 .editButton {
@@ -546,6 +553,14 @@ export default {
   /* Position the tooltip text - see examples below! */
   position: absolute;
   z-index: 1;
+}
+
+.row {
+  display: flex;
+}
+
+.column {
+  flex: 2;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */

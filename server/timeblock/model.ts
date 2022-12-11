@@ -50,7 +50,7 @@ const TimeBlockSchema = new Schema<TimeBlock>({
   // The message a user can send with a meeting request
   message: {
     type: String,
-    required: true,
+    required: false,
     default: ''
   },
   // The start time of the 1hr-long time block

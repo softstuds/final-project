@@ -109,7 +109,7 @@
             that.pastMeetings = Object.values(result);
         });
 
-        const paramsPastNoFeedback = {method: 'GET', url: '/api/timeblock/check'}
+        const paramsPastNoFeedback = {method: 'GET', url: '/api/timeblock/met/check'}
         this.request(paramsPastNoFeedback).then(function(result) {
             that.meetingsWithoutFeedback = Object.values(result);
         });

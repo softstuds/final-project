@@ -143,7 +143,7 @@ class TimeBlockCollection {
    * @return {Promise<Number>} - The number of meetings a user owns, has accepted, and has attended 
    */
   static async findTotalMetByOwner(userId: Types.ObjectId | string): Promise<Number> {
-    return TimeBlockModel.find({owner: userId, accepted: true, status: {$ne: ['CANCELED', 'REQUESTER_MET']}}).count();
+    return TimeBlockModel.find({owner: userId, accepted: true, status: {$nin: ['CANCELED', 'REQUESTER_MET']}}).count();
   }
 
   /**
@@ -196,7 +196,7 @@ class TimeBlockCollection {
    */
    static async findTotalUniqueMetByOwner(ownerId: Types.ObjectId | string): Promise<Number> {
     const now = new Date();
-    const distinct = await TimeBlockModel.find({owner: ownerId, accepted: true, start: {$lte: now}, status: {$ne: ['CANCELED', 'REQUESTER_MET']}}).distinct('requester');
+    const distinct = await TimeBlockModel.find({owner: ownerId, accepted: true, start: {$lte: now}, status: {$nin: ['CANCELED', 'REQUESTER_MET']}}).distinct('requester');
     return distinct.length;
   }
 
