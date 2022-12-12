@@ -292,10 +292,10 @@ h2 {
   padding: 0px;
   margin: 12px 24px 12px 12px;
   height: 28px;
-  border: 0.5px solid black;
+  border: 0px;
   background-color: #c46345;
   border-radius: 4px;
-  color: black;
+  color: white;
   cursor: pointer;
 }
 
