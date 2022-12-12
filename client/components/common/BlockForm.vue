@@ -231,10 +231,6 @@ button {
   top: 26px;
   margin: 4px 12px;
   height: 36px;
-  background-color: #729e85;
-  border-radius:6px;
-  border: 0px;
-  color: white;
 }
 
 button:hover {
