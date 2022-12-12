@@ -74,6 +74,11 @@ export default {
       pm: String,
     }
   },
+  watch: {
+      meeting: function() {
+        this.getDate();
+      }
+    },
   mounted () {
     this.getDate();
     this.needFeedback();

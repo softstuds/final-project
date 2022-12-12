@@ -238,6 +238,23 @@ const isBlockInNextFour = async (req: Request, res: Response, next: NextFunction
   next();
 };
 
+/**
+ * Checks if the start time is before the end time
+ */
+const isStartBeforeEnd = async (req: Request, res: Response, next: NextFunction) => {
+  const start = new Date(req.body.start);
+  const end = new Date(req.body.end);
+  
+  if (start >= end) {
+    res.status(403).json({
+      error: 'The end time must be after the start time.'
+    });
+    return;
+  }
+
+  next();
+};
+
 export {
   isUserGiven,
   isValidUserParam,
@@ -253,5 +270,6 @@ export {
   isBlockInFuture,
   isBlockInPast,
   isBlockAccepted,
-  isBlockInNextFour
+  isBlockInNextFour,
+  isStartBeforeEnd
 };
