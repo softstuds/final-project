@@ -69,7 +69,7 @@ main {
   margin: auto;
   height: 100%;
   box-sizing: border-box;
-  border-right: 0.5px solid black;
+  border-right: 0.5px solid rgb(182, 182, 182);
 }
 
 .body2 {

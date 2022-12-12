@@ -101,6 +101,7 @@ img {
     font-size: 20px;
     /* display: grid; */
     display: flex;
+    margin-top: 50px;
     flex-direction: column;
     gap: 40px;
     align-items: left;
