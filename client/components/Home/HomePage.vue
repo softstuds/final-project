@@ -39,9 +39,6 @@
                 <section class="noMeetings" v-else>
                   You have no incoming requests. Start searching for 
                   users!
-                  <button v-if="$store.state.userId" onclick="window.location.href='/#/search'">
-                      Search for users!
-                  </button>
                 </section>
             </div>
             <div class="columnMeeting">
@@ -61,9 +58,6 @@
                 <section class="noMeetings" v-else>
                   You have no incoming requests. Start searching for 
                   users!
-                  <button v-if="$store.state.userId" onclick="window.location.href='/#/search'">
-                      Search for users!
-                  </button>
                 </section>
             </div>
             <div class="columnBox">

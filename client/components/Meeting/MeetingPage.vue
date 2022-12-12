@@ -4,7 +4,9 @@
 <template>
     <main>
       <section>
-        <div class="row">
+        <div 
+        v-if="this.pastMeetings.bool || this.upcomingMeetings.bool || this.incomingRequests.bool || this.outgoingRequests.bool"
+        class="row">
             <div class="column">
                 <h2>Past Meetings</h2>
                 <section
@@ -22,7 +24,7 @@
                 <section class="noMeetings" v-else>
                   You have no past meetings. Start searching for 
                   users!
-                  <button v-if="$store.state.userId" onclick="window.location.href='/#/search'">
+                  <button  onclick="window.location.href='/#/search'">
                       Search for users!
                   </button>
                 </section>
@@ -44,7 +46,7 @@
                 <section class="noMeetings" v-else>
                   You have no upcoming meetings. Start searching for 
                   users!
-                  <button v-if="$store.state.userId" onclick="window.location.href='/#/search'">
+                  <button onclick="window.location.href='/#/search'">
                       Search for users!
                   </button>
                 </section>
@@ -66,7 +68,7 @@
                 <section class="noMeetings" v-else>
                   You have no incoming requests. Start searching for 
                   users!
-                  <button v-if="$store.state.userId" onclick="window.location.href='/#/search'">
+                  <button onclick="window.location.href='/#/search'">
                       Search for users!
                   </button>
                 </section>
@@ -88,11 +90,46 @@
                 <section class="noMeetings" v-else>
                   You have no outgoing requests. Start searching for 
                   users!
-                  <button v-if="$store.state.userId" onclick="window.location.href='/#/search'">
+                  <button onclick="window.location.href='/#/search'">
                       Search for users!
                   </button>
                 </section>
             </div>
+        </div>
+        <div v-else>
+          <div class="row">
+          <div class="column">
+                <h2>Past Meetings</h2>
+                <section class="noMeetings">
+                  You have no past meetings. Start searching for 
+                  users!
+                </section>
+          </div>
+          <div class="column">
+                <h2>Upcoming Meetings</h2>
+                <section class="noMeetings">
+                  You have no upcoming meetings. Start searching for 
+                  users!
+                </section>
+          </div>
+          <div class="column">
+                <h2>Incoming Requests</h2>
+                <section class="noMeetings">
+                  You have no incoming requests. Start searching for 
+                  users!
+                </section>
+          </div>
+          <div class="column">
+                <h2>Outgoing Requests</h2>
+                <section class="noMeetings">
+                  You have no outgoing requests. Start searching for 
+                  users!
+                </section>
+          </div>
+        </div>
+          <section>
+            <button class="large" onclick="window.location.href='/#/search'">Search for users!</button>
+          </section>
         </div>
       </section>
     </main>
@@ -128,6 +165,7 @@
             renderkey: 0,
         }
     },
+
     mounted() {
         this.getAllMeetings();
     },
@@ -284,6 +322,14 @@ button {
   border-radius:6px;
   border: 0px;
   color: white;
+}
+
+.large {
+  width: 30%;
+  height: 48px;
+  margin-top: 48px;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 </style>
