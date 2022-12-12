@@ -259,7 +259,7 @@ export default {
               const nextDay = new Date(start);
               nextDay.setDate(start.getDate() + i);
               var status;
-              if (nextDay.getMonth() < today.getMonth() || nextDay.getDate() < today.getDate()) {
+              if (nextDay < today) {
                 status = 'day pastDay';
               } else {
                 if (nextDay.getMonth() == today.getMonth() && nextDay.getDate() == today.getDate()) {
