@@ -4,6 +4,7 @@ import TimeBlockCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as timeBlockValidator from '../timeblock/middleware';
 import * as util from './util';
+import UserCollection from '../user/collection';
 
 const router = express.Router();
 
@@ -61,7 +62,7 @@ router.get(
  * @throws {403} - If the user is not logged in
  */
  router.get(
-  '/access/',
+  '/access',
   [
     userValidator.isUserLoggedIn
   ],
@@ -90,6 +91,34 @@ router.get(
     const unMarkedTimeBlocks = await TimeBlockCollection.findAllByUserOccurred(userId, false);
     const response = unMarkedTimeBlocks.map(util.constructTimeBlockResponse);
     res.status(200).json(response);
+  }
+);
+
+/**
+ * Whether user has claimable availabilities
+ *
+ * @name GET /api/timeblock/availability/users
+ *
+ * @return {Array<Users>} - Users who have availabilities
+ * @throws {403} - If the user is not logged in
+ */
+router.get(
+  '/availability/users',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const users = await UserCollection.findAll();
+    const availabilities = users.map(user => TimeBlockCollection.findAvailabilityStatus(user._id));
+    const availabilityResults = await Promise.all(availabilities);
+    const usersWithAvailability = [];
+    
+    for (const userNum in users) {
+      if (availabilityResults[userNum]) {
+        usersWithAvailability.push(users[userNum]);
+      }
+    }
+    res.status(200).json({usersWithAvailability});
   }
 );
 

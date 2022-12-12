@@ -26,7 +26,8 @@
           <TagsFilterButton
             @filterUsers="filterTags"
             @unfilterUsers="unfilterTags"
-            :refreshCount="refreshCount">
+            :refreshCount="refreshCount"
+            :initialValue="initialTags">
           </TagsFilterButton>
         </section>
         <section class="industry-filter">
@@ -35,7 +36,8 @@
             class="industry-filter-bar"
             @filterUsers="filterIndustry"
             @unfilterUsers="unfilterIndustry"
-            :refreshCount="refreshCount">
+            :refreshCount="refreshCount"
+            :initialValue="initialIndustry">
           </IndustryFilter>
         </section>
         <section class="grad-year-filter">
@@ -43,8 +45,19 @@
           <FindUsersForm 
               placeholder="Filter by graduation year"
               button="Submit"
-              @filterUsers="filterGradYear">
+              @filterUsers="filterGradYear"
+              :refreshCount="refreshCount"
+              :initialValue="initialGradYear">
           </FindUsersForm>
+        </section>
+        <section class="availability-filter">
+          <h1>Filter by User Availability...</h1>
+          <AvailabilityFilter
+            @filterUsers="filterAvailable"
+            @unfilterUsers="unfilterAvailable"
+            :refreshCount="refreshCount"
+            :initialValue="initialAvailable">
+          </AvailabilityFilter>
         </section>
       </section>
       <button class="clear-filter-button"
@@ -97,10 +110,11 @@ import TagsFilterButton from '@/components/Tags/TagsFilterButton.vue';
 import IndustryFilter from '@/components/Industry/IndustryFilter.vue';
 import FindUsersForm from '@/components/Search/FindUsersForm.vue';
 import SearchUsersForm from '@/components/Search/SearchUsersForm.vue';
+import AvailabilityFilter from '@/components/Availability/AvailabilityFilter.vue';
 
 export default {
   name: 'SearchPage',
-  components: {UserCardComponent, TagsFilterButton, IndustryFilter, FindUsersForm, SearchUsersForm},
+  components: {UserCardComponent, TagsFilterButton, IndustryFilter, FindUsersForm, SearchUsersForm, AvailabilityFilter},
   data() {
     return {
       users: [],
@@ -108,6 +122,11 @@ export default {
       industryFilteredUsers: new Set(),
       gradYearFilteredUsers: new Set(),
       searchFilteredUsers: new Set(),
+      availableFilteredUsers: new Set(),
+      initialTags: '',
+      initialIndustry: '',
+      initialGradYear: '',
+      initialAvailable: false,
       displayedUsers: [],
       filtering: false,
       refreshCount: 0
@@ -129,18 +148,22 @@ export default {
       this.industryFilteredUsers = this.getIds();
       this.gradYearFilteredUsers = this.getIds();
       this.searchFilteredUsers = this.getIds();
+      this.availableFilteredUsers = this.getIds();
     },
     changeFiltering() {
       this.filtering = !this.filtering;
     },
     clearFiltering() {
       this.refreshCount += 1;
+      this.clearInitials();
       this.tagsFilteredUsers = this.getIds();
       this.industryFilteredUsers = this.getIds();
       this.gradYearFilteredUsers = this.getIds();
+      this.availableFilteredUsers = this.getIds();
       this.getDisplayedUsers();
     },
-    filterTags(value) {
+    filterTags(value, tagsSelected) {
+      this.initialTags = tagsSelected;
       this.tagsFilteredUsers = new Set(value);
       this.getDisplayedUsers();
     },
@@ -148,20 +171,34 @@ export default {
       this.searchFilteredUsers = new Set(value);
       this.getDisplayedUsers();
     },
-    filterIndustry(value) {
+    filterIndustry(value, industrySelected) {
+      this.initialIndustry = industrySelected;
       this.industryFilteredUsers = new Set(value);
       this.getDisplayedUsers();
     },
-    filterGradYear(value) {
+    filterGradYear(value, gradYearSelected) {
       this.gradYearFilteredUsers = new Set(value);
+      this.initialGradYear = gradYearSelected;
+      this.getDisplayedUsers();
+    },
+    filterAvailable(value) {
+      this.availableFilteredUsers = new Set(value);
+      this.initialAvailable = true;
+      this.getDisplayedUsers();
+    },
+    unfilterAvailable() {
+      this.availableFilteredUsers = this.getIds();
+      this.initialAvailable = false;
       this.getDisplayedUsers();
     },
     unfilterTags() {
       this.tagsFilteredUsers = this.getIds();
+      this.initialTags = '';
       this.getDisplayedUsers();
     },
     unfilterIndustry() {
       this.industryFilteredUsers = this.getIds();
+      this.initialIndustry = '';
       this.getDisplayedUsers();
     },
     getIds() {
@@ -171,10 +208,17 @@ export default {
       const allFilters = [this.tagsFilteredUsers, 
                           this.industryFilteredUsers, 
                           this.gradYearFilteredUsers, 
-                          this.searchFilteredUsers];
+                          this.searchFilteredUsers,
+                          this.availableFilteredUsers];
       const filterIntersection = allFilters.reduce((a, b) => new Set([...a].filter(x => b.has(x))));
       this.displayedUsers = this.users;
       this.displayedUsers = this.displayedUsers.filter(user => filterIntersection.has(user.id));
+    },
+    clearInitials() {
+      this.initialIndustry = '';
+      this.initialTags = '';
+      this.initialGradYear = '';
+      this.initialAvailable = false;
     }
   }
 };
@@ -223,12 +267,6 @@ h2 {
   font-size: 48px;
 }
 
-.filterBar {
-  display: flex;
-  flex-direction: column;
-  margin: 20px 0px;
-}
-
 .industry-filter-bar {
   width: 300px;
   height: fit-content;
@@ -267,6 +305,7 @@ h2 {
   margin-left: 12px;
   justify-content: flex-start;
   flex-wrap: wrap;
+  margin: 12px 24px 12px 12px;
 }
 
 .grad-year-filter {
@@ -282,5 +321,9 @@ h2 {
 
 .users-search-form {
   margin: 12px 24px 12px 12px;
+}
+
+.availability-filter {
+  margin-left: 3em;
 }
 </style>
