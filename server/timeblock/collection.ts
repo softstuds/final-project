@@ -175,7 +175,7 @@ class TimeBlockCollection {
   }
 
   /**
-   * Find if user has access to request other user's blocks
+   * Find if user has availabilities available on their profile
    * 
    * @param {string} userId - The id of the user
    * @return {Promise<Boolean>} - The number of meetings a user owns, has accepted, and has attended 
