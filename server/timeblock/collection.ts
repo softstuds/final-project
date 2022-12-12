@@ -127,17 +127,17 @@ class TimeBlockCollection {
   }
 
   /**
-   * Get the number of total meetings that the user has accepted not including cancellations
+   * Get the number of total meetings that the user has had not including cancellations
    * 
    * @param {string} userId - The id of the user
    * @param {Date} startAfter - The date after which to count timeblocks
    * @return {Promise<Number>} - The number of meetings a user owns and has accepted 
    */
-   static async findTotalAcceptedByOwner(userId: Types.ObjectId | string, startAfter: Date = null): Promise<Number> {
+   static async findTotalMeetingsByUser(userId: Types.ObjectId | string, startAfter: Date = null): Promise<Number> {
     if (startAfter) {
-      return TimeBlockModel.find({owner: userId, accepted: true, status: {$ne: 'CANCELED'}, start: {$gte: startAfter}}).count();
+      return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}], accepted: true, status: {$ne: 'CANCELED'}, start: {$gte: startAfter}}).count();
     } else {
-      return TimeBlockModel.find({owner: userId, accepted: true, status: {$ne: 'CANCELED'}}).count();
+      return await TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}], accepted: true, status: {$ne: 'CANCELED'}}).count();
     }
   }
 
@@ -148,15 +148,21 @@ class TimeBlockCollection {
    * @param {string} userId - The id of the user
    * @return {Promise<Number>} - The number of meetings a user owns, has accepted, and has attended 
    */
-  static async findTotalMetByOwner(userId: Types.ObjectId | string): Promise<Number> {
-    return TimeBlockModel.find({owner: userId, accepted: true, status: {$nin: ['CANCELED', 'REQUESTER_MET']}}).count();
+  static async findTotalMetByUser(userId: Types.ObjectId | string): Promise<Number> {
+    return await TimeBlockModel.find({
+      $or: [
+        {owner: userId, status: {$in: ['OWNER_MET', 'MET', 'NO_RESPONSE']}},
+        {requester: userId, status: {$in: ['REQUESTER_MET', 'MET', 'NO_RESPONSE']}},
+      ],
+      accepted: true,
+    }).count();
   }
 
   /**
    * Find if user has access to request other user's blocks
    * 
    * @param {string} userId - The id of the user
-   * @return {Promise<Boolean>} - The number of meetings a user owns, has accepted, and has attended 
+   * @return {Promise<Boolean>} - True if the user has access
    */
   static async findAccessStatus(userId: Types.ObjectId | string): Promise<Boolean> {
     const userBlocks = await TimeBlockModel.find({owner: userId, status: {$ne: 'CANCELED'}}).sort({start: -1}).populate('owner requester');
@@ -173,6 +179,28 @@ class TimeBlockCollection {
     }
     return false;
   }
+
+  /**
+   * Find if user has availabilities available on their profile
+   * 
+   * @param {string} userId - The id of the user
+   * @return {Promise<Boolean>} - True if the user has availabilities on their profile
+   */
+  static async findAvailabilityStatus(userId: Types.ObjectId | string): Promise<Boolean> {
+    const userBlocks = await TimeBlockModel.find({owner: userId, status: {$ne: 'CANCELED'}}).sort({start: -1}).populate('owner requester');
+    const today = new Date();
+    const rangeEnd = new Date();
+    rangeEnd.setHours(0, 0, 0, 0);
+    rangeEnd.setDate(rangeEnd.getDate() - rangeEnd.getDay() + 7 * 4); // What shows on calendar
+
+    for (const block of userBlocks) {
+      const blockDate = new Date(block.start);
+      if (blockDate > today && blockDate < rangeEnd && block.requester == null) {
+        return true;
+      }
+    }
+    return false;
+  }
   
   /**
    * Get the number of total months that the user has been active (e.g. putting time blocks in)
@@ -180,30 +208,34 @@ class TimeBlockCollection {
    * @param {string} userId - The id of the user
    * @return {Promise<Number>} - The number of months since a user put in their first availability
    */
-  static async findTotalMonthsByOwner(userId: Types.ObjectId | string): Promise<Number> {
+  static async findTotalMonthsByUser(userId: Types.ObjectId | string): Promise<Number> {
     // month calculation taken from https://stackoverflow.com/a/2536445 
     const firstTimeBlock = await TimeBlockModel.findOne({owner: userId}).sort({start: 1});
     if (!firstTimeBlock) {
-      return 0;
+      return 1;
     }
     const firstStart = firstTimeBlock.start;
     const today = new Date();
     var months = (today.getFullYear() - firstStart.getFullYear()) * 12;
     months -= firstStart.getMonth();
     months += today.getMonth();
-    return months <= 0 ? 0 : months;
+    return months <= 0 ? 1 : months+1;
   }
 
   /**
    * Get the number of total unique users that the given owner has met with
    *
-   * @param {string} ownerId - The id of the owner
+   * @param {string} userId - The id of the owner
    * @return {Promise<Number>} - The number of unique users that a given owner has met with
    */
-   static async findTotalUniqueMetByOwner(ownerId: Types.ObjectId | string): Promise<Number> {
+   static async findTotalUniqueMetByUser(userId: Types.ObjectId | string): Promise<Number> {
     const now = new Date();
-    const distinct = await TimeBlockModel.find({owner: ownerId, accepted: true, start: {$lte: now}, status: {$nin: ['CANCELED', 'REQUESTER_MET']}}).distinct('requester');
-    return distinct.length;
+    const requesters = await TimeBlockModel.find({owner: userId, accepted: true, start: {$lte: now}, status: {$nin: ['CANCELED', 'REQUESTER_MET']}}).distinct('requester');
+    let users = new Set(requesters);
+    const owners = await TimeBlockModel.find({requester: userId, accepted: true, start: {$lte: now}, status: {$nin: ['CANCELED', 'OWNER_MET']}}).distinct('owner');
+    const newUsers = new Set(owners);
+    users = new Set([...users, ...newUsers]);
+    return users.size;
   }
 
   /**
