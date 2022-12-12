@@ -531,6 +531,7 @@ select {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  align-items: center;
   margin: 10px;
 }
 
