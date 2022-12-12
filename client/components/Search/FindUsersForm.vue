@@ -8,11 +8,15 @@ export default {
         refreshCount: {
             type: Number,
             required: true
+        },
+        initialValue: {
+            type: String,
+            required: true
         }
     },
     data() {
         return {
-            value:""
+            value: this.initialValue
         }
     },
     watch: {
@@ -30,7 +34,7 @@ export default {
                     throw new Error(res.error);
                 }
                 const filteredIds = res.map(user => user.id);
-                this.$emit('filterUsers', filteredIds);
+                this.$emit('filterUsers', filteredIds, this.value);
             } catch (e) {
                 this.$set(this.alerts, e, 'error');
                 setTimeout(() => this.$delete(this.alerts, e), 3000);

@@ -46,7 +46,8 @@
               placeholder="🔍 Filter by graduation year"
               button="🔄 Get Users"
               @filterUsers="filterGradYear"
-              :refreshCount="refreshCount">
+              :refreshCount="refreshCount"
+              :initialValue="initialGradYear">
           </FindUsersForm>
         </section>
         <section class="availability-filter">
@@ -54,7 +55,8 @@
           <AvailabilityFilter
             @filterUsers="filterAvailable"
             @unfilterUsers="unfilterAvailable"
-            :refreshCount="refreshCount">
+            :refreshCount="refreshCount"
+            :initialValue="initialAvailable">
           </AvailabilityFilter>
         </section>
       </section>
@@ -123,8 +125,8 @@ export default {
       availableFilteredUsers: new Set(),
       initialTags: '',
       initialIndustry: '',
-      initialgradYear: null,
-      initialAvailable: null,
+      initialGradYear: '',
+      initialAvailable: false,
       displayedUsers: [],
       filtering: false,
       refreshCount: 0
@@ -174,16 +176,19 @@ export default {
       this.industryFilteredUsers = new Set(value);
       this.getDisplayedUsers();
     },
-    filterGradYear(value) {
+    filterGradYear(value, gradYearSelected) {
       this.gradYearFilteredUsers = new Set(value);
+      this.initialGradYear = gradYearSelected;
       this.getDisplayedUsers();
     },
     filterAvailable(value) {
       this.availableFilteredUsers = new Set(value);
+      this.initialAvailable = true;
       this.getDisplayedUsers();
     },
     unfilterAvailable() {
       this.availableFilteredUsers = this.getIds();
+      this.initialAvailable = false;
       this.getDisplayedUsers();
     },
     unfilterTags() {
@@ -212,6 +217,8 @@ export default {
     clearInitials() {
       this.initialIndustry = '';
       this.initialTags = '';
+      this.initialGradYear = '';
+      this.initialAvailable = false;
     }
   }
 };

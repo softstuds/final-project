@@ -14,12 +14,22 @@ export default {
         refreshCount: {
             type: Number,
             required: true
+        },
+        initialValue: {
+            type: Boolean,
+            required: true
         }
     },
     data() {
         return {
             filteredIds: [],
-            checked: false
+            checked: this.initialValue
+        }
+    },
+    mounted() {
+        if (this.checked) {
+            const checkBox = document.getElementById('checkbox');
+            checkBox.checked = true;
         }
     },
     watch: {
