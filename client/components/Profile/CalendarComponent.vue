@@ -89,12 +89,14 @@
           <button 
             v-if="!editing"
             @click="startEditing"
+            class="edit"
           >
             Edit My Availabilities
           </button>
           <button 
             v-else
             @click="hideTimeSelector"
+            class="edit"
           >
             Stop Editing
           </button>
@@ -151,7 +153,7 @@
               <div 
                 class="tooltip"
               >
-                <p class="tooltipIcon">?</p>
+                <p class="tooltipIcon">ⓘ</p>
                 <span class="tooltiptext tooltipRight">
                   Automatically generate 30 minute blocks within your entered availability.
                 </span>
@@ -438,9 +440,14 @@ select {
 
 .addButton {
   max-width: 100px;
+  height: 42px;
 }
 .activeButton {
   background-color:cornflowerblue
+}
+
+.edit {
+  padding: 8px;
 }
 
 .disabled {
@@ -487,27 +494,27 @@ select {
 }
 
 .selected {
-  background-color:yellow;
+  background-color:rgb(255, 255, 197);
 }
 
 .day {
   width: 100%;
-  border: 1px solid black;
+  border: 0.5px solid black;
   min-height: 100px;
+  font-weight: 400;
   padding-bottom: 30px;
-  /* height: 100px;
-  overflow-y: scroll; */
 }
 
 .borderTop {
-  border: 1px solid black;
+  border: 0.5px solid black;
   border-bottom: none;
-  font-weight: bold;
-  background-color: #729e85;
+  font-weight: 500;
+  padding: 4px;
+  background-color: #b1d6c1;
 }
 
 .borderBottom {
-  border-bottom: 1px solid black;
+  border-bottom: 0.5px solid black;
 }
 
 .timeBlock {

@@ -72,7 +72,7 @@
             class="row statRow"
           >
             <b class="field">{{ stat.label }}: </b>
-            <section>{{ stat.value }}</section>
+            <section class="value">{{ stat.value }}</section>
           </section>
         </section>
       </section>
@@ -207,9 +207,9 @@ textarea {
 }
 
 .infoBox {
-  border: 1px solid black;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  border: 0.5px solid black;
+  margin-top: 16px;
+  margin-bottom: 16px;
   padding-left: 20px;
   padding-right: 20px;
 }
@@ -240,19 +240,31 @@ textarea {
   justify-content: space-between;
 }
 
-.label {
-  min-width: 120px;
-  
+.field {
+  font-weight: 400;
 }
 
+.value {
+  font-weight: 300;
+}
+
+.label {
+  min-width: 120px;
+  font-weight: 500;
+}
+
+
 .name {
-  font-weight: bold;
+  font-weight: 300;
   font-size: 36px;
+  margin-bottom:24px;
+  padding: 12px 0px;
 }
 
 .flatText {
   color: gray;
   font-size: medium;
+  padding: 12px 0px;
 }
 
 .accessStatus {
