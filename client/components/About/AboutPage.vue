@@ -29,6 +29,8 @@
                     in time for every user on the platform. With this, users are able to manage their expectations about whether 
                     or not a user will be responsive to their meeting requests.
                 </p>
+                <h2>Watch our Demo...</h2>
+                <p>(insert demo video here)</p>
         </section>
     </main>
 </template>
