@@ -48,7 +48,7 @@
                 class="meeting"
                 >
                 <MeetingComponent
-                v-for="block in this.incomingRequests.timeBlock"
+                v-for="block in this.incomingRequests.timeBlocks"
                 :key="block.id"
                 :meeting="block"
                 :type="'incoming'"
