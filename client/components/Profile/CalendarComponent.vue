@@ -21,10 +21,10 @@
         </div>
       </section>
       <section v-if="(hasRequestable || editing)">
-        <div class="borderedBox">
+        <div class="box">
           <section
             v-for="day in daysOfWeek"
-            class="borderedBox">
+            class="box borderTop">
               {{ day }}
           </section>
         </div>
@@ -40,7 +40,7 @@
               :class="getClass(i, index)"
               @click="updateSelection(i, index)"
             >
-              <section class="borderedBox">
+              <section class="box borderBottom">
                 {{ calendarDays[i][index].day.getMonth() + 1 }}/{{ calendarDays[i][index].day.getDate() }}
               </section>
               <section 
@@ -483,11 +483,21 @@ export default {
   background-color:yellow;
 }
 
-.borderedBox {
-  border-bottom: 1px solid black;
+.box {
   display: flex;
   justify-content: center;
   width: 100%;
+}
+
+.borderTop {
+  border: 1px solid black;
+  border-bottom: none;
+  font-weight: bold;
+  background-color: #729e85;
+}
+
+.borderBottom {
+  border-bottom: 1px solid black;
 }
 
 .timeBlock {

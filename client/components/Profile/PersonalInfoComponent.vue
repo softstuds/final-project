@@ -4,68 +4,78 @@
   <div
     v-if="user !== null"
   >
-    <header>
-      <h2>{{ user.firstName }} {{ user.lastName }}</h2>
-    </header>
-    <section class="info">
-      <section>
-        <i class="flatText">
-          Last Active: {{ user.lastActive }}
-        </i>
-        <p v-if="(user._id === $store.state.userId)">
-          You <b>{{ $store.state.hasAccess === true ? 'can' : 'can not' }}</b> request meetings with others
-        </p>
-        <hr/>
-        <section class="editInfo"
-          v-if="user._id === $store.state.userId">
-          <button v-if="editingInfo" @click="updateInfo">Save Changes</button>
-          <button v-else @click="(editingInfo=true)">Edit Info</button>
-        </section>
-        <section 
-          v-for="field in fields"
-          class="fieldInput" 
-          :key="field.name">
-          <b class="field">{{ field.display }}</b>
-          <section v-if="editingInfo">
-            <input
-              v-if="field.name === 'graduationYear'"
-              :value="(user.graduationYear ?? (new Date()).getFullYear())"
-              type="number"
-              min="1920"
-              step="1"
-              @input="user.graduationYear = $event.target.value"
-            />
-            <textarea 
-              v-else
-              @input="user[field.name] = $event.target.value"
-            >{{ user[field.name] }}</textarea>
-          </section>
-          
-          <section v-else>{{ user[field.name] }}</section>
-        </section>
-        <section class="fieldInput">
-          <b class="field">Industry:</b>
-          <IndustryButton v-if="editingInfo"></IndustryButton>
-          <section v-else>{{ user.industry ? user.industry.industryType : 'Unspecified' }}</section>
-        </section>
-        <section class="fieldInput">
-          <b class="field">Willing To:</b>
-          <WillingTosSelect 
-            v-if="editingInfo"
-            :userId="userId"
-          />
-          <section v-else>{{ this.tags.length > 0 ? tags.map(tag => frontEndTags[tag]).join(', ') : 'None Selected'}}</section>
-        </section>
-      </section>
+    <section>
+      <b class="name">{{ user.firstName }} {{ user.lastName }}</b>
     </section>
-    <section class="segment">
-      <section class="segmentHeader">
-        <h3><b>{{ user.firstName }}'s Statistics</b></h3>
+    <i class="flatText">
+      Last Active: {{ user.lastActive }}
+    </i>
+    <section v-if="(user._id === $store.state.userId)" class="accessStatus">
+      You 
+      <b v-if="($store.state.hasAccess === true)" class="greenText">can</b> 
+      <b v-else class="redText">cannot</b> 
+      request meetings with others
+    </section>
+    <section class="info">
+      <section class="infoBox bioInfo">
+        <section class="infoHeader">
+          <h3>General Information</h3>
+          <section
+            v-if="user._id === $store.state.userId">
+            <button v-if="editingInfo" @click="updateInfo">Save Changes</button>
+            <button v-else @click="(editingInfo=true)">Edit Info</button>
+          </section>
+        </section>
+        <section>
+          <section 
+            v-for="field in fields"
+            class="row" 
+            :key="field.name">
+            <b class="label">{{ field.display }}</b>
+            <section v-if="editingInfo" class="wideBox">
+              <input
+                v-if="field.name === 'graduationYear'"
+                :value="(user.graduationYear ?? (new Date()).getFullYear())"
+                type="number"
+                min="1920"
+                step="1"
+                @input="user.graduationYear = $event.target.value"
+              />
+              <section v-else class="wideBox">
+                <textarea
+                  @input="user[field.name] = $event.target.value"
+                >{{ user[field.name] }}</textarea>
+              </section>
+            </section>
+            <section v-else>{{ user[field.name] }}</section>
+          </section>
+          <section class="row">
+            <b class="label">Industry:</b>
+            <IndustryButton v-if="editingInfo"></IndustryButton>
+            <section v-else>{{ user.industry ? user.industry.industryType : 'Unspecified' }}</section>
+          </section>
+          <section class="row">
+            <b class="label">Willing To:</b>
+            <WillingTosSelect 
+              v-if="editingInfo"
+              :userId="userId"
+            />
+            <section v-else>{{ this.tags.length > 0 ? tags.map(tag => frontEndTags[tag]).join(', ') : 'None Selected'}}</section>
+          </section>
+        </section>
       </section>
-      <p v-for="stat in statistics">
-        <b>{{ stat.label }}:</b>
-        {{ stat.value }}
-      </p>
+      <section class="infoBox statistics">
+        <section class="infoHeader"><h3>Statistics</h3></section>
+        <section>
+          <section 
+            v-for="stat in statistics"
+            class="row statRow"
+          >
+            <b class="field">{{ stat.label }}: </b>
+            <section>{{ stat.value }}</section>
+          </section>
+        </section>
+      </section>
     </section>
     <CalendarComponent 
       :userId="userId"
@@ -174,52 +184,87 @@ export default {
 </script>
 
 <style scoped>
-.flatText {
-    color: gray
-}
-.segment {
-    border-top: 1px solid black;
+
+button {
+  padding: 5px;
 }
 
-.segmentHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+textarea {
+  resize: none;
+  width: 100%;
+  min-height: 80px;
 }
 
-.editButton {
-  height: 25px
-}
-.calendar {
-    display: flex;
+
+.wideBox {
+  width: 100%;
 }
 
-.day {
-    width: 100%;
-    border: 1px solid black;
-    padding: 1%
-}
-
-.timeBlock {
-    border: 1px solid black;
-    padding: 10%
-}
-
-.fieldInput {
+.info {
   display: flex;
-  justify-content: start;
-  align-items: center;
-  margin: 10px;
+  width: 100%;
+  justify-content: space-between;
 }
 
-.field {
+.infoBox {
+  border: 1px solid black;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.infoHeader {
+  display: flex;
+  height: 50px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bioInfo {
+  width: 65%;
+  margin-right: 10px;
+}
+
+.statistics {
+  width: 35%;
+}
+
+.row {
+  display: flex;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.statRow {
+  justify-content: space-between;
+}
+
+.label {
   min-width: 120px;
   
 }
 
-h2 {
-  font-weight: 180;
-  font-size: 48px;
+.name {
+  font-weight: bold;
+  font-size: 36px;
+}
+
+.flatText {
+  color: gray;
+  font-size: medium;
+}
+
+.accessStatus {
+  margin-top: 10px;
+}
+
+.redText {
+  color: red
+}
+
+.greenText {
+  color: green
 }
 
 p b {
@@ -230,8 +275,4 @@ p {
   font-weight: 300;
 }
 
-.editInfo {
-  display: flex;
-  justify-content: flex-end;
-}
 </style>
