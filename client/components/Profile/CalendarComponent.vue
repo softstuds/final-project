@@ -475,6 +475,8 @@ export default {
   border: 1px solid black;
   min-height: 100px;
   padding-bottom: 30px;
+  /* height: 100px;
+  overflow-y: scroll; */
 }
 
 .selected {
@@ -561,6 +563,12 @@ export default {
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
   visibility: visible;
+}
+
+.alerts {
+    position: relative;
+    z-index: 99;
+    text-align: center;
 }
 
 </style>
