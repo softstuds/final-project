@@ -219,6 +219,11 @@ export default {
       this.initialTags = '';
       this.initialGradYear = '';
       this.initialAvailable = false;
+    },
+    sortList() {
+      this.displayedUsers.sort(function (a, b) {
+        return a.lastName.toLowerCase().localeCompare(b.lastName.toLowerCase());
+      });
     }
   }
 };
