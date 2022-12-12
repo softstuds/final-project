@@ -1,5 +1,7 @@
 <template >
-  <div id="app">
+  <div 
+    class="entire-page"
+    id="app">
     <header>
       <NavBar class="nav" />
     </header>
@@ -47,6 +49,11 @@ body {
   padding: 0 20;
   font-size: 1.2em;
   font-family: "Segoe UI", "Helvetica Neue", "Arial";
+}
+
+.entire-page {
+  display: flex;
+  flex-direction: row;
 }
 
 main {

@@ -59,11 +59,14 @@
 
 <style scoped>
 nav {
-    padding: 1.5vw 2vw;
+    padding-top: 2vw;
+    padding-left: 1vw;
     margin: 0;
     background-color: white;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 70px;
+    justify-content: center;
     align-items: center;
     position: relative;
     text-decoration: none;
@@ -97,9 +100,11 @@ img {
 
 .right {
     font-size: 20px;
-    display: grid;
-    gap: 16px;
-    grid-auto-flow: column;
+    /* display: grid; */
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    /* grid-auto-flow: column; */
     align-items: center;
 }
 
