@@ -130,17 +130,10 @@
     },
     mounted() {
         this.getAllMeetings();
-        this.test();
     },
     methods: {
         reRender() {
             this.renderkey += 1;
-        },
-        test() {
-          console.log('YEETER', this.upcomingMeetings);
-          console.log('Feet', this.pastMeetings.bool, this.pastMeetings.timeBlocks);
-          console.log('check', this.incomingRequests);
-
         },
     async getAllMeetings()  {
 
