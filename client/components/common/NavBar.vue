@@ -7,7 +7,7 @@
     <div class="left">
       <img src="../../public/favicon.png">
       <h1 class="title">
-        Alumni Connector
+        ac
       </h1>
     </div>
     <div class="right">
@@ -59,19 +59,17 @@
 
 <style scoped>
 nav {
-    padding-top: 2vw;
-    padding-left: 1vw;
-    margin: 0;
+    padding: 24px 42px 0px 24px;
+    margin: 24px 0px;
     background-color: white;
-    display: flex;
-    flex-direction: column;
     gap: 70px;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+    align-items: left;
+    width: 120%;
     text-decoration: none;
     font-weight:300;
     color: black !important;
+    list-style-type: none;
+    height: 100%; /* Full height */
 }
 
 a:hover { text-decoration: none; color:#729e85; }
@@ -96,6 +94,7 @@ img {
 .left {
 	display: flex;
 	align-items: center;
+  margin-bottom: 24px;
 }
 
 .right {
@@ -104,8 +103,7 @@ img {
     display: flex;
     flex-direction: column;
     gap: 40px;
-    /* grid-auto-flow: column; */
-    align-items: center;
+    align-items: left;
 }
 
 .right a {
