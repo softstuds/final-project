@@ -213,9 +213,9 @@ router.get(
     res.status(200).json({
       message: 'Statistics were fetched successfully.',
       statistics: [
-        {label: 'Total Meetings Had', value: totalHoursAccepted},
-        {label: 'Average Meetings Had per Month', value: `${averageMonthlyHours.toFixed(2)}`},
-        {label: 'Total Meetings Had This Month', value: hoursThisMonth},
+        {label: 'Total Meetings', value: totalHoursAccepted},
+        {label: 'Average Meetings per Month', value: `${averageMonthlyHours.toFixed(2)}`},
+        {label: 'Total Meetings This Month', value: hoursThisMonth},
         {label: 'Meeting Success Rate', value: `${Math.round(meetingSuccessRate)}%`},
         {label: 'Unique Users Met', value: uniqueUsers},
       ]
