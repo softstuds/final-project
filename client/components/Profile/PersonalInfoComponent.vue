@@ -256,7 +256,7 @@ textarea {
 
 .name {
   font-weight: 300;
-  font-size: 36px;
+  font-size: 48px;
   margin-bottom:24px;
   padding: 12px 0px;
 }
