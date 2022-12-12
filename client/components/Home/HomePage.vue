@@ -148,7 +148,7 @@
   };
   </script>
 
-  <style scoped>
+<style scoped>
 
 section {
   display: flex;
@@ -189,6 +189,11 @@ button {
   border-radius:6px;
   border: 0px;
   color: white;
+}
+
+button:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0 4px 12px;
+  cursor: pointer;
 }
 
 .row {

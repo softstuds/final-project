@@ -12,7 +12,7 @@
           button="Submit"
           @filterUsers="searchUsers">
       </SearchUsersForm >
-      <button class="filter-button"
+      <button class="filter-button general-button"
           v-if="!filtering"
           @click="changeFiltering">
           Show Filters
@@ -60,12 +60,12 @@
           </AvailabilityFilter>
         </section>
       </section>
-      <button class="clear-filter-button"
+      <button class="clear-filter-button general-button"
           v-if="filtering"
           @click="clearFiltering">
           Clear all Filters
       </button>
-      <button class="filter-button"
+      <button class="filter-button general-button"
           v-if="filtering"
           @click="changeFiltering">
           Hide Filters
@@ -296,6 +296,11 @@ h2 {
   background-color: #c46345;
   border-radius: 4px;
   color: black;
+  cursor: pointer;
+}
+
+.general-button:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0 4px 12px;
   cursor: pointer;
 }
 
