@@ -68,17 +68,22 @@ nav {
     position: relative;
     text-decoration: none;
     font-weight:300;
-    color: black !important;
+    color: black;
 }
 
 a:hover { text-decoration: none; color:#729e85; }
 a:visited { text-decoration: underline; color:black; }
 a:focus { 
   text-decoration: underline;
-  color:#729e85;
+  color:#729e85 !important;
   font-weight: 500;
 }
-a:active { text-decoration: underline; color:#729e85; }
+router-link:active {
+  text-decoration: underline;
+  color:#729e85 !important;
+  font-weight: 500;
+}
+a:-webkit-any-link {color: black;}
 
 .title {
     font-size: 32px;
