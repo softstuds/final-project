@@ -79,17 +79,8 @@ nav {
 
 a:hover { text-decoration: none; color:#729e85; }
 a:visited { text-decoration: underline; color:black; }
-a:focus { 
-  text-decoration: underline;
-  color:#729e85 !important;
-  font-weight: 500;
-}
-router-link:active {
-  text-decoration: underline;
-  color:#729e85 !important;
-  font-weight: 500;
-}
 a:-webkit-any-link {color: black;}
+
 
 .title {
     font-size: 32px;

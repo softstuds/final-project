@@ -233,19 +233,19 @@ router.get(
     const totalHoursAccepted = await TimeBlockCollection.findTotalMeetingsByUser(userId) as number;
     const totalHoursMet = await TimeBlockCollection.findTotalMetByUser(userId) as number;
     const months = await TimeBlockCollection.findTotalMonthsByUser(userId) as number;
-    const averageMonthlyHours = totalHoursAccepted / months;
+    const averageMonthlyHours = (totalHoursAccepted / months).toFixed(2);
     const now = new Date();
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
     const hoursThisMonth = await TimeBlockCollection.findTotalMeetingsByUser(userId, firstDay);
-    const meetingSuccessRate = (totalHoursAccepted) ? totalHoursMet / totalHoursAccepted * 100 : 100;
+    const meetingSuccessRate = (totalHoursAccepted) ? `${Math.round(totalHoursMet / totalHoursAccepted * 100)}%` : 'N/A';
     const uniqueUsers = await TimeBlockCollection.findTotalUniqueMetByUser(userId);
     res.status(200).json({
       message: 'Statistics were fetched successfully.',
       statistics: [
         {label: 'Total Meetings', value: totalHoursAccepted},
-        {label: 'Average Meetings per Month', value: `${averageMonthlyHours.toFixed(2)}`},
+        {label: 'Average Meetings per Month', value: `${averageMonthlyHours}`},
         {label: 'Total Meetings This Month', value: hoursThisMonth},
-        {label: 'Meeting Success Rate', value: `${Math.round(meetingSuccessRate)}%`},
+        {label: 'Meeting Success Rate', value: `${meetingSuccessRate}`},
         {label: 'Unique Users Met', value: uniqueUsers},
       ]
     });

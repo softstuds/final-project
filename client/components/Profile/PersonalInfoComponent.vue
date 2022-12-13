@@ -189,6 +189,11 @@ button {
   padding: 5px;
 }
 
+button:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0 4px 12px;
+  cursor: pointer;
+}
+
 textarea {
   resize: none;
   width: 100%;

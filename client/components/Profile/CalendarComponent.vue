@@ -37,46 +37,48 @@
             <section
               v-for="(date, index) in week"
               :key="index"
-              :class="getClass(i, index)"
+              class="fullDateBox"
               @click="updateSelection(i, index)"
             >
-              <section class="flexDisplay borderBottom">
+              <section class="flexDisplay borderBottom borderSides">
                 {{ calendarDays[i][index].day.getMonth() + 1 }}/{{ calendarDays[i][index].day.getDate() }}
               </section>
-              <section 
-                v-for="block in date"
-                :key="block._id"
-                class="timeBlock"
-              >
-                {{ block.start.getHours() % 12 == 0 ?
-                  12 :
-                  block.start.getHours() % 12
-                }}:{{ block.start.getMinutes() == 0 ? '00' : block.start.getMinutes() }}
-                {{ block.start.getHours() < 12 ? 'am' : 'pm' }}
-                <div class="row">
-                  <section class="column" v-if="userId !== $store.state.userId">
-                    <button 
-                      v-if="$store.state.hasAccess === true"
-                      class="activeButton"
-                      @click="requestTimeBlock(block._id)"
+              <section :class="getClass(i, index)">
+                <section 
+                  v-for="block in date"
+                  :key="block._id"
+                  class="timeBlock"
+                >
+                  {{ block.start.getHours() % 12 == 0 ?
+                    12 :
+                    block.start.getHours() % 12
+                  }}:{{ block.start.getMinutes() == 0 ? '00' : block.start.getMinutes() }}
+                  {{ block.start.getHours() < 12 ? 'am' : 'pm' }}
+                  <div class="row">
+                    <section class="column" v-if="userId !== $store.state.userId">
+                      <button 
+                        v-if="$store.state.hasAccess === true"
+                        class="activeButton"
+                        @click="requestTimeBlock(block._id)"
+                      >
+                        Request
+                      </button>
+                      <button 
+                        v-else
+                        class="disabled"
+                      >
+                        Request
+                      </button>
+                    </section>
+                    <button
+                      v-if="editing"
+                      class="deleteButton column"
+                      @click="deleteTimeBlock(block._id)"
                     >
-                      Request
+                      Delete
                     </button>
-                    <button 
-                      v-else
-                      class="disabled"
-                    >
-                      Request
-                    </button>
-                  </section>
-                  <button
-                    v-if="editing"
-                    class="deleteButton column"
-                    @click="deleteTimeBlock(block._id)"
-                  >
-                    Delete
-                  </button>
-                </div>
+                  </div>
+                </section>
               </section>
             </section>
           </div>
@@ -89,7 +91,7 @@
           <button 
             v-if="!editing"
             @click="startEditing"
-            class="edit"
+            class="edit marginBottom"
           >
             Edit My Availabilities
           </button>
@@ -105,9 +107,7 @@
       <section id="selectTime" class="flexDisplay flexColumn alignCenter">
         <section class="flexDisplay flexColumn">
           <section class="flexDisplay">
-            <div 
-              class="tooltip"
-            >
+            <div class="tooltip">
               <p>Selected Day: {{ selectedDateString }}</p>
               <span class="tooltiptext tooltipTop">
                 Select a different day by clicking on the calendar.
@@ -150,9 +150,7 @@
                   Generate 30 minute blocks
                 </button>
               </section>
-              <div 
-                class="tooltip"
-              >
+              <div class="tooltip">
                 <p class="tooltipIcon">ⓘ</p>
                 <span class="tooltiptext tooltipRight">
                   Automatically generate 30 minute blocks within your entered availability.
@@ -162,9 +160,7 @@
           </section>
         </section>
         <section class="bottomTooltip">
-          <div 
-            class="tooltip"
-          >
+          <div class="tooltip">
             <small>Having trouble entering availabilities?</small>
             <span class="tooltiptext tooltipTop">
               You can only enter times between now and the end of the calendar shown (4 weeks).
@@ -439,6 +435,11 @@ select {
   margin-left: 10px;
 }
 
+p {
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
 .addButton {
   max-width: 100px;
   height: 42px;
@@ -485,6 +486,10 @@ select {
   align-items: center;
 }
 
+.marginBottom {
+  margin-bottom: 50px;
+}
+
 .editFooter {
   justify-content: end;
   margin-top: 10px;
@@ -498,14 +503,16 @@ select {
   background-color:rgb(255, 255, 197);
 }
 
-.day {
+.fullDateBox {
   width: 100%;
-  border: 0.5px solid black;
-  min-height: 100px;
   font-weight: 400;
-  padding-bottom: 30px;
-  /* height: 100px;
-  overflow-y: scroll; */
+}
+
+.day {
+  border: 0.5px solid black;
+  padding-bottom: 15px;
+  height: 100px;
+  overflow-y: scroll;
 }
 
 .borderTop {
@@ -520,14 +527,19 @@ select {
   border-bottom: 0.5px solid black;
 }
 
+.borderSides {
+  border-left: 0.5px solid black;
+  border-right: 0.5px solid black;
+}
+
 .timeBlock {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   border: 1px solid black;
-  padding: 10px;
-  margin: 10px;
-  font-size: 12px;
+  padding: 6px;
+  margin: 6px;
+  font-size: 14px;
 }
 
 .selector {
