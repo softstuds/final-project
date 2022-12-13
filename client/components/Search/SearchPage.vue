@@ -134,6 +134,7 @@ export default {
   },
   mounted() {
     this.getUsers();
+    this.$store.commit('updateLastActive');
   },
   methods: {
     async getUsers() {

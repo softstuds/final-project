@@ -6,16 +6,16 @@
       <section class="main">
         <h1>Your Meetings</h1>
         <div 
-        v-if="this.pastMeetings.bool || this.upcomingMeetings.bool || this.incomingRequests.bool || this.outgoingRequests.bool"
+        v-if="pastMeetings.bool || upcomingMeetings.bool || incomingRequests.bool || outgoingRequests.bool"
         class="row">
             <div class="column">
                 <h2>Past Meetings</h2>
                 <section
-                v-if="this.pastMeetings.bool"
+                v-if="pastMeetings.bool"
                 class="meeting"
                 >
                 <MeetingComponent
-                v-for="block in this.pastMeetings.timeBlocks"
+                v-for="block in pastMeetings.timeBlocks"
                 :key="block.id"
                 :meeting="block"
                 :type="'past'"
@@ -33,11 +33,11 @@
             <div class="column">
                 <h2>Upcoming Meetings</h2>
                 <section
-                v-if="this.upcomingMeetings.bool"
+                v-if="upcomingMeetings.bool"
                 class="meeting"
                 >
                 <MeetingComponent
-                v-for="block in this.upcomingMeetings.timeBlocks"
+                v-for="block in upcomingMeetings.timeBlocks"
                 :key="block.id"
                 :meeting="block"
                 :type="'upcoming'"
@@ -56,10 +56,10 @@
                 <h2>Incoming Requests</h2>
                 <section 
                 class="meeting"
-                v-if="this.incomingRequests.bool"
+                v-if="incomingRequests.bool"
                 >
                 <MeetingComponent
-                v-for="block in this.incomingRequests.timeBlocks"
+                v-for="block in incomingRequests.timeBlocks"
                 :key="block.id"
                 :meeting="block"
                 :type="'incoming'"
@@ -78,10 +78,10 @@
                 <h2>Outgoing Requests</h2>
                 <section
                 class="meeting"
-                v-if="this.outgoingRequests.bool"
+                v-if="outgoingRequests.bool"
                 >
                 <MeetingComponent
-                v-for="block in this.outgoingRequests.timeBlocks"
+                v-for="block in outgoingRequests.timeBlocks"
                 :key="block.id"
                 :meeting="block"
                 :type="'outgoing'"
@@ -129,7 +129,10 @@
           </div>
         </div>
           <section>
-            <button class="large" onclick="window.location.href='/#/search'">Search for users!</button>
+            <routerlink to="/search">
+              <button class="large">Search for users!</button>
+            </routerlink>
+            
           </section>
         </div>
       </section>
@@ -190,12 +193,15 @@
 
         const paramsPast = {method: 'GET', url: '/api/timeblock/met'}
         this.request(paramsPast).then(function(result) {
+          console.log('hello')
           if (Object.values(result).length != 0) {
             that.pastMeetings.timeBlocks = Object.values(result);
             that.pastMeetings.bool = true;
           } else {
             that.pastMeetings.bool = false;
           }
+          console.log('mariah', that.pastMeetings.timeBlocks)
+
         });
 
         const paramsOutgoing = {method: 'GET', url: '/api/timeblock/requests/sent'}
@@ -260,12 +266,9 @@
 section {
   display: flex;
   flex-direction: column;
-  /* background-color: #abd6be; */
-  /* font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
 }
 
 main{
-    /* padding: 48px 48px 48px; */
     padding: 10px 24px 10px;
     margin: 0;
 }
@@ -342,6 +345,7 @@ button:hover {
   margin-top: 48px;
   font-size: 24px;
   cursor: pointer;
+  margin-left: 36%;
 }
 
 </style>

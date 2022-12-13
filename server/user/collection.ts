@@ -24,8 +24,8 @@ class UserCollection {
     const user = new UserModel({
       email: username,
       password,
-      firstName: nameArray[0],
-      lastName: nameArray[nameArray.length - 1],
+      firstName: nameArray[0][0].toUpperCase()+ nameArray[0].slice(1),
+      lastName: nameArray[1][0].toUpperCase()+ nameArray[1].slice(1),
       graduationYear,
       lastActive
     });

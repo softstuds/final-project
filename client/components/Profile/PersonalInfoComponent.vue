@@ -178,6 +178,7 @@ export default {
       }
       this.user = res.user;
       this.getTags();
+      this.$store.commit('updateLastActive');
     }
   }
 };
@@ -266,7 +267,6 @@ textarea {
 
 .flatText {
   color: gray;
-  /* font-size: medium; */
   box-sizing: border-box;
 }
 
