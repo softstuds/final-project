@@ -5,10 +5,12 @@
 <template>
   <nav>
     <div class="left">
-      <img src="../../public/favicon.png">
-      <h1 class="title">
-        <router-link class="title" to="/">AC</router-link>
-      </h1>
+      <router-link to="/">
+        <section class="row">
+          <img class="column" src="../../public/favicon.png"><h1 class="title column">AC</h1>
+        </section>
+        
+      </router-link>
     </div>
     <div class="right">
       <router-link to="/">
@@ -78,15 +80,24 @@ nav {
 }
 
 a:hover { text-decoration: none; color:#729e85; }
-a:visited { text-decoration: underline; color:black; }
+a:visited { text-decoration: none; color:black; }
 a:-webkit-any-link {color: black;}
 
 
 .title {
     font-size: 32px;
-    margin: 0 5px;
+    margin: 0 8px 2px 8px;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     text-decoration: none !important;
+    font-style:normal;
+}
+
+a,
+a:link,
+a:visited,
+a:hover,
+a:active{
+    text-decoration: none;
 }
 
 
@@ -117,4 +128,17 @@ img {
 .alerts {
     width: 25%;
 }
+
+.row {
+  display: flex;
+  text-decoration: none !important;
+
+}
+
+.column {
+  flex: 80%;
+  text-decoration: none !important;
+
+}
+
 </style>
