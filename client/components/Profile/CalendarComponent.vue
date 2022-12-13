@@ -475,7 +475,8 @@ p {
 textarea {
   resize: none;
   width: 100%;
-  min-height: 80px;
+  min-height: 100px;
+  font-size: 14pt;
 }
 .wideBox {
   width: 100%;
@@ -680,10 +681,11 @@ textarea {
 /* Modal Content/Box */
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
+  margin: 30%;
+  margin-top: 15%;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
+  width: 40%;
 }
 
 /* The Close Button */
@@ -691,6 +693,7 @@ textarea {
   color: white;
   float: right;
   font-weight: bold;
+  font-size: 12pt;
   padding: 5px;
   margin-left: 5px;
   margin-top: 10px;
