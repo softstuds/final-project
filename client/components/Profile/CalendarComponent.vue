@@ -243,12 +243,13 @@ export default {
           this.updateSelection(0, this.defaultDay);
         },
         updateSelection(i, index) {
-          if (this.editing && i > 0 || index >= this.defaultDay) {
+          if (this.editing && (i > 0 || index >= this.defaultDay)) {
             this.selectedWeek = i;
             this.selectedDay = index;
+
+            const selectedDate = this.calendarDays[i][index].day;
+            this.selectedDateString = selectedDate.getMonth() + 1 + "/" + selectedDate.getDate();
           }
-          const selectedDate = this.calendarDays[i][index].day;
-          this.selectedDateString = selectedDate.getMonth() + 1 + "/" + selectedDate.getDate();
         },
         getClass(i, index) {
           const unselected = this.calendarDays[i][index].status;
@@ -503,6 +504,8 @@ select {
   min-height: 100px;
   font-weight: 400;
   padding-bottom: 30px;
+  /* height: 100px;
+  overflow-y: scroll; */
 }
 
 .borderTop {
