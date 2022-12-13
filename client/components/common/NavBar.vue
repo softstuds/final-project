@@ -13,9 +13,6 @@
       </router-link>
     </div>
     <div class="right">
-      <router-link to="/">
-        Home
-      </router-link>
       <router-link
         to="/about"
       >

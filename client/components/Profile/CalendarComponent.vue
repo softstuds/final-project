@@ -406,6 +406,7 @@ export default {
             if (!this.$store.state.hasAccess) {
               this.$store.commit('updateAccess');
             }
+            this.$store.commit('updateLastActive');
         },
         async requestTimeBlock() {            
             const options = {
@@ -433,6 +434,7 @@ export default {
             }
             this.getAvailibilities();
             this.closeModal();
+            this.$store.commit('updateLastActive');
         },
         async deleteTimeBlock(blockId) {            
             const options = {
@@ -456,6 +458,7 @@ export default {
             if (this.$store.state.hasAccess) {
               this.$store.commit('updateAccess');
             }
+            this.$store.commit('updateLastActive');
         }
     }
 };

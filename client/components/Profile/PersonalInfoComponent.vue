@@ -178,6 +178,7 @@ export default {
       }
       this.user = res.user;
       this.getTags();
+      this.$store.commit('updateLastActive');
     }
   }
 };
