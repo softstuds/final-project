@@ -86,7 +86,6 @@ export default {
   },
   methods: {
     getOtherParty() {
-      console.log(typeof this.meeting.status);
         if (this.user._id == this.meeting.owner) {
           this.otherParty = this.requester.name;
         } else {

@@ -4,65 +4,132 @@
 <template>
     <main>
       <section>
-        <div class="row">
+        <div 
+        v-if="this.pastMeetings.bool || this.upcomingMeetings.bool || this.incomingRequests.bool || this.outgoingRequests.bool"
+        class="row">
             <div class="column">
                 <h2>Past Meetings</h2>
                 <section
-                v-for="block in this.pastMeetings"
+                v-if="this.pastMeetings.bool"
                 class="meeting"
                 >
                 <MeetingComponent
+                v-for="block in this.pastMeetings.timeBlocks"
                 :key="block.id"
                 :meeting="block"
                 :type="'past'"
                 @reRender="reRender"
                  />
                 </section>
+                <section class="noMeetings" v-else>
+                  You have no past meetings. Start searching for 
+                  users!
+                  <button  onclick="window.location.href='/#/search'">
+                      Search for users!
+                  </button>
+                </section>
             </div>
             <div class="column">
                 <h2>Upcoming Meetings</h2>
                 <section
+                v-if="this.upcomingMeetings.bool"
                 class="meeting"
                 >
                 <MeetingComponent
-                v-for="block in this.upcomingMeetings"
+                v-for="block in this.upcomingMeetings.timeBlocks"
                 :key="block.id"
                 :meeting="block"
                 :type="'upcoming'"
                 @refreshMeetings="getAllMeetings"
                  />
                 </section>
-               
+                <section class="noMeetings" v-else>
+                  You have no upcoming meetings. Start searching for 
+                  users!
+                  <button onclick="window.location.href='/#/search'">
+                      Search for users!
+                  </button>
+                </section>
             </div>
             <div class="column">
                 <h2>Incoming Requests</h2>
                 <section 
                 class="meeting"
+                v-if="this.incomingRequests.bool"
                 >
                 <MeetingComponent
-                v-for="block in this.incomingRequests"
+                v-for="block in this.incomingRequests.timeBlocks"
                 :key="block.id"
                 :meeting="block"
                 :type="'incoming'"
                 @refreshMeetings="getAllMeetings"
                  />
                 </section>
-
+                <section class="noMeetings" v-else>
+                  You have no incoming requests. Start searching for 
+                  users!
+                  <button onclick="window.location.href='/#/search'">
+                      Search for users!
+                  </button>
+                </section>
             </div>
             <div class="column">
                 <h2>Outgoing Requests</h2>
                 <section
                 class="meeting"
+                v-if="this.outgoingRequests.bool"
                 >
                 <MeetingComponent
-                v-for="block in this.outgoingRequests"
+                v-for="block in this.outgoingRequests.timeBlocks"
                 :key="block.id"
                 :meeting="block"
                 :type="'outgoing'"
                 @refreshMeetings="getAllMeetings"
                  />
                 </section>
+                <section class="noMeetings" v-else>
+                  You have no outgoing requests. Start searching for 
+                  users!
+                  <button onclick="window.location.href='/#/search'">
+                      Search for users!
+                  </button>
+                </section>
             </div>
+        </div>
+        <div v-else>
+          <div class="row">
+          <div class="column">
+                <h2>Past Meetings</h2>
+                <section class="noMeetings">
+                  You have no past meetings. Start searching for 
+                  users!
+                </section>
+          </div>
+          <div class="column">
+                <h2>Upcoming Meetings</h2>
+                <section class="noMeetings">
+                  You have no upcoming meetings. Start searching for 
+                  users!
+                </section>
+          </div>
+          <div class="column">
+                <h2>Incoming Requests</h2>
+                <section class="noMeetings">
+                  You have no incoming requests. Start searching for 
+                  users!
+                </section>
+          </div>
+          <div class="column">
+                <h2>Outgoing Requests</h2>
+                <section class="noMeetings">
+                  You have no outgoing requests. Start searching for 
+                  users!
+                </section>
+          </div>
+        </div>
+          <section>
+            <button class="large" onclick="window.location.href='/#/search'">Search for users!</button>
+          </section>
         </div>
       </section>
     </main>
@@ -78,17 +145,29 @@
     },
     data () {
         return {
-            pastMeetings: [],
-            upcomingMeetings: [],
-            incomingRequests: [],
-            outgoingRequests: [],
+            pastMeetings: {
+              timeBlocks: [],
+              bool: Boolean
+            },
+            upcomingMeetings: {
+              timeBlocks: [],
+              bool: Boolean
+            },
+            incomingRequests: {
+              timeBlocks: [],
+              bool: Boolean
+            },
+            outgoingRequests: {
+              timeBlocks: [],
+              bool: Boolean
+            },
             user: null,
             renderkey: 0,
         }
     },
+
     mounted() {
         this.getAllMeetings();
-
     },
     methods: {
         reRender() {
@@ -100,24 +179,42 @@
 
         const paramsUpcoming = {method: 'GET', url: '/api/timeblock/upcoming'}
         this.request(paramsUpcoming).then(function(result) {
-            that.upcomingMeetings = Object.values(result);
+          if (Object.values(result).length != 0) {
+            that.upcomingMeetings.timeBlocks = Object.values(result);
+            that.upcomingMeetings.bool = true;
+          } else {
+            that.upcomingMeetings.bool = false;
+          }
         });
 
         const paramsPast = {method: 'GET', url: '/api/timeblock/met'}
         this.request(paramsPast).then(function(result) {
-            that.pastMeetings = Object.values(result);
+          if (Object.values(result).length != 0) {
+            that.pastMeetings.timeBlocks = Object.values(result);
+            that.pastMeetings.bool = true;
+          } else {
+            that.pastMeetings.bool = false;
+          }
         });
 
         const paramsOutgoing = {method: 'GET', url: '/api/timeblock/requests/sent'}
         this.request(paramsOutgoing).then(function(result) {
-            that.outgoingRequests = Object.values(result);
-            console.log(that.outgoingRequests, typeof that.outgoingRequests)
+          if (Object.values(result).length != 0) {
+            that.outgoingRequests.timeBlocks = Object.values(result);
+            that.outgoingRequests.bool = true;
+          } else {
+            that.outgoingRequests.bool = false;
+          }
         });
         
         const paramsIncoming = {method: 'GET', url: '/api/timeblock/requests/received'}
         this.request(paramsIncoming).then(function(result) {
-            that.incomingRequests = Object.values(result);
-
+          if (Object.values(result).length != 0) {
+            that.incomingRequests.timeBlocks = Object.values(result);
+            that.incomingRequests.bool = true;
+          } else {
+            that.incomingRequests.bool = false;
+          }
         });
 
         },
@@ -208,6 +305,36 @@ h3 {
 
 .column .meeting {
     padding: 0%;
+}
+
+.noMeetings {
+  padding-top: 12px;
+  margin: 24px;
+  text-align: center;
+  font-size: 16px;
+}
+
+button {
+  width: 60%;
+  margin: 24px auto;
+  height: 36px;
+  background-color: #729e85;
+  border-radius:6px;
+  border: 0px;
+  color: white;
+}
+
+button:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0 4px 12px;
+  cursor: pointer;
+}
+
+.large {
+  width: 30%;
+  height: 48px;
+  margin-top: 48px;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 </style>

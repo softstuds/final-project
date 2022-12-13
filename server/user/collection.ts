@@ -39,7 +39,7 @@ class UserCollection {
    * @return {Promise<Array<HydratedDocument<User>>>} - All the users
    */
   static async findAll(): Promise<Array<HydratedDocument<User>>> {
-    return await UserModel.find({}).populate('industry');
+    return await UserModel.find({}).collation({locale: "en" }).sort({lastName: 1}).populate('industry');
   }
 
   /**

@@ -11,6 +11,11 @@
       </h1>
     </div>
     <div class="right">
+      <router-link
+        to="/about"
+      >
+        About
+      </router-link>
       <router-link to="/">
         Home
       </router-link>
@@ -76,10 +81,15 @@ a:hover { text-decoration: none; color:#729e85; }
 a:visited { text-decoration: underline; color:black; }
 a:focus { 
   text-decoration: underline;
-  color:#729e85;
+  color:#729e85 !important;
   font-weight: 500;
 }
-a:active { text-decoration: underline; color:#729e85; }
+router-link:active {
+  text-decoration: underline;
+  color:#729e85 !important;
+  font-weight: 500;
+}
+a:-webkit-any-link {color: black;}
 
 .title {
     font-size: 32px;
