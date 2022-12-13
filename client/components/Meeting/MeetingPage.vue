@@ -129,7 +129,10 @@
           </div>
         </div>
           <section>
-            <button class="large" onclick="window.location.href='/#/search'">Search for users!</button>
+            <routerlink to="/search">
+              <button class="large">Search for users!</button>
+            </routerlink>
+            
           </section>
         </div>
       </section>
@@ -342,6 +345,7 @@ button:hover {
   margin-top: 48px;
   font-size: 24px;
   cursor: pointer;
+  margin-left: 36%;
 }
 
 </style>
