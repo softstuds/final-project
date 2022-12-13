@@ -213,12 +213,18 @@ export default {
       const filterIntersection = allFilters.reduce((a, b) => new Set([...a].filter(x => b.has(x))));
       this.displayedUsers = this.users;
       this.displayedUsers = this.displayedUsers.filter(user => filterIntersection.has(user.id));
+      this.sortList();
     },
     clearInitials() {
       this.initialIndustry = '';
       this.initialTags = '';
       this.initialGradYear = '';
       this.initialAvailable = false;
+    },
+    sortList() {
+      this.displayedUsers.sort(function (a, b) {
+        return a.lastName.toLowerCase().localeCompare(b.lastName.toLowerCase());
+      });
     }
   }
 };
