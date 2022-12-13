@@ -660,6 +660,7 @@ textarea {
 
 .alerts {
     position: relative;
+    bottom: 80px;
     z-index: 99;
     text-align: center;
 }
