@@ -3,7 +3,8 @@
 
 <template>
     <main>
-      <section>
+      <section class="main">
+        <h1>Your Meetings</h1>
         <div 
         v-if="this.pastMeetings.bool || this.upcomingMeetings.bool || this.incomingRequests.bool || this.outgoingRequests.bool"
         class="row">
@@ -284,11 +285,17 @@ h3 {
   font-size: 12px;
 }
 
+.main > h1 {
+  margin-top: 48px;
+  font-weight: 300;
+}
+
+h1 {
+  font-size: 48px;
+}
+
 .row {
   display: flex;
-  /* align-items: center;
-  justify-content: space-between; */
-  padding: 24px 0px 0px 0px;
 }
 .timeBlock {
     border: 0.5px solid black;
