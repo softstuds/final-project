@@ -23,7 +23,7 @@ const isValidUserParam = async (req: Request, res: Response, next: NextFunction)
 
   if (!user) {
     res.status(404).json({
-      error: `User with ID ${req.params.userId} does not exist.`
+      error: `User ${user.firstName + user.lastName} does not exist.`
     });
     return;
   }
@@ -39,7 +39,7 @@ const isValidUserBody = async (req: Request, res: Response, next: NextFunction) 
 
   if (!user) {
     res.status(404).json({
-      error: `User with ID ${req.params.userId} does not exist.`
+      error: `User ${user.firstName + user.lastName} does not exist.`
     });
     return;
   }
@@ -81,13 +81,18 @@ const isValidInput = async (req: Request, res: Response, next: NextFunction) => 
  */
 const isBlockNonexistent = async (req: Request, res: Response, next: NextFunction) => {
   const userId = req.session.userId as string;
-  const timeBlocks = await TimeBlockCollection.findAllByOwner(userId);
+  const timeBlocks = await TimeBlockCollection.findAllByUser(userId);
   const start = new Date(req.body.start);
-  const sameStartBlock = timeBlocks.filter((block) => (block.start.getTime() == start.getTime()));
+  const sameStartBlock = timeBlocks.filter((block) => {
+    if (block.owner._id == req.session.userId || (block.requester._id == req.session.userId && block.accepted)) {
+      return block.start.getTime() == start.getTime(); 
+    }
+    return false;   
+  });
 
   if (sameStartBlock.length > 0) {
     res.status(409).json({
-      error: `Time block with start ${req.body.start} already exists for user ID ${userId}.`
+      error: 'You already have a meeting scheduled for this time.'
     });
     return;
   }
@@ -102,7 +107,7 @@ const isBlockExistent = async (req: Request, res: Response, next: NextFunction) 
   const timeBlock = await TimeBlockCollection.findOne(req.params.timeBlockId);
   if (!timeBlock) {
     res.status(404).json({
-      error: `Time block with ID ${req.params.timeBlockId} does not exist.`
+      error: 'You do not have an availability or meeting at this time.'
     });
     return;
   }
@@ -117,7 +122,7 @@ const isBlockExistent = async (req: Request, res: Response, next: NextFunction) 
   const timeBlock = await TimeBlockCollection.findOne(req.params.timeBlockId);
   if (timeBlock.requester._id.toString() !== (req.session.userId as string)) {
     res.status(403).json({
-      error: `User is not requester of time block with ID ${req.params.timeBlockId}.`
+      error: `You are not the requester of this time block.`
     });
     return;
   }
@@ -132,7 +137,7 @@ const isBlockOwner = async (req: Request, res: Response, next: NextFunction) => 
   const timeBlock = await TimeBlockCollection.findOne(req.params.timeBlockId);
   if (timeBlock.owner._id.toString() !== (req.session.userId as string)) {
     res.status(403).json({
-      error: `User is not owner of time block with ID ${req.params.timeBlockId}.`
+      error: `You are not the owner of this time block.`
     });
     return;
   }
@@ -147,7 +152,7 @@ const isBlockNotOwner = async (req: Request, res: Response, next: NextFunction) 
   const timeBlock = await TimeBlockCollection.findOne(req.params.timeBlockId);
   if (timeBlock.owner._id === req.session.userId) {
     res.status(403).json({
-      error: `User is already owner of time block with ID ${req.params.timeBlockId}.`
+      error: `You are already the owner of this time block.`
     });
     return;
   }
@@ -162,7 +167,7 @@ const isBlockOwnerOrRequester = async (req: Request, res: Response, next: NextFu
   const timeBlock = await TimeBlockCollection.findOne(req.params.timeBlockId);
   if (timeBlock.owner._id.toString() !== req.session.userId && timeBlock.requester._id.toString() !== req.session.userId) {
     res.status(403).json({
-      error: `User is not owner or requester of time block with ID ${req.params.timeBlockId}.`
+      error: `You are not the owner or requester of this time block.`
     });
     return;
   }
@@ -178,7 +183,7 @@ const isBlockInFuture = async (req: Request, res: Response, next: NextFunction) 
   const timeBlock = await TimeBlockCollection.findOne(req.params.timeBlockId);
   if (timeBlock.start < now) {
     res.status(409).json({
-      error: `Time block with ID ${req.params.timeBlockId} has already passed.`
+      error: `This meeting time has already passed.`
     });
     return;
   }
@@ -194,7 +199,7 @@ const isBlockInPast = async (req: Request, res: Response, next: NextFunction) =>
   const timeBlock = await TimeBlockCollection.findOne(req.params.timeBlockId);
   if (timeBlock.start > now) {
     res.status(409).json({
-      error: `Time block with ID ${req.params.timeBlockId} has not passed yet.`
+      error: `This meeting time has not passed yet.`
     });
     return;
   }
@@ -209,7 +214,7 @@ const isBlockAccepted = async (req: Request, res: Response, next: NextFunction) 
   const timeBlock = await TimeBlockCollection.findOne(req.params.timeBlockId);
   if (!timeBlock.accepted) {
     res.status(409).json({
-      error: `Time block with ID ${req.params.timeBlockId} is not an accepted meeting.`
+      error: `This is not an accepted meeting.`
     });
     return;
   }
