@@ -74,7 +74,7 @@ nav {
     font-weight:300;
     color: black !important;
     list-style-type: none;
-    height: 100%; /* Full height */
+    height: 100%;
 }
 
 a:hover { text-decoration: none; color:#729e85; }
@@ -100,7 +100,6 @@ img {
 
 .right {
     font-size: 20px;
-    /* display: grid; */
     display: flex;
     margin-top: 50px;
     flex-direction: column;
