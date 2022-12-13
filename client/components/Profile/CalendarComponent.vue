@@ -37,48 +37,46 @@
             <section
               v-for="(date, index) in week"
               :key="index"
-              class="fullDateBox"
+              :class="getClass(i, index)"
               @click="updateSelection(i, index)"
             >
-              <section class="flexDisplay borderBottom borderSides">
+              <section class="flexDisplay borderBottom">
                 {{ calendarDays[i][index].day.getMonth() + 1 }}/{{ calendarDays[i][index].day.getDate() }}
               </section>
-              <section :class="getClass(i, index)">
-                <section 
-                  v-for="block in date"
-                  :key="block._id"
-                  class="timeBlock"
-                >
-                  {{ block.start.getHours() % 12 == 0 ?
-                    12 :
-                    block.start.getHours() % 12
-                  }}:{{ block.start.getMinutes() == 0 ? '00' : block.start.getMinutes() }}
-                  {{ block.start.getHours() < 12 ? 'am' : 'pm' }}
-                  <div class="row">
-                    <section class="column" v-if="userId !== $store.state.userId">
-                      <button 
-                        v-if="$store.state.hasAccess === true"
-                        class="activeButton"
-                        @click="openModal(block._id)"
-                      >
-                        Request
-                      </button>
-                      <button 
-                        v-else
-                        class="disabled"
-                      >
-                        Request
-                      </button>
-                    </section>
-                    <button
-                      v-if="editing"
-                      class="deleteButton column"
-                      @click="deleteTimeBlock(block._id)"
+              <section 
+                v-for="block in date"
+                :key="block._id"
+                class="timeBlock"
+              >
+                {{ block.start.getHours() % 12 == 0 ?
+                  12 :
+                  block.start.getHours() % 12
+                }}:{{ block.start.getMinutes() == 0 ? '00' : block.start.getMinutes() }}
+                {{ block.start.getHours() < 12 ? 'am' : 'pm' }}
+                <div class="row">
+                  <section class="column" v-if="userId !== $store.state.userId">
+                    <button 
+                      v-if="$store.state.hasAccess === true"
+                      class="activeButton"
+                      @click="requestTimeBlock(block._id)"
                     >
-                      Delete
+                      Request
                     </button>
-                  </div>
-                </section>
+                    <button 
+                      v-else
+                      class="disabled"
+                    >
+                      Request
+                    </button>
+                  </section>
+                  <button
+                    v-if="editing"
+                    class="deleteButton column"
+                    @click="deleteTimeBlock(block._id)"
+                  >
+                    Delete
+                  </button>
+                </div>
               </section>
             </section>
           </div>
@@ -91,7 +89,7 @@
           <button 
             v-if="!editing"
             @click="startEditing"
-            class="edit marginBottom"
+            class="edit"
           >
             Edit My Availabilities
           </button>
@@ -107,7 +105,9 @@
       <section id="selectTime" class="flexDisplay flexColumn alignCenter">
         <section class="flexDisplay flexColumn">
           <section class="flexDisplay">
-            <div class="tooltip">
+            <div 
+              class="tooltip"
+            >
               <p>Selected Day: {{ selectedDateString }}</p>
               <span class="tooltiptext tooltipTop">
                 Select a different day by clicking on the calendar.
@@ -150,7 +150,9 @@
                   Generate 30 minute blocks
                 </button>
               </section>
-              <div class="tooltip">
+              <div 
+                class="tooltip"
+              >
                 <p class="tooltipIcon">ⓘ</p>
                 <span class="tooltiptext tooltipRight">
                   Automatically generate 30 minute blocks within your entered availability.
@@ -160,7 +162,9 @@
           </section>
         </section>
         <section class="bottomTooltip">
-          <div class="tooltip">
+          <div 
+            class="tooltip"
+          >
             <small>Having trouble entering availabilities?</small>
             <span class="tooltiptext tooltipTop">
               You can only enter times between now and the end of the calendar shown (4 weeks).
@@ -177,22 +181,6 @@
       >
         <p>{{ alert }}</p>
       </article>
-    </section>
-    <section id="messageModal" class="modal">
-      <!-- Modal content -->
-      <section class="modal-content">
-        <section class="wideBox">
-          <textarea
-            :placeholder="('Why do you want to meet with ' + userName + '?')"
-            @input="message = $event.target.value"
-          >
-          </textarea>
-        </section>
-        <section class="justifyEnd flexDisplay">
-          <button class="modalButton backgroundGray" @click="closeModal">Cancel</button>
-          <button class="modalButton" @click="requestTimeBlock">Submit Request</button>
-        </section>
-      </section>
     </section>
   </div>
 </template>
@@ -228,8 +216,6 @@ export default {
             defaultDay: 0,
             selectedDay: 0,
             selectedDateString: '',
-            message: '',
-            selectedBlock: null,
             alerts: {}
         }
     },
@@ -246,16 +232,6 @@ export default {
         this.hideTimeSelector();
     },
     methods: {
-        openModal(blockId) {
-          this.selectedBlock = blockId;
-          this.message = '';
-          const modal = document.getElementById("messageModal");
-          modal.style.display = "block";
-        },
-        closeModal() {
-          const modal = document.getElementById("messageModal");
-          modal.style.display = "none";
-        },
         startEditing() { // can only be done on $store.state.user
           if (!this.$store.state.user.meetingLink) {
             const e = "Please add a meeting link in your account settings before adding availabilities.";
@@ -303,7 +279,7 @@ export default {
               nextDay.setDate(start.getDate() + i);
               var status;
               if (nextDay < today) {
-                status = 'day backgroundGray';
+                status = 'day pastDay';
               } else {
                 if (nextDay.getMonth() == today.getMonth() && nextDay.getDate() == today.getDate()) {
                   this.defaultDay = i % 7;
@@ -407,19 +383,16 @@ export default {
               this.$store.commit('updateAccess');
             }
         },
-        async requestTimeBlock() {            
+        async requestTimeBlock(blockId) {            
             const options = {
                 method: 'PATCH',
                 headers: {'Content-Type': 'application/json'},
                 credentials: 'same-origin',
-                body: JSON.stringify({
-                  userId: this.$store.state.userId,
-                  message: this.message
-                })
+                body: JSON.stringify({userId: this.$store.state.userId})
             };
 
             try {
-                const r = await fetch('api/timeblock/request/' + this.selectedBlock, options);
+                const r = await fetch('api/timeblock/request/' + blockId, options);
                 const res = await r.json();
                 if (!r.ok) {
                     throw new Error(res.error);
@@ -432,7 +405,6 @@ export default {
                 setTimeout(() => this.$delete(this.alerts, e), 3000);
             }
             this.getAvailibilities();
-            this.closeModal();
         },
         async deleteTimeBlock(blockId) {            
             const options = {
@@ -467,19 +439,9 @@ select {
   margin-left: 10px;
 }
 
-p {
-  margin-block-start: 0;
-  margin-block-end: 0;
-}
-
-textarea {
-  resize: none;
-  width: 100%;
-  min-height: 100px;
-  font-size: 14pt;
-}
-.wideBox {
-  width: 100%;
+button:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0 4px 12px;
+  cursor: pointer;
 }
 
 .addButton {
@@ -524,16 +486,8 @@ textarea {
   flex-direction: column;
 }
 
-.justifyEnd {
-  justify-content: flex-end;
-}
-
 .alignCenter {
   align-items: center;
-}
-
-.marginBottom {
-  margin-bottom: 50px;
 }
 
 .editFooter {
@@ -541,7 +495,7 @@ textarea {
   margin-top: 10px;
 }
 
-.backgroundGray {
+.pastDay {
   background-color:lightgray;
 }
 
@@ -549,16 +503,14 @@ textarea {
   background-color:rgb(255, 255, 197);
 }
 
-.fullDateBox {
-  width: 100%;
-  font-weight: 400;
-}
-
 .day {
+  width: 100%;
   border: 0.5px solid black;
-  padding-bottom: 15px;
-  height: 100px;
-  overflow-y: scroll;
+  min-height: 100px;
+  font-weight: 400;
+  padding-bottom: 30px;
+  /* height: 100px;
+  overflow-y: scroll; */
 }
 
 .borderTop {
@@ -573,19 +525,14 @@ textarea {
   border-bottom: 0.5px solid black;
 }
 
-.borderSides {
-  border-left: 0.5px solid black;
-  border-right: 0.5px solid black;
-}
-
 .timeBlock {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   border: 1px solid black;
-  padding: 6px;
-  margin: 6px;
-  font-size: 14px;
+  padding: 10px;
+  margin: 10px;
+  font-size: 12px;
 }
 
 .selector {
@@ -600,6 +547,7 @@ textarea {
   margin-top: 50px;
 }
 
+/* Tooltip container */
 .tooltip {
   position: relative;
   display: inline-block;
@@ -626,6 +574,8 @@ textarea {
   padding: 5px;
   border-radius: 6px;
   font-size: medium;
+ 
+  /* Position the tooltip text - see examples below! */
   position: absolute;
   z-index: 1;
 }
@@ -650,52 +600,15 @@ textarea {
   flex: 2;
 }
 
+/* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
 
 .alerts {
     position: relative;
-    bottom: 80px;
     z-index: 99;
     text-align: center;
-}
-
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgb(0,0,0);
-  background-color: rgba(0,0,0,0.4);
-}
-.modal-content {
-  background-color: #fefefe;
-  margin: 30%;
-  margin-top: 15%;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 40%;
-}
-.modalButton {
-  color: white;
-  float: right;
-  font-weight: bold;
-  font-size: 12pt;
-  padding: 5px;
-  margin-left: 5px;
-  margin-top: 10px;
-}
-
-.modalButton:hover,
-.modalButton:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
 }
 
 </style>
