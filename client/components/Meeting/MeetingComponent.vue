@@ -32,6 +32,7 @@
         <p v-else class="canceled">This meeting has been canceled.</p>
       </div>
       <div v-else-if="(type=='past' && this.meeting.status==='NO_RESPONSE')">
+        <p>{{this.meeting.status}}</p>
         <p v-if="(this.user._id==meeting.owner._id)"> Did {{requester.name}} attend the meeting?</p>
         <p v-else>Did {{owner.name}} attend the meeting?</p>
         <div class="row">
@@ -40,9 +41,11 @@
         </div>
       </div>
       <div v-else-if="(type=='past' && this.meeting.status !== 'NO_RESPONSE')">
-        <p v-if="(this.feedbackScenario=='user-owner-notmet' || this.feedbackScenario=='user-requester-notmet')" class="notAccepted">{{otherParty}} marked you as did not attend.</p>
-        <p v-else-if="(this.feedbackScenario=='user-owner-met' || this.feedbackScenario=='user-requester-met')" class="notAccepted">You marked {{otherParty}} as did not attend.</p>
-        <p v-else-if="(meeting.status==='MET')" class="met">This meeting was marked as fully attended.</p>
+        <p v-if="(meeting.status==='MET')" class="met">You marked {{otherParty}} as attended.</p>
+        <p v-else-if="(meeting.status==='OWNER_MET' && user._id ===meeting.owner._id)" class="notAccepted">You marked {{otherParty}} as did not attend.</p>
+        <p v-else-if="(meeting.status==='OWNER_MET' && user._id ===meeting.requester._id)" class="notAccepted">{{otherParty}} marked you as not attending.</p>
+        <p v-else-if="(meeting.status==='REQUESTER_MET' && user._id ===meeting.requester._id)" class="notAccepted">You marked {{otherParty}} as did not attend.</p>
+        <p v-else-if="(meeting.status==='REQUESTER_MET' && user._id ===meeting.owner._id)" class="notAccepted">{{otherParty}} marked you as not attending.</p>
       </div>
 
     </section>
@@ -92,9 +95,9 @@ export default {
   },
   methods: {
     getOtherParty() {
-        if (this.user._id === this.meeting.owner._id) {
+        if (this.user._id == this.meeting.owner._id) {
           this.otherParty = this.requester.name;
-        } else {
+        } else if (this.user._id === this.meeting.requester._id) {
           this.otherParty = this.owner.name;
         }
     },
@@ -243,7 +246,7 @@ export default {
       
     },
     async feedbackNotMet() {
-      if (this.meeting.status === "NO_RESPONSE") {
+      if (!this.meeting.met) {
         try {
         const r = await fetch(`/api/timeblock/met/${this.meeting._id}`, {
           method: 'PATCH', 
@@ -263,7 +266,7 @@ export default {
       this.feedback = true;
       this.needFeedback();
       this.$emit('reRender');
-
+      this.$emit('refreshMeetings');
       }
       
     }

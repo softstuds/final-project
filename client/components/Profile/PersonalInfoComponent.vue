@@ -22,8 +22,8 @@
           <h3>General Information</h3>
           <section
             v-if="user._id === $store.state.userId">
-            <button v-if="editingInfo" @click="updateInfo">Save Changes</button>
-            <button v-else @click="(editingInfo=true)">Edit Info</button>
+            <button v-if="editingInfo" class="padding" @click="updateInfo">Save Changes</button>
+            <button v-else class="padding" @click="(editingInfo=true)">Edit Info</button>
           </section>
         </section>
         <section>
@@ -185,10 +185,6 @@ export default {
 
 <style scoped>
 
-button {
-  padding: 5px;
-}
-
 button:hover {
   box-shadow: rgba(0, 0, 0, 0.2) 0 4px 12px;
   cursor: pointer;
@@ -200,6 +196,9 @@ textarea {
   min-height: 80px;
 }
 
+.padding {
+  padding: 5px;
+}
 
 .wideBox {
   width: 100%;
