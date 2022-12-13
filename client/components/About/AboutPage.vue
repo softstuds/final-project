@@ -50,14 +50,15 @@ section {
 }
 
 main {
-    padding: 10px 24px 10px;
-    margin: 0;
+    padding: 24px 10px 10px 108px !important;
+    margin: auto !important;
+    width: 900px;
 }
 
 h2, h2 > * {
     text-align: center;
     justify-content: center;
-    font-weight: 300;
+    font-weight: 500;
 }
 
 p {
