@@ -106,7 +106,7 @@ const isValidGraduationYear = (req: Request, res: Response, next: NextFunction) 
     return;
   }
 
-  if (gradYearNumber < 1860 || gradYearNumber > 2026) {
+  if (gradYearNumber < 1860 || gradYearNumber > 3000) {
     res.status(400).json({
       error: 'Invalid graduation year.'
     });
