@@ -1,17 +1,17 @@
 <!-- Component for viewing a person's information (name, username, graduation year, last active, industry -->
 
 <template>
-    <main v-if="this.meeting !== null">
+    <main v-if="meeting && user">
     <section class="timeBlock">
       <p v-if="type=='outgoing'">Requested meeting with <router-link class="link" :to="('/profile/' + meeting.owner._id)">{{owner.name}}</router-link></p>
       <p v-else-if="type=='incoming'">
         Incoming meeting invite from <router-link class="link" :to="('/profile/' + meeting.requester._id)">{{requester.name}}</router-link> 
       </p>
-      <p v-if="(type=='upcoming' && this.user._id==meeting.owner._id)">Upcoming meeting with <router-link class="link" :to="('/profile/' + meeting.requester._id)">{{requester.name}}</router-link></p>
-      <p v-if="(type=='upcoming' && this.user._id==meeting.requester._id)">Upcoming meeting with <router-link class="link" :to="('/profile/' + meeting.owner._id)">{{owner.name}}</router-link></p>
-      <p v-if="(type=='past' && this.user._id==meeting.owner._id)">Past meeting with <router-link class="link" :to="('/profile/' + meeting.requester._id)"></router-link></p>
-      <p v-if="(type=='past' && this.user._id==meeting.requester._id)">Past meeting with <router-link class="link" :to="('/profile/' + meeting.owner._id)">{{owner.name}}</router-link> </p>
-      <p class="time">{{this.day}} at {{hour}}:{{minute}} {{pm}}</p>
+      <p v-if="(type=='upcoming' && user._id==meeting.owner._id)">Upcoming meeting with <router-link class="link" :to="('/profile/' + meeting.requester._id)">{{requester.name}}</router-link></p>
+      <p v-if="(type=='upcoming' && user._id==meeting.requester._id)">Upcoming meeting with <router-link class="link" :to="('/profile/' + meeting.owner._id)">{{owner.name}}</router-link></p>
+      <p v-if="(type=='past' && user._id==meeting.owner._id)">Past meeting with <router-link class="link" :to="('/profile/' + meeting.requester._id)">{{requester.name}}</router-link></p>
+      <p v-if="(type=='past' && user._id==meeting.requester._id)">Past meeting with <router-link class="link" :to="('/profile/' + meeting.owner._id)">{{owner.name}}</router-link> </p>
+      <p class="time">{{day}} at {{hour}}:{{minute}} {{pm}}</p>
 
       <div v-if="type=='incoming'">
         <div class="message">Message: {{meeting.message}}</div> 
@@ -27,20 +27,20 @@
         <button @click="acceptRequest" class="column accept">Accept</button>
       </div>
       <div v-else-if="type=='upcoming'">
-        <p>Meeting Link: {{this.link ?? 'nolink'}}</p>
+        <p>Meeting Link: {{link ?? 'nolink'}}</p>
         <button v-if="meeting.status !== 'CANCELED'" @click="cancelMeeting">Cancel Meeting</button>
         <p v-else class="canceled">This meeting has been canceled.</p>
       </div>
-      <div v-else-if="(type=='past' && this.meeting.status==='NO_RESPONSE')">
-        <p>{{this.meeting.status}}</p>
-        <p v-if="(this.user._id==meeting.owner._id)"> Did {{requester.name}} attend the meeting?</p>
+      <div v-else-if="(type=='past' && meeting.status==='NO_RESPONSE')">
+        <p>{{meeting.status}}</p>
+        <p v-if="(user._id==meeting.owner._id)"> Did {{requester.name}} attend the meeting?</p>
         <p v-else>Did {{owner.name}} attend the meeting?</p>
         <div class="row">
           <button @click="feedbackNotMet" class="column">No</button>
           <button @click="feedbackMet" class="column accept">Yes</button>
         </div>
       </div>
-      <div v-else-if="(type=='past' && this.meeting.status !== 'NO_RESPONSE')">
+      <div v-else-if="(type=='past' && meeting.status !== 'NO_RESPONSE')">
         <p v-if="(meeting.status==='MET')" class="met">You marked {{otherParty}} as attended.</p>
         <p v-else-if="(meeting.status==='OWNER_MET' && user._id ===meeting.owner._id)" class="notAccepted">You marked {{otherParty}} as did not attend.</p>
         <p v-else-if="(meeting.status==='OWNER_MET' && user._id ===meeting.requester._id)" class="notAccepted">{{otherParty}} marked you as not attending.</p>
@@ -84,7 +84,6 @@ export default {
   watch: {
       meeting: function() {
         this.getDate();
-        this.getScenario();
       }
     },
   mounted () {
@@ -93,11 +92,12 @@ export default {
   },
   methods: {
     getOtherParty() {
-        if (this.user._id == this.meeting.owner._id) {
-          this.otherParty = this.requester.name;
-        } else if (this.user._id === this.meeting.requester._id) {
-          this.otherParty = this.owner.name;
-        }
+      if (this.user._id == this.meeting.owner._id) {
+        this.otherParty = this.requester.name;
+      } else if (this.user._id === this.meeting.requester._id) {
+        this.otherParty = this.owner.name;
+      }
+        
     },
     getDate () {
       const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
