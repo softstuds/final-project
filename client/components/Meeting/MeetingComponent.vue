@@ -26,15 +26,15 @@
         <button v-if="meeting.status !== 'CANCELED'" @click="cancelMeeting">Cancel Meeting</button>
         <p v-else class="canceled">This meeting has been canceled.</p>
       </div>
-      <div v-else-if="(type=='past' && this.feedback==false)">
-        <p v-if="(this.user._id==meeting.owner._id)">Did {{requester.name}} attend the meeting?</p>
+      <div v-else-if="(type=='past' && this.meeting.status==='NO_RESPONSE')">
+        <p v-if="(this.user._id==meeting.owner._id)"> Did {{requester.name}} attend the meeting?</p>
         <p v-else>Did {{owner.name}} attend the meeting?</p>
         <div class="row">
           <button @click="feedbackNotMet" class="column">No</button>
           <button @click="feedbackMet" class="column accept">Yes</button>
         </div>
       </div>
-      <div v-else-if="(type=='past' && this.feedback==true)">
+      <div v-else-if="(type=='past' && this.meeting.status !== 'NO_RESPONSE')">
         <p v-if="(meeting.met==true)" class="met">You marked {{otherParty}} as attended.</p>
         <p v-else class="notAccepted">You marked {{otherParty}} as did not attend.</p>
       </div>
@@ -118,7 +118,7 @@ export default {
 
     },
     needFeedback() {
-      if (this.meeting.status == 'NO_RESPONSE') {
+      if (this.meeting.status === 'NO_RESPONSE') {
         this.feedback = false;
       } else {
         this.feedback = true;
@@ -204,7 +204,7 @@ export default {
       this.$emit('refreshMeetings');
     },
     async feedbackMet() {
-      if (!this.meeting.met) {
+      if (this.meeting.status === "NO_RESPONSE") {
         try {
         const r = await fetch(`/api/timeblock/met/${this.meeting._id}`, {
           method: 'PATCH', 
@@ -221,8 +221,9 @@ export default {
         this.$set(this.alerts, e, 'error');
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
-      this.needFeedback();
+
       this.$emit('reRender');
+      this.$emit('refreshMeetings');
     }
       
     },
@@ -285,11 +286,11 @@ section, p {
 }
 
 .met {
-  color: forestgreen;
+  color: #729e85;
 }
 
 .accept {
-  background-color: forestgreen;
+  background-color: #729e85;
   color: white;
   border: none;
 }

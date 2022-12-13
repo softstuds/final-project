@@ -18,7 +18,7 @@
                 :key="block.id"
                 :meeting="block"
                 :type="'past'"
-                @reRender="reRender"
+                @refreshMeetings="getAllMeetings"
                  />
                 </section>
                 <section class="noMeetings" v-else>
@@ -176,7 +176,7 @@
     async getAllMeetings()  {
 
         let that = this;
-
+        console.log('called');
         const paramsUpcoming = {method: 'GET', url: '/api/timeblock/upcoming'}
         this.request(paramsUpcoming).then(function(result) {
           if (Object.values(result).length != 0) {

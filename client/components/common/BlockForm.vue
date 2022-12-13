@@ -225,7 +225,7 @@ input {
   margin: 4px 12px 0px 0px;
 }
 
-button {
+.columnform {
   width: 20%;
   position: relative;
   top: 26px;
@@ -233,7 +233,7 @@ button {
   height: 36px;
 }
 
-button:hover {
+.columnform:hover {
   box-shadow: rgba(0, 0, 0, 0.2) 0 4px 12px;
   cursor: pointer;
 }

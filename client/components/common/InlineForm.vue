@@ -58,7 +58,7 @@ input {
 .submit-button {
   position: relative;
   height: 36px;
-  background-color: #729e85;
+  background-color: #729e85 !important;
   border-radius:6px;
   border: 0px;
   margin: 0 8px;

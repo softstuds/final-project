@@ -41,6 +41,13 @@ export default {
   box-sizing: border-box;
 }
 
+button {
+  background-color: #729e85;
+  border-radius: 6px;
+  border: 0px;
+  color: white;
+}
+
 body {
   height: 100vh;
   flex-direction: column;
