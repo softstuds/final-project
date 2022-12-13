@@ -7,7 +7,7 @@
     <div class="left">
       <img src="../../public/favicon.png">
       <h1 class="title">
-        ac
+        AC
       </h1>
     </div>
     <div class="right">
