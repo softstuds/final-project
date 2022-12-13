@@ -1,7 +1,7 @@
 <!-- Component for viewing a person's information (name, username, graduation year, last active, industry -->
 
 <template>
-    <main>
+    <main v-if="this.meeting !== null">
     <section class="timeBlock">
       <p v-if="type=='outgoing'">Requested meeting with <router-link class="link" :to="('/profile/' + meeting.owner._id)">{{owner.name}}</router-link></p>
       <p v-else-if="type=='incoming'">
@@ -75,7 +75,6 @@ export default {
         email: this.meeting.requester.email,
       },
       link: this.meeting.owner.meetingLink,
-      feedbackScenario: String,
       day: String,
       hour: String,
       minute: String,
