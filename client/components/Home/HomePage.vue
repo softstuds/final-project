@@ -79,9 +79,8 @@
         </header>
         <h3>
           <a class='notSignedIn' onclick="window.location.href='/#/login'">
-            Sign in
-          </a>
-          to access Alumni Connector.
+            Sign in</a>
+             to access Alumni Connector.
         </h3>
       </div>
     </main>
