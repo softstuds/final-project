@@ -1,5 +1,7 @@
 <template >
-  <div id="app">
+  <div 
+    class="entire-page"
+    id="app">
     <header>
       <NavBar class="nav" />
     </header>
@@ -49,8 +51,13 @@ body {
   font-family: "Segoe UI", "Helvetica Neue", "Arial";
 }
 
+.entire-page {
+  display: flex;
+  flex-direction: row;
+}
+
 main {
-  padding: 40px;
+  padding: 0px;
   padding-top: 20px;
 }
 
@@ -63,15 +70,20 @@ button {
 
 .nav {
   margin: 0px !important;
-  width: 100% !important;
+  width: 12% !important;
+  display: block;
+  position: fixed; /* Make it stick, even on scroll */
   margin: auto;
+  height: 100%;
   box-sizing: border-box;
-  position: absolute; 
+  border-right: 0.5px solid rgb(182, 182, 182);
 }
 
 .body2 {
-  margin: auto !important;
-  width: 1280px;
+  margin: auto;
+  margin-left: 12% !important;
+  padding: 0px 0px 0px 72px !important;
+  width: 80%;
 }
 
 .alerts {
