@@ -1,14 +1,14 @@
 <!-- Component for viewing a person's information (name, username, graduation year, last active, industry -->
 
 <template>
-  <div
+  <div class="main"
     v-if="user !== null"
   >
     <section>
-      <b class="name">{{ user.firstName }} {{ user.lastName }}</b>
+      <p class="name">{{ user.firstName }} {{ user.lastName }}</p>
     </section>
     <i class="flatText">
-      Last Active: {{ user.lastActive }}
+      <h2>Last Active: {{ user.lastActive }}</h2>
     </i>
     <section v-if="(user._id === $store.state.userId)" class="accessStatus">
       You 
@@ -257,14 +257,19 @@ textarea {
 .name {
   font-weight: 300;
   font-size: 48px;
-  margin-bottom:24px;
-  padding: 12px 0px;
+  margin-bottom: 0px;
 }
 
 .flatText {
   color: gray;
-  font-size: medium;
-  padding: 12px 0px;
+  /* font-size: medium; */
+  box-sizing: border-box;
+}
+
+h2 {
+  padding: 0px 0px;
+  font-size: 16px;
+  font-weight: 300;
 }
 
 .accessStatus {
@@ -283,8 +288,14 @@ p b {
   font-weight: 400;
 }
 
+
 p {
   font-weight: 300;
+  margin-top: 48px;
+}
+
+section .main {
+  margin-top: 48px;
 }
 
 </style>

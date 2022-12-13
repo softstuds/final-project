@@ -77,6 +77,7 @@ export default {
   watch: {
       meeting: function() {
         this.getDate();
+        this.needFeedback();
       }
     },
   mounted () {

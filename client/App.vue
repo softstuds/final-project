@@ -61,13 +61,6 @@ main {
   padding-top: 20px;
 }
 
-button {
-  background-color: #729e85;
-  border-radius:6px;
-  border: 0px;
-  color: white;
-}
-
 .nav {
   margin: 0px !important;
   width: 12% !important;
