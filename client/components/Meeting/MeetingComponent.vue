@@ -4,14 +4,19 @@
     <main>
     <section class="timeBlock">
       <p v-if="type=='outgoing'">Requested meeting with {{owner.name}}</p>
-      <p v-else-if="type=='incoming'">Incoming meeting invite from {{requester.name}}</p>
+      <p v-else-if="type=='incoming'">
+        Incoming meeting invite from <router-link :to="('/profile/' + meeting.requester._id)">{{requester.name}}</router-link> 
+      </p>
       <p v-if="(type=='upcoming' && this.user._id==meeting.owner._id)">Upcoming meeting with {{requester.name}}</p>
       <p v-if="(type=='upcoming' && this.user._id==meeting.requester._id)">Upcoming meeting with {{owner.name}}</p>
       <p v-if="(type=='past' && this.user._id==meeting.owner._id)">Past meeting with {{requester.name}}</p>
       <p v-if="(type=='past' && this.user._id==meeting.requester._id)">Past meeting with {{owner.name}}</p>
       <p class="time">{{this.day}} at {{hour}}:{{minute}} {{pm}}</p>
 
-      
+      <div v-if="type=='incoming'">
+        <div class="message">Message: {{meeting.message}}</div> 
+      </div>      
+
       <div v-if="type=='outgoing'" class="row">
         <p v-if="(meeting.accepted==true)" class="accepted column">accepted</p>
         <p v-else class="notAccepted column">not accepted</p>
@@ -35,8 +40,9 @@
         </div>
       </div>
       <div v-else-if="(type=='past' && this.meeting.status !== 'NO_RESPONSE')">
-        <p v-if="(meeting.met==true)" class="met">You marked {{otherParty}} as attended.</p>
-        <p v-else class="notAccepted">You marked {{otherParty}} as did not attend.</p>
+        <p v-if="(this.feedbackScenario=='user-owner-notmet' || this.feedbackScenario=='user-requester-notmet')" class="notAccepted">{{otherParty}} marked you as did not attend.</p>
+        <p v-else-if="(this.feedbackScenario=='user-owner-met' || this.feedbackScenario=='user-requester-met')" class="notAccepted">You marked {{otherParty}} as did not attend.</p>
+        <p v-else-if="(meeting.status==='MET')" class="met">This meeting was marked as fully attended.</p>
       </div>
 
     </section>
@@ -52,7 +58,6 @@ export default {
       required: true
     },
     type: String,
-    button: String,
   },
   data () {
     return {
@@ -67,7 +72,7 @@ export default {
         email: this.meeting.requester.email,
       },
       link: this.meeting.owner.meetingLink,
-      feedback: Boolean,
+      feedbackScenario: String,
       day: String,
       hour: String,
       minute: String,
@@ -77,17 +82,17 @@ export default {
   watch: {
       meeting: function() {
         this.getDate();
-        this.needFeedback();
+        this.getScenario();
       }
     },
   mounted () {
     this.getDate();
-    this.needFeedback();
+    this.getScenario();
     this.getOtherParty();
   },
   methods: {
     getOtherParty() {
-        if (this.user._id == this.meeting.owner) {
+        if (this.user._id === this.meeting.owner._id) {
           this.otherParty = this.requester.name;
         } else {
           this.otherParty = this.owner.name;
@@ -117,11 +122,21 @@ export default {
       this.day = date.toLocaleDateString('en-us', options)
 
     },
-    needFeedback() {
+    getScenario() {
       if (this.meeting.status === 'NO_RESPONSE') {
-        this.feedback = false;
-      } else {
-        this.feedback = true;
+        this.feedbackScenario = "NO_RESPONSE"
+      } else if (this.meeting.status === 'OWNER_MET' && this.user._id === this.meeting.owner._id) {
+        // other person marked user (owner) as not met
+        this.feedbackScenario = "user-owner-notmet";
+      } else if (this.meeting.status === 'OWNER_MET' && this.user._id !== this.meeting.owner._id) {
+        // user marked other person (owner) as not met
+        this.feedbackScenario = "user-requester-met";
+      } else if (this.meeting.status === 'REQUESTER_MET' && this.user._id === this.meeting.owner._id) {
+        // user (owner) marked other person as not met
+        this.feedbackScenario = "user-owner-met";
+      } else if (this.meeting.status === 'REQUESTER_MET' && this.user._id !== this.meeting.owner._id) {
+        // other person (owner) marked user as not met
+        this.feedbackScenario = "user-requester-notmet";
       }
     },
     async cancelRequest () {
@@ -228,7 +243,7 @@ export default {
       
     },
     async feedbackNotMet() {
-      if (!this.meeting.met) {
+      if (this.meeting.status === "NO_RESPONSE") {
         try {
         const r = await fetch(`/api/timeblock/met/${this.meeting._id}`, {
           method: 'PATCH', 
@@ -321,6 +336,11 @@ button {
   border-radius: 4px;
   color: black;
   cursor: pointer;
+}
+
+.message {
+  font-style: italic;
+  color: gray;
 }
 
 </style>

@@ -162,7 +162,7 @@
               timeBlocks: [],
               bool: Boolean
             },
-            user: null,
+            user: this.$store.state.user,
             renderkey: 0,
         }
     },

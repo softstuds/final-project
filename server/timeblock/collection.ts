@@ -280,10 +280,10 @@ class TimeBlockCollection {
     if (met) {
       timeBlock.status = 'MET';
     }
-    else if (responderId === timeBlock.owner._id) {
+    else if (responderId == timeBlock.owner._id) {
       timeBlock.status = 'OWNER_MET';
     }
-    else if (responderId === timeBlock.requester._id) {
+    else if (responderId == timeBlock.requester._id) {
       timeBlock.status = 'REQUESTER_MET';
     }
     await timeBlock.save();
