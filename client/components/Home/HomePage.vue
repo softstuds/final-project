@@ -62,11 +62,18 @@
             </div>
             <div class="columnBox">
                 <h2>Your Statistics</h2>
-                <section class="stats">
+                <section 
+                  class="stats"
+                  v-if="statsLoaded">
                     <p v-for="stat in statistics">
                     <b>{{ stat.label }}:</b>
                     {{ stat.value }}
                     </p>
+                </section>
+                <section
+                  class="stats"
+                  v-if="!statsLoaded">
+                  <b>Loading your statistics...</b>
                 </section>
                 
             </div>
@@ -107,6 +114,7 @@
             statistics: {},
             user: null,
             renderkey: 0,
+            statsLoaded: false
         }
     },
     mounted() {
@@ -149,6 +157,7 @@
       }
 
       this.statistics = res.statistics;
+      this.statsLoaded = true;
     },
     async request(params) {
       /**
