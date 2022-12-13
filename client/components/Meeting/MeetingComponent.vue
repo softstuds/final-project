@@ -143,7 +143,7 @@ export default {
 
       this.key = 'reset';
       this.$emit('refreshMeetings');
-    
+      this.$store.commit('updateLastActive');
     },
     async cancelMeeting () {
       try {
@@ -164,7 +164,7 @@ export default {
 
       this.key = 'reset';
       this.$emit('refreshMeetings');
-    
+      this.$store.commit('updateLastActive');
     },
     async rejectRequest () {
       try {
@@ -183,6 +183,7 @@ export default {
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
       this.$emit('refreshMeetings');
+      this.$store.commit('updateLastActive');
     },
     async acceptRequest () {
       try {
@@ -202,6 +203,7 @@ export default {
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
       this.$emit('refreshMeetings');
+      this.$store.commit('updateLastActive');
     },
     async feedbackMet() {
       if (this.meeting.status === "NO_RESPONSE") {
@@ -224,37 +226,36 @@ export default {
 
       this.$emit('reRender');
       this.$emit('refreshMeetings');
+      this.$store.commit('updateLastActive');
     }
       
     },
     async feedbackNotMet() {
       if (!this.meeting.met) {
         try {
-        const r = await fetch(`/api/timeblock/met/${this.meeting._id}`, {
-          method: 'PATCH', 
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({input: false})
-        });
+          const r = await fetch(`/api/timeblock/met/${this.meeting._id}`, {
+            method: 'PATCH', 
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({input: false})
+          });
 
-        const res = await r.json();
-        if (!r.ok) {
-          throw new Error(res.error);
+          const res = await r.json();
+          if (!r.ok) {
+            throw new Error(res.error);
+          }
+
+        } catch (e) {
+          this.$set(this.alerts, e, 'error');
+          setTimeout(() => this.$delete(this.alerts, e), 3000);
         }
-
-      } catch (e) {
-        this.$set(this.alerts, e, 'error');
-        setTimeout(() => this.$delete(this.alerts, e), 3000);
+        this.feedback = true;
+        this.needFeedback();
+        this.$emit('reRender');
+        this.$emit('refreshMeetings');
+        this.$store.commit('updateLastActive');
       }
-      this.feedback = true;
-      this.needFeedback();
-      this.$emit('reRender');
-      this.$emit('refreshMeetings');
-      }
-      
     }
-
-
-    }
+  }
 };
 </script>
 

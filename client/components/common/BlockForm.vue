@@ -166,7 +166,6 @@ export default {
 
         if (this.refreshUser) {
           this.$store.commit('refreshUser');
-          this.$store.commit('updateLastActive');
           this.$store.commit('updateAccess');
           this.$store.commit('getUsers');
         }
@@ -178,6 +177,7 @@ export default {
         this.$set(this.alerts, e, 'error');
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
+      this.$store.commit('updateLastActive');
     }
   }
 };
