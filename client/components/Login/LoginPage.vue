@@ -10,7 +10,7 @@
       <RegisterForm />
     </section>
     <section>
-      <header>
+      <header class="pushDown">
         <h2>Have an account?</h2>
       </header>
       <LoginForm />
@@ -30,3 +30,12 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+
+.pushDown {
+  margin-top: 84px;
+}
+
+
+</style>
