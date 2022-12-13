@@ -600,7 +600,6 @@ textarea {
   margin-top: 50px;
 }
 
-/* Tooltip container */
 .tooltip {
   position: relative;
   display: inline-block;
@@ -627,8 +626,6 @@ textarea {
   padding: 5px;
   border-radius: 6px;
   font-size: medium;
- 
-  /* Position the tooltip text - see examples below! */
   position: absolute;
   z-index: 1;
 }
@@ -653,7 +650,6 @@ textarea {
   flex: 2;
 }
 
-/* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
@@ -665,21 +661,18 @@ textarea {
     text-align: center;
 }
 
-/* The Modal (background) */
 .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  display: none;
+  position: fixed;
+  z-index: 1;
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
 }
-
-/* Modal Content/Box */
 .modal-content {
   background-color: #fefefe;
   margin: 30%;
@@ -688,8 +681,6 @@ textarea {
   border: 1px solid #888;
   width: 40%;
 }
-
-/* The Close Button */
 .modalButton {
   color: white;
   float: right;

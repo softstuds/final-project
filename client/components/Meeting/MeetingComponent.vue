@@ -278,7 +278,6 @@ section, p {
 .time {
   font-size: 12pt;
   font-weight: 300;
-  /* color:forestgreen; */
 }
 
 .notAccepted {
@@ -301,9 +300,6 @@ section, p {
 
 .row {
   display: flex;
-  /* align-items: center;
-  justify-content: space-between; */
-  /* padding: 24px 0px 0px 0px; */
 }
 
 .column {

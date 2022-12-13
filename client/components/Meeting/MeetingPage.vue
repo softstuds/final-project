@@ -263,12 +263,9 @@
 section {
   display: flex;
   flex-direction: column;
-  /* background-color: #abd6be; */
-  /* font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
 }
 
 main{
-    /* padding: 48px 48px 48px; */
     padding: 10px 24px 10px;
     margin: 0;
 }
