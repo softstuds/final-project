@@ -62,6 +62,20 @@ class TimeBlockCollection {
   }
 
   /**
+   * Get all the time blocks in the database with a given user as owner or requester
+   * and a given start time that are uncanceled
+   *
+   * @param {string} userId - The id of the user
+   * @param {Date} start - The start time
+   * @return {Promise<HydratedDocument<TimeBlock>[]>} - An array of all of the time blocks for a given user and start time
+   */
+  static async findAllUncanceledByUserAndStart(userId: Types.ObjectId | string, start: Date): Promise<Array<HydratedDocument<TimeBlock>>> {
+    // Retrieves time blocks and sorts them from latest to earliest time
+    const startTime = new Date(start);
+    return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId, accepted: true}], start: startTime, status: {$ne: 'CANCELED'}}).sort({start: -1}).populate('owner requester');
+  }
+
+  /**
    * Get all the time blocks in the database with a given user as owner or requester that's passed
    * in order of most to least recent start time, not including canceled ones
    *

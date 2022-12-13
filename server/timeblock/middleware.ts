@@ -77,30 +77,6 @@ const isValidInput = async (req: Request, res: Response, next: NextFunction) => 
 };
 
 /**
- * Checks if a block with a given start time in req.body already exists with the user
- */
-const isBlockNonexistent = async (req: Request, res: Response, next: NextFunction) => {
-  const userId = req.session.userId as string;
-  const timeBlocks = await TimeBlockCollection.findAllByUser(userId);
-  const start = new Date(req.body.start);
-  const sameStartBlock = timeBlocks.filter((block) => {
-    if (block.owner._id == req.session.userId || (block.requester._id == req.session.userId && block.accepted)) {
-      return block.start.getTime() == start.getTime(); 
-    }
-    return false;   
-  });
-
-  if (sameStartBlock.length > 0) {
-    res.status(409).json({
-      error: 'You already have a meeting scheduled for this time.'
-    });
-    return;
-  }
-
-  next();
-};
-
-/**
  * Checks if a block with a given ID in req.params exists
  */
 const isBlockExistent = async (req: Request, res: Response, next: NextFunction) => {
@@ -266,7 +242,6 @@ export {
   isValidUserBody,
   isValidMessage,
   isValidInput,
-  isBlockNonexistent,
   isBlockExistent,
   isBlockOwner,
   isBlockNotOwner,
