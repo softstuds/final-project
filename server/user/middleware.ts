@@ -25,12 +25,22 @@ const isCurrentSessionUserExists = async (req: Request, res: Response, next: Nex
  * Checks if a name in req.body is valid
  */
 const isValidName = (req: Request, res: Response, next: NextFunction) => {
+  const nameRegex = /^([A-Za-z\-]+)$/;
   const names = (req.body.name as string).split(' ');
-  if (names.length < 2) {
+  if (names.length !== 2) {
     res.status(400).json({
-      error: 'Enter first and last name.'
+      error: 'Enter only first and last name.'
     });
     return;
+  }
+
+  for (let name of names) {
+    if (!nameRegex.test(name)) {
+      res.status(400).json({
+        error: 'Name can only contain letters and dashes.'
+      });
+      return;
+    }
   }
 
   next();
