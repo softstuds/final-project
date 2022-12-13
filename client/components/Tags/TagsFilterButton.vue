@@ -99,7 +99,7 @@ export default {
   padding: 0px 18px;
   margin: 12px 8px 12px 0px;
   font-size: 16px;
-  height: 28px;
+  height: 70%;
   border: 0.5px solid black;
   background-color: white;
   border-radius: 4px;
