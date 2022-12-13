@@ -50,6 +50,11 @@ router.beforeEach((to, from, next) => {
       next({name: 'Login'}); // Go to Login page if user navigates to Profiles and are not signed in
       return;
     }
+
+    if (to.name === 'Home' && !router.app.$store.state.userId) {
+      next({name: 'Login'}); // Go to Login page if user navigates to Profiles and are not signed in
+      return;
+    }
     
   }
 

@@ -7,17 +7,19 @@
     <div class="left">
       <img src="../../public/favicon.png">
       <h1 class="title">
-        AC
+        <router-link class="title" to="/">AC</router-link>
       </h1>
     </div>
     <div class="right">
+      <router-link 
+        v-if="$store.state.userId"
+        to="/home">
+        Home
+      </router-link>
       <router-link
         to="/about"
       >
         About
-      </router-link>
-      <router-link to="/">
-        Home
       </router-link>
       <router-link
         v-if="$store.state.userId"
@@ -85,8 +87,10 @@ a:-webkit-any-link {color: black;}
 .title {
     font-size: 32px;
     margin: 0 5px;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-decoration: none !important;
 }
+
 
 img {
     height: 32px;

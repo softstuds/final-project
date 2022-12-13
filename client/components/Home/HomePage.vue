@@ -25,11 +25,11 @@
             <div class="columnMeeting">
                 <h2>Upcoming Meetings</h2>
                 <section
-                v-if="this.upcomingMeetings.bool"
+                v-if="upcomingMeetings.bool"
                 class="meeting"
                 >
                 <MeetingComponent
-                v-for="block in this.upcomingMeetings.timeBlocks"
+                v-for="block in upcomingMeetings.timeBlocks"
                 :key="block.id"
                 :meeting="block"
                 :type="'upcoming'"
@@ -44,11 +44,11 @@
             <div class="columnMeeting">
                 <h2>Incoming Requests</h2>
                 <section 
-                v-if="this.incomingRequests.bool"
+                v-if="incomingRequests.bool"
                 class="meeting"
                 >
                 <MeetingComponent
-                v-for="block in this.incomingRequests.timeBlocks"
+                v-for="block in incomingRequests.timeBlocks"
                 :key="block.id"
                 :meeting="block"
                 :type="'incoming'"
