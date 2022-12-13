@@ -5,6 +5,7 @@ import * as userValidator from '../user/middleware';
 import * as timeBlockValidator from '../timeblock/middleware';
 import * as util from './util';
 import UserCollection from '../user/collection';
+import e from 'express';
 
 const router = express.Router();
 
@@ -261,9 +262,8 @@ router.get(
  * @param {string} end - The end time of the time block
  * @return {TimeBlockResponse[]} - The created time block(s)
  * @throws {400} - If end time is not given
- * @throws {403} - If the user is not logged in
- * @throws {409} - If the user already has a time block with the given start time 
- *                or if the start time has already passed
+ * @throws {403} - If the user is not logged in, the start time already passed, or
+ *               the user already has a time block with the given start time
  */
 router.put(
   '/',
@@ -276,17 +276,27 @@ router.put(
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     var start = new Date(req.body.start);
     const end = req.body.end ? new Date(req.body.end) : new Date(start.getTime() + 1000*60*30);
+    let returnError = false;
     const created = [];
     while (start < end) {
       const existing = await TimeBlockCollection.findAllUncanceledByUserAndStart(userId, start);
       if (existing.length == 0) {
         const timeBlock = await TimeBlockCollection.addOne(userId, start);
         created.push(timeBlock);
+      } else {
+        returnError = true;
       }
       start = new Date(start.getTime() + 1000*60*30); //adds half an hour to start
     }
     const response = created.map(util.constructTimeBlockResponse);
-    res.status(200).json(response);
+    if (returnError) {
+      res.status(409).json({
+        error: 'One or more of your inputted availabilities could not be added because it already exists.',
+        meetings: response,
+      });
+    } else {
+      res.status(200).json(response);
+    }
   }
 );
 
