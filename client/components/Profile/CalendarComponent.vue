@@ -91,7 +91,7 @@
           <button 
             v-if="!editing"
             @click="startEditing"
-            class="edit"
+            class="edit marginBottom"
           >
             Edit My Availabilities
           </button>
@@ -484,6 +484,10 @@ p {
 
 .alignCenter {
   align-items: center;
+}
+
+.marginBottom {
+  margin-bottom: 50px;
 }
 
 .editFooter {
