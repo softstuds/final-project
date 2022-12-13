@@ -3,14 +3,14 @@
 <template>
     <main>
     <section class="timeBlock">
-      <p v-if="type=='outgoing'">Requested meeting with {{owner.name}}</p>
+      <p v-if="type=='outgoing'">Requested meeting with <router-link class="link" :to="('/profile/' + meeting.owner._id)">{{owner.name}}</router-link></p>
       <p v-else-if="type=='incoming'">
-        Incoming meeting invite from <router-link :to="('/profile/' + meeting.requester._id)">{{requester.name}}</router-link> 
+        Incoming meeting invite from <router-link class="link" :to="('/profile/' + meeting.requester._id)">{{requester.name}}</router-link> 
       </p>
-      <p v-if="(type=='upcoming' && this.user._id==meeting.owner._id)">Upcoming meeting with {{requester.name}}</p>
-      <p v-if="(type=='upcoming' && this.user._id==meeting.requester._id)">Upcoming meeting with {{owner.name}}</p>
-      <p v-if="(type=='past' && this.user._id==meeting.owner._id)">Past meeting with {{requester.name}}</p>
-      <p v-if="(type=='past' && this.user._id==meeting.requester._id)">Past meeting with {{owner.name}}</p>
+      <p v-if="(type=='upcoming' && this.user._id==meeting.owner._id)">Upcoming meeting with <router-link class="link" :to="('/profile/' + meeting.requester._id)">{{requester.name}}</router-link></p>
+      <p v-if="(type=='upcoming' && this.user._id==meeting.requester._id)">Upcoming meeting with <router-link class="link" :to="('/profile/' + meeting.owner._id)">{{owner.name}}</router-link></p>
+      <p v-if="(type=='past' && this.user._id==meeting.owner._id)">Past meeting with <router-link class="link" :to="('/profile/' + meeting.requester._id)"></router-link></p>
+      <p v-if="(type=='past' && this.user._id==meeting.requester._id)">Past meeting with <router-link class="link" :to="('/profile/' + meeting.owner._id)">{{owner.name}}</router-link> </p>
       <p class="time">{{this.day}} at {{hour}}:{{minute}} {{pm}}</p>
 
       <div v-if="type=='incoming'">
@@ -90,7 +90,6 @@ export default {
     },
   mounted () {
     this.getDate();
-    this.getScenario();
     this.getOtherParty();
   },
   methods: {
@@ -125,23 +124,7 @@ export default {
       this.day = date.toLocaleDateString('en-us', options)
 
     },
-    getScenario() {
-      if (this.meeting.status === 'NO_RESPONSE') {
-        this.feedbackScenario = "NO_RESPONSE"
-      } else if (this.meeting.status === 'OWNER_MET' && this.user._id === this.meeting.owner._id) {
-        // other person marked user (owner) as not met
-        this.feedbackScenario = "user-owner-notmet";
-      } else if (this.meeting.status === 'OWNER_MET' && this.user._id !== this.meeting.owner._id) {
-        // user marked other person (owner) as not met
-        this.feedbackScenario = "user-requester-met";
-      } else if (this.meeting.status === 'REQUESTER_MET' && this.user._id === this.meeting.owner._id) {
-        // user (owner) marked other person as not met
-        this.feedbackScenario = "user-owner-met";
-      } else if (this.meeting.status === 'REQUESTER_MET' && this.user._id !== this.meeting.owner._id) {
-        // other person (owner) marked user as not met
-        this.feedbackScenario = "user-requester-notmet";
-      }
-    },
+
     async cancelRequest () {
       try {
         const r = await fetch(`/api/timeblock/request/${this.meeting._id}/unsend`, {
@@ -344,6 +327,10 @@ button {
 .message {
   font-style: italic;
   color: gray;
+}
+
+.link {
+  color:#729e85;
 }
 
 </style>
