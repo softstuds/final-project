@@ -8,7 +8,7 @@
             </header>
                 <h2>Our Mission...</h2>
                 <p>
-                    Alumni connector was created to faciliate more genuine connections between 
+                    Alumni Connector was created to faciliate more genuine connections between 
                     students and alumni. Alumni are one of the most effective resources for students 
                     in terms of career networking. Sometimes alumni’s purposes for joining the network
                     are not transparent. Students and other alumni can't tell whether others are 
@@ -24,6 +24,9 @@
                     right on your profile. This lessens the back-and-forth needed to find a time that works for both parties and 
                     makes the scheduling process more reliable and efficient. We believe in quid pro quo, so each user must enter
                     their availabilities for other users to schedule meetings with them if they want to schedule time to meet with other users. 
+                    Users cannot directly email each other and instead must meet order to connect 
+                    because we want to facilitate face-to-face interactions in order to develop
+                    and hone users' interpersonal skills, which are critical in the workforce.
                     Each user also selects from a list of pre-made tags to identify what services they are 
                     willing to offer to other students and alumni from their school. Lastly, we clearly display the last logged
                     in time for every user on the platform. With this, users are able to manage their expectations about whether 
