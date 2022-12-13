@@ -16,6 +16,10 @@ export default {
         refreshCount: {
             type: Number,
             required: true
+        },
+        initialValue: {
+            type: String,
+            required: true
         }
     },
     data() {
@@ -36,6 +40,9 @@ export default {
     mounted() {
         this.backEndTags = this.inverse(this.frontEndTags);
         this.active = this.initializeActive(this.frontEndTags);
+        if (this.initialValue.length > 0) {
+            this.active[this.initialValue] = true;
+        }
     },
     watch: {
         refreshCount: function(val) {
@@ -75,7 +82,7 @@ export default {
             }
             this.filteredIds = res.map(tag => tag.userId);
             this.$emit('unfilterUsers');
-            this.$emit('filterUsers', this.filteredIds);
+            this.$emit('filterUsers', this.filteredIds, value);
         }
     }
 }

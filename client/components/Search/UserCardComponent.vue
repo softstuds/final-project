@@ -50,7 +50,8 @@ export default {
             'helpInterview': 'Help with Interview Preparation',
             'email': 'Email'
         },
-        tagsDisplayed: []
+        tagsDisplayed: [],
+        hasAvailability: null,
       }
     },
     mounted() {
@@ -58,23 +59,23 @@ export default {
     },
     watch: {
       tags: function(val) {
-            this.tagsDisplayed = [];
-            for (let tag in this.tags) {
-                if (this.tags[tag] === true) {
-                  this.tagsDisplayed.push(this.frontEndTags[tag])
-                }
+        this.tagsDisplayed = [];
+        for (let tag in this.tags) {
+            if (this.tags[tag] === true) {
+              this.tagsDisplayed.push(this.frontEndTags[tag])
             }
         }
+      }
     },
     methods: {
       async getTags() {
-            const r = await fetch(`/api/tags/users/${this.user._id}`);
-            const res = await r.json();
-            if (!r.ok) {
-                throw new Error(res.error);
-            }
-            this.tags = res.tags;
-        },
+        const r = await fetch(`/api/tags/users/${this.user._id}`);
+        const res = await r.json();
+        if (!r.ok) {
+            throw new Error(res.error);
+        }
+        this.tags = res.tags;
+      }
     }
 }
 </script>

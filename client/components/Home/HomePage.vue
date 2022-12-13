@@ -3,6 +3,7 @@
 
 <template>
     <main>
+      <div v-if="$store.state.user">
     <section class="row">
         <div class="column">
             <header>
@@ -12,7 +13,7 @@
         <div class="column"> 
             <button
                 v-if="$store.state.userId"
-                onclick="window.location.href=`${window.location.href}search`"
+                onclick="window.location.href='/#/search'"
             >
                 Search for users!
             </button>
@@ -24,29 +25,39 @@
             <div class="columnMeeting">
                 <h2>Upcoming Meetings</h2>
                 <section
+                v-if="this.upcomingMeetings.bool"
                 class="meeting"
                 >
                 <MeetingComponent
-                v-for="block in this.upcomingMeetings"
+                v-for="block in this.upcomingMeetings.timeBlocks"
                 :key="block.id"
                 :meeting="block"
                 :type="'upcoming'"
                 @refreshMeetings="getAllMeetings"
                  />
                 </section>
+                <section class="noMeetings" v-else>
+                  You have no incoming requests. Start searching for 
+                  users!
+                </section>
             </div>
             <div class="columnMeeting">
                 <h2>Incoming Requests</h2>
                 <section 
+                v-if="this.incomingRequests.bool"
                 class="meeting"
                 >
                 <MeetingComponent
-                v-for="block in this.incomingRequests"
+                v-for="block in this.incomingRequests.timeBlocks"
                 :key="block.id"
                 :meeting="block"
                 :type="'incoming'"
                 @refreshMeetings="getAllMeetings"
                  />
+                </section>
+                <section class="noMeetings" v-else>
+                  You have no incoming requests. Start searching for 
+                  users!
                 </section>
             </div>
             <div class="columnBox">
@@ -61,6 +72,17 @@
             </div>
         </div>
       </section>
+      </div>
+      <div v-else>
+        <header>
+            <h1>Welcome to Alumni Connector!</h1>
+        </header>
+        <h3>
+          <a class='notSignedIn' onclick="window.location.href='/#/login'">
+            Sign in</a>
+             to access Alumni Connector.
+        </h3>
+      </div>
     </main>
   </template>
   
@@ -74,8 +96,14 @@
     },
     data () {
         return {
-            upcomingMeetings: [],
-            incomingRequests: [],
+              upcomingMeetings: {
+              timeBlocks: [],
+              bool: Boolean
+            },
+            incomingRequests: {
+              timeBlocks: [],
+              bool: Boolean
+            },
             statistics: {},
             user: null,
             renderkey: 0,
@@ -94,12 +122,22 @@
 
         const paramsUpcoming = {method: 'GET', url: '/api/timeblock/upcoming'}
         this.request(paramsUpcoming).then(function(result) {
-            that.upcomingMeetings = Object.values(result);
+          if (Object.values(result).length != 0) {
+            that.upcomingMeetings.timeBlocks = Object.values(result);
+            that.upcomingMeetings.bool = true;
+          } else {
+            that.upcomingMeetings.bool = false;
+          }
         });
         
         const paramsIncoming = {method: 'GET', url: '/api/timeblock/requests/received'}
         this.request(paramsIncoming).then(function(result) {
-            that.incomingRequests = Object.values(result);
+          if (Object.values(result).length != 0) {
+            that.incomingRequests.timeBlocks = Object.values(result);
+            that.incomingRequests.bool = true;
+          } else {
+            that.incomingRequests.bool = false;
+          }
         });
 
         },
@@ -148,7 +186,7 @@
   };
   </script>
 
-  <style scoped>
+<style scoped>
 
 section {
   display: flex;
@@ -178,8 +216,9 @@ h1 {
 }
 
 h3 {
-  font-size: 12px;
+  font-size: 24px;
 }
+
 
 button {
   width: 20%;
@@ -189,6 +228,11 @@ button {
   border-radius:6px;
   border: 0px;
   color: white;
+}
+
+button:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0 4px 12px;
+  cursor: pointer;
 }
 
 .row {
@@ -233,5 +277,31 @@ b {
 .column .meeting {
     padding: 0%;
 }
+
+
+.noMeetings {
+  padding-top: 12px;
+  margin: 24px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.noMeetings button {
+  width: 60%;
+  margin: 24px auto;
+  height: 36px;
+  background-color: #729e85;
+  border-radius:6px;
+  border: 0px;
+  color: white;
+}
+
+.notSignedIn {
+  text-decoration: underline;
+  color: #729e85;
+  cursor: pointer;
+}
+
+
 
 </style>

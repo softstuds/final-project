@@ -7,10 +7,15 @@
     <div class="left">
       <img src="../../public/favicon.png">
       <h1 class="title">
-        ac
+        AC
       </h1>
     </div>
     <div class="right">
+      <router-link
+        to="/about"
+      >
+        About
+      </router-link>
       <router-link to="/">
         Home
       </router-link>
@@ -74,6 +79,8 @@ nav {
 
 a:hover { text-decoration: none; color:#729e85; }
 a:visited { text-decoration: underline; color:black; }
+a:-webkit-any-link {color: black;}
+
 
 .title {
     font-size: 32px;

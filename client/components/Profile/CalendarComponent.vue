@@ -14,32 +14,33 @@
           class="tooltip"
         >
           <p class="tooltipEmphasized">Why can't I request availabilities?</p>
-          <span class="tooltiptext">
+          <span class="tooltiptext tooltipTop">
             You need to have availabilities on your own profile 
             in order to request others' availabilities.
           </span>
         </div>
       </section>
       <section v-if="(hasRequestable || editing)">
-        <div class="daysOfWeek">
+        <div class="flexDisplay">
           <section
             v-for="day in daysOfWeek"
-            class="dayOfWeek">
+            class="flexDisplay borderTop">
               {{ day }}
           </section>
         </div>
-        <section class="calendar">
+        <section class="flexDisplay flexColumn">
           <div
             v-for="(week, i) in timeBlocks"
             :key="i"
-            class="week"
+            class="flexDisplay"
           >
             <section
               v-for="(date, index) in week"
               :key="index"
-              :class="calendarDays[i][index].status"
+              :class="getClass(i, index)"
+              @click="updateSelection(i, index)"
             >
-              <section class="dayHeader">
+              <section class="flexDisplay borderBottom">
                 {{ calendarDays[i][index].day.getMonth() + 1 }}/{{ calendarDays[i][index].day.getDate() }}
               </section>
               <section 
@@ -63,103 +64,101 @@
                     </button>
                     <button 
                       v-else
-                      class="disabledButton"
+                      class="disabled"
                     >
                       Request
                     </button>
                   </section>
-
-                    <button
+                  <button
                     v-if="editing"
                     class="deleteButton column"
                     @click="deleteTimeBlock(block._id)"
                   >
                     Delete
                   </button>
-                 
                 </div>
               </section>
             </section>
           </div>
         </section>
       </section>
-      <section class="editFooter">
+      <section class="flexDisplay editFooter">
         <section
           v-if="userId === $store.state.userId"
         >
           <button 
             v-if="!editing"
-            class="editButton"
             @click="startEditing"
+            class="edit"
           >
             Edit My Availabilities
           </button>
           <button 
             v-else
-            class="editButton"
-            @click="hideDatePicker"
+            @click="hideTimeSelector"
+            class="edit"
           >
             Stop Editing
           </button>
         </section>
       </section>
-      <section id="selectDate" class="dateSelectorFooter">
-        <section class="dateSelector">
-          <section class="selector">
-            <div><small>Month</small></div>
-            <select id="dateMonth">
-              <option 
-                v-for="i in 12"
-                :key="i"
-                :value="i"
-              >
-                {{ i }}
-              </option>
-            </select>
-          </section>
-          <section class="selector">
-            <div><small>Day</small></div>
-            <select id="dateDay">
-              <option 
-                v-for="j in 31"
-                :key="j"
-                :value="j"
-              >
-                {{ j }}
-              </option>
-            </select>
-          </section>
-          <section class="selector">
-            <div><small>Time</small></div>
-            <select id="dateTime">
-              <option :value="0">
-                12 am
-              </option>
-              <option 
-                v-for="k in 11"
-                :key="k"
-                :value="k"
-              >
-                {{ k }} am
-              </option>
-              <option :value="12">
-                12 pm
-              </option>
-              <option 
-                v-for="k in 11"
-                :key="k + 12"
-                :value="k + 12"
-              >
-                {{ k }} pm
-              </option>
-            </select>
-          </section>
-          <section class="selector">
-            <button
-              @click="addTimeBlock"
+      <section id="selectTime" class="flexDisplay flexColumn alignCenter">
+        <section class="flexDisplay flexColumn">
+          <section class="flexDisplay">
+            <div 
+              class="tooltip"
             >
-              Add Availability
-            </button>
+              <p>Selected Day: {{ selectedDateString }}</p>
+              <span class="tooltiptext tooltipTop">
+                Select a different day by clicking on the calendar.
+              </span>
+            </div>
+          </section>
+          <section class="flexDisplay alignCenter">
+            <section>
+              <section class="selector" @change="updateEndTime">
+                <div><small>Start Time: </small></div>
+                <select id="startTime">
+                  <option
+                    v-for="(time, i) in times"
+                    :key="i"
+                    :value="i"
+                  >
+                    {{ time }}
+                  </option>
+                </select>
+              </section>
+              <section class="selector">
+                <div><small>End Time: </small></div>
+                <select id="endTime">
+                  <option
+                    v-for="(time, i) in times"
+                    :key="i"
+                    :value="i"
+                  >
+                    {{ time }}
+                  </option>
+                </select>
+              </section>
+            </section>
+            <section class="selector">
+              <section>
+                <button
+                  @click="addTimeBlock"
+                  class="addButton"
+                >
+                  Generate 30 minute blocks
+                </button>
+              </section>
+              <div 
+                class="tooltip"
+              >
+                <p class="tooltipIcon">ⓘ</p>
+                <span class="tooltiptext tooltipRight">
+                  Automatically generate 30 minute blocks within your entered availability.
+                </span>
+              </div>
+            </section>
           </section>
         </section>
         <section class="bottomTooltip">
@@ -167,7 +166,7 @@
             class="tooltip"
           >
             <small>Having trouble entering availabilities?</small>
-            <span class="tooltiptext">
+            <span class="tooltiptext tooltipTop">
               You can only enter times between now and the end of the calendar shown (4 weeks).
             </span>
           </div>
@@ -207,6 +206,16 @@ export default {
             timeBlocks: [],
             calendarDays: [],
             daysOfWeek: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            times: [
+              '12:00am', '12:30am', '1:00am', '1:30am', '2:00am', '2:30am', '3:00am', '3:30am', '4:00am', '4:30am', '5:00am', '5:30am', 
+              '6:00am', '6:30am', '7:00am', '7:30am', '8:00am', '8:30am', '9:00am', '9:30am', '10:00am', '10:30am', '11:00am', '11:30am',
+              '12:00pm', '12:30pm', '1:00pm', '1:30pm', '2:00pm', '2:30pm', '3:00pm', '3:30pm', '4:00pm', '4:30pm', '5:00pm', '5:30pm',
+              '6:00pm', '6:30pm', '7:00pm', '7:30pm', '8:00pm', '8:30pm', '9:00pm', '9:30pm', '10:00pm', '10:30pm', '11:00pm', '11:30pm',
+            ],
+            selectedWeek: 0,
+            defaultDay: 0,
+            selectedDay: 0,
+            selectedDateString: '',
             alerts: {}
         }
     },
@@ -215,12 +224,12 @@ export default {
         this.editing = false;
         this.hasRequestable = false;
         this.getAvailibilities();
-        this.hideDatePicker();
+        this.hideTimeSelector();
       }
     },
     mounted() {
         this.getAvailibilities();
-        this.hideDatePicker();
+        this.hideTimeSelector();
     },
     methods: {
         startEditing() { // can only be done on $store.state.user
@@ -229,8 +238,28 @@ export default {
             this.$set(this.alerts, e, 'error');
             setTimeout(() => this.$delete(this.alerts, e), 3000);
           } else {
-            this.showDatePicker();
+            this.showTimeSelector();
           }
+          this.updateSelection(0, this.defaultDay);
+        },
+        updateSelection(i, index) {
+          if (this.editing && (i > 0 || index >= this.defaultDay)) {
+            this.selectedWeek = i;
+            this.selectedDay = index;
+
+            const selectedDate = this.calendarDays[i][index].day;
+            this.selectedDateString = selectedDate.getMonth() + 1 + "/" + selectedDate.getDate();
+          }
+        },
+        getClass(i, index) {
+          const unselected = this.calendarDays[i][index].status;
+          if (!this.editing || this.userId !== this.$store.state.userId) {
+            return unselected;
+          }
+          if (this.selectedWeek != i || this.selectedDay != index) {
+            return unselected;
+          }
+          return 'day selected';
         },
         async getAvailibilities() {
             const r = await fetch("api/timeblock/unclaimed/" + this.userId);
@@ -250,11 +279,12 @@ export default {
               nextDay.setDate(start.getDate() + i);
               var status;
               if (nextDay < today) {
-                status = 'pastDay';
-              } else if (nextDay.getMonth() == today.getMonth() && nextDay.getDate() == today.getDate()) {
-                status = 'today';
+                status = 'day pastDay';
               } else {
-                status = 'futureDay';
+                if (nextDay.getMonth() == today.getMonth() && nextDay.getDate() == today.getDate()) {
+                  this.defaultDay = i % 7;
+                }
+                status = 'day';
               }
               nextFourWeeks.push({day: nextDay, status});
             }
@@ -293,49 +323,48 @@ export default {
               this.hasRequestable = true;
             }
         },
-        showDatePicker() {
+        showTimeSelector() {
             this.editing = true;
-            const dateSelector = document.getElementById('selectDate');
-            dateSelector.style.display = "flex";
+            const timeSelector = document.getElementById('selectTime');
+            timeSelector.style.display = "flex";
 
             const today = new Date();
 
-            const monthSelector = document.getElementById('dateMonth');
-            monthSelector.selectedIndex = today.getMonth(); // already zero indexed
-
-            const daySelector = document.getElementById('dateDay');
-            daySelector.selectedIndex = today.getDate() - 1;  // not zero indexed
-
-            const timeSelector = document.getElementById('dateTime');
-            timeSelector.selectedIndex = 9;
+            const startTime = document.getElementById('startTime');
+            startTime.selectedIndex = 18;
+            const endTime = document.getElementById('endTime');
+            endTime.selectedIndex = 19;
         },
-        hideDatePicker() {
+        hideTimeSelector() {
             this.editing = false;
-            const dateSelector = document.getElementById('selectDate');
-            dateSelector.style.display = "none";
+            const timeSelector = document.getElementById('selectTime');
+            timeSelector.style.display = "none";
+        },
+        updateEndTime() {
+          const startTime = document.getElementById('startTime');
+          const endTime = document.getElementById('endTime');
+          endTime.selectedIndex = startTime.selectedIndex + 1;
         },
         async addTimeBlock() {
-            const date = new Date();
+            const startTime = new Date(this.calendarDays[this.selectedWeek][this.selectedDay].day);
+            const endTime = new Date(startTime);
 
-            const monthSelector = document.getElementById('dateMonth');
-            date.setMonth(monthSelector.value - 1); // zero index
-
-            const daySelector = document.getElementById('dateDay');
-            date.setDate(daySelector.value);
-
-            const timeSelector = document.getElementById('dateTime');
-            date.setHours(timeSelector.value, 0, 0, 0);
+            const startElement = document.getElementById('startTime');
+            const endElement = document.getElementById('endTime');
+            startTime.setHours(Math.floor(startElement.value / 2), (startElement.value % 2 * 30), 0, 0);
+            endTime.setHours(Math.floor(endElement.value / 2), (endElement.value % 2 * 30), 0, 0);
 
             const today = new Date();
-            if (date < today) {
-              date.setFullYear(today.getFullYear() + 1); // ensure that date is always in future
+            if (startTime < today) {
+              startTime.setFullYear(today.getFullYear() + 1); // ensure that date is always in future
+              endTime.setFullYear(today.getFullYear() + 1);
             }
 
             const options = {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 credentials: 'same-origin',
-                body: JSON.stringify({start: date.toString()})
+                body: JSON.stringify({start: startTime.toString(), end: endTime.toString()})
             };
 
             try {
@@ -406,26 +435,29 @@ export default {
 
 <style scoped>
 
+select {
+  margin-left: 10px;
+}
+
+.addButton {
+  max-width: 100px;
+  height: 42px;
+}
 .activeButton {
   background-color:cornflowerblue
 }
 
-.disabledButton {
+.edit {
+  padding: 8px;
+}
+
+.disabled {
   color:lightgray
 }
 
 .deleteButton {
-  width: 100%;
-  margin: 4px 0px;
-  height: 24px;
   background-color: #c46345;
-  border-radius:6px;
-  border: 0px;
   color: white;
-}
-
-.editButton {
-  height: 25px
 }
 .availability {
     border-top: 1px solid black;
@@ -439,85 +471,71 @@ export default {
   margin-bottom: 10px;
 }
 
-.editFooter {
-    display: flex;
-    justify-content: end;
-    margin-top: 10px;
+.flexDisplay {
+  display: flex;
+  width: 100%;
+  justify-content: center;
 }
 
-.calendar {
-  display: flex;
+.flexColumn {
   flex-direction: column;
-  width: 100%;
 }
 
-.week {
-  display: flex;
-  width: 100%;
-}
-
-.pastDay {
-  width: 100%;
-  border: 1px solid black;
-  min-height: 100px;
-  background-color:lightgray;
-}
-
-.today {
-  width: 100%;
-  border: 1px solid black;
-  min-height: 100px;
-  background-color:rgba(100, 148, 237, 0.381);
-}
-
-.futureDay {
-  width: 100%;
-  border: 1px solid black;
-  min-height: 100px;
-}
-.dayHeader {
-  border-bottom: 1px solid black;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.daysOfWeek {
-  border: 1px solid black;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-.dayOfWeek {
-  border: 1px solid black;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.timeBlock {
-  border: 1px solid black;
-  padding: 10px;
-  margin: 10px;
-}
-
-.dateSelector {
-  display: flex;
-  justify-content: center;
-}
-
-.dateSelectorFooter {
-  display: flex;
-  flex-direction: column;
+.alignCenter {
   align-items: center;
 }
 
+.editFooter {
+  justify-content: end;
+  margin-top: 10px;
+}
+
+.pastDay {
+  background-color:lightgray;
+}
+
+.selected {
+  background-color:rgb(255, 255, 197);
+}
+
+.day {
+  width: 100%;
+  border: 0.5px solid black;
+  min-height: 100px;
+  font-weight: 400;
+  padding-bottom: 30px;
+  /* height: 100px;
+  overflow-y: scroll; */
+}
+
+.borderTop {
+  border: 0.5px solid black;
+  border-bottom: none;
+  font-weight: 500;
+  padding: 4px;
+  background-color: #b1d6c1;
+}
+
+.borderBottom {
+  border-bottom: 0.5px solid black;
+}
+
+.timeBlock {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border: 1px solid black;
+  padding: 10px;
+  margin: 10px;
+  font-size: 12px;
+}
+
 .selector {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: end;
-    margin: 10px
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 10px;
 }
 
 .bottomTooltip {
@@ -529,7 +547,11 @@ export default {
   position: relative;
   display: inline-block;
   color: gray;
-  font-style: italic;
+}
+
+.tooltipIcon {
+  font-size: 16px;
+  margin-left: 10px;
 }
 
 .tooltipEmphasized {
@@ -540,9 +562,6 @@ export default {
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 400px;
-  bottom: 100%;
-  left: 50%;
-  margin-left: -200px;
   background-color: black;
   color: #fff;
   font-style: normal;
@@ -556,6 +575,18 @@ export default {
   z-index: 1;
 }
 
+.tooltipTop {
+  margin-left: -200px;
+  bottom: 100%;
+  left: 50%;
+}
+
+.tooltipRight {
+  margin-left: 10px;
+  bottom: 10%;
+  left: 100%;
+}
+
 .row {
   display: flex;
 }
@@ -567,6 +598,12 @@ export default {
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
   visibility: visible;
+}
+
+.alerts {
+    position: relative;
+    z-index: 99;
+    text-align: center;
 }
 
 </style>
