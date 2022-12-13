@@ -269,7 +269,6 @@ router.put(
   '/',
   [
     userValidator.isUserLoggedIn,
-    timeBlockValidator.isBlockNonexistent,
     timeBlockValidator.isBlockInNextFour,
     timeBlockValidator.isStartBeforeEnd
   ],
@@ -279,8 +278,11 @@ router.put(
     const end = req.body.end ? new Date(req.body.end) : new Date(start.getTime() + 1000*60*30);
     const created = [];
     while (start < end) {
-      const timeBlock = await TimeBlockCollection.addOne(userId, start);
-      created.push(timeBlock);
+      const existing = await TimeBlockCollection.findAllUncanceledByUserAndStart(userId, start);
+      if (existing.length == 0) {
+        const timeBlock = await TimeBlockCollection.addOne(userId, start);
+        created.push(timeBlock);
+      }
       start = new Date(start.getTime() + 1000*60*30); //adds half an hour to start
     }
     const response = created.map(util.constructTimeBlockResponse);
