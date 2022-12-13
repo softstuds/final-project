@@ -59,7 +59,7 @@
                       <button 
                         v-if="$store.state.hasAccess === true"
                         class="activeButton"
-                        @click="requestTimeBlock(block._id)"
+                        @click="openModal(block._id)"
                       >
                         Request
                       </button>
@@ -178,6 +178,22 @@
         <p>{{ alert }}</p>
       </article>
     </section>
+    <section id="messageModal" class="modal">
+      <!-- Modal content -->
+      <section class="modal-content">
+        <section class="wideBox">
+          <textarea
+            :placeholder="('Why do you want to meet with ' + userName + '?')"
+            @input="message = $event.target.value"
+          >
+          </textarea>
+        </section>
+        <section class="justifyEnd flexDisplay">
+          <button class="modalButton backgroundGray" @click="closeModal">Cancel</button>
+          <button class="modalButton" @click="requestTimeBlock">Submit Request</button>
+        </section>
+      </section>
+    </section>
   </div>
 </template>
 
@@ -212,6 +228,8 @@ export default {
             defaultDay: 0,
             selectedDay: 0,
             selectedDateString: '',
+            message: '',
+            selectedBlock: null,
             alerts: {}
         }
     },
@@ -228,6 +246,16 @@ export default {
         this.hideTimeSelector();
     },
     methods: {
+        openModal(blockId) {
+          this.selectedBlock = blockId;
+          this.message = '';
+          const modal = document.getElementById("messageModal");
+          modal.style.display = "block";
+        },
+        closeModal() {
+          const modal = document.getElementById("messageModal");
+          modal.style.display = "none";
+        },
         startEditing() { // can only be done on $store.state.user
           if (!this.$store.state.user.meetingLink) {
             const e = "Please add a meeting link in your account settings before adding availabilities.";
@@ -275,7 +303,7 @@ export default {
               nextDay.setDate(start.getDate() + i);
               var status;
               if (nextDay < today) {
-                status = 'day pastDay';
+                status = 'day backgroundGray';
               } else {
                 if (nextDay.getMonth() == today.getMonth() && nextDay.getDate() == today.getDate()) {
                   this.defaultDay = i % 7;
@@ -379,16 +407,19 @@ export default {
               this.$store.commit('updateAccess');
             }
         },
-        async requestTimeBlock(blockId) {            
+        async requestTimeBlock() {            
             const options = {
                 method: 'PATCH',
                 headers: {'Content-Type': 'application/json'},
                 credentials: 'same-origin',
-                body: JSON.stringify({userId: this.$store.state.userId})
+                body: JSON.stringify({
+                  userId: this.$store.state.userId,
+                  message: this.message
+                })
             };
 
             try {
-                const r = await fetch('api/timeblock/request/' + blockId, options);
+                const r = await fetch('api/timeblock/request/' + this.selectedBlock, options);
                 const res = await r.json();
                 if (!r.ok) {
                     throw new Error(res.error);
@@ -401,6 +432,7 @@ export default {
                 setTimeout(() => this.$delete(this.alerts, e), 3000);
             }
             this.getAvailibilities();
+            this.closeModal();
         },
         async deleteTimeBlock(blockId) {            
             const options = {
@@ -438,6 +470,15 @@ select {
 p {
   margin-block-start: 0;
   margin-block-end: 0;
+}
+
+textarea {
+  resize: none;
+  width: 100%;
+  min-height: 80px;
+}
+.wideBox {
+  width: 100%;
 }
 
 .addButton {
@@ -482,6 +523,10 @@ p {
   flex-direction: column;
 }
 
+.justifyEnd {
+  justify-content: flex-end;
+}
+
 .alignCenter {
   align-items: center;
 }
@@ -495,7 +540,7 @@ p {
   margin-top: 10px;
 }
 
-.pastDay {
+.backgroundGray {
   background-color:lightgray;
 }
 
@@ -616,6 +661,46 @@ p {
     position: relative;
     z-index: 99;
     text-align: center;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.modalButton {
+  color: white;
+  float: right;
+  font-weight: bold;
+  padding: 5px;
+  margin-left: 5px;
+  margin-top: 10px;
+}
+
+.modalButton:hover,
+.modalButton:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 </style>
