@@ -48,6 +48,11 @@ button {
   color: white;
 }
 
+button:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0 4px 12px;
+  cursor: pointer;
+}
+
 body {
   height: 100vh;
   flex-direction: column;

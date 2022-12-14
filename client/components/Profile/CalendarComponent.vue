@@ -37,13 +37,13 @@
             <section
               v-for="(date, index) in week"
               :key="index"
-              class="fullDateBox"
+              :class="getClass(i, index)"
               @click="updateSelection(i, index)"
             >
               <section class="flexDisplay borderBottom borderSides">
                 {{ calendarDays[i][index].day.getMonth() + 1 }}/{{ calendarDays[i][index].day.getDate() }}
               </section>
-              <section :class="getClass(i, index)">
+              <section class="day">
                 <section 
                   v-for="block in date"
                   :key="block._id"
@@ -283,7 +283,7 @@ export default {
           if (this.selectedWeek != i || this.selectedDay != index) {
             return unselected;
           }
-          return 'day selected';
+          return 'fullDateBox selected';
         },
         async getAvailibilities() {
             const r = await fetch("api/timeblock/unclaimed/" + this.userId);
@@ -303,12 +303,12 @@ export default {
               nextDay.setDate(start.getDate() + i);
               var status;
               if (nextDay < today) {
-                status = 'day backgroundGray';
+                status = 'fullDateBox backgroundGray';
               } else {
                 if (nextDay.getMonth() == today.getMonth() && nextDay.getDate() == today.getDate()) {
                   this.defaultDay = i % 7;
                 }
-                status = 'day';
+                status = 'fullDateBox';
               }
               nextFourWeeks.push({day: nextDay, status});
             }

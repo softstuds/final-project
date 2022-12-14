@@ -310,6 +310,7 @@ section, p {
 
 .row {
   display: flex;
+  align-items: center;
 }
 
 .column {
