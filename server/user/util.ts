@@ -20,7 +20,7 @@ export type UserResponse = {
  * @param {Date} date - A date object
  * @returns {string} - formatted date as string
  */
-const formatDate = (date: Date): string => (new Date(date)).toLocaleDateString('en-US');
+const formatDate = (date: Date): string => (new Date(date)).toLocaleDateString('en-US', { timeZone: 'America/New_York' });
 
 /**
  * Transform a raw User object from the database into an object
