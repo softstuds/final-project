@@ -33,7 +33,8 @@
                     or not a user will be responsive to their meeting requests.
                 </p>
                 <h2>Watch our Demo...</h2>
-                <p>(insert demo video here)</p>
+                <iframe src="https://drive.google.com/file/d/17lBrbSISNXW8OERa5a2j6WGI3V52qw2u/preview" width="640" height="480" allow="autoplay">
+                </iframe>
         </section>
     </main>
 </template>
@@ -44,6 +45,11 @@ export default {
 }
 </script>
 <style scoped>
+
+iframe {
+    align-self: center;
+}
+
 section {
   display: flex;
   flex-direction: column;
