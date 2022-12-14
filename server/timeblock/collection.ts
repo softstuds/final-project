@@ -148,10 +148,11 @@ class TimeBlockCollection {
    * @return {Promise<Number>} - The number of meetings a user owns and has accepted 
    */
    static async findTotalMeetingsByUser(userId: Types.ObjectId | string, startAfter: Date = null): Promise<Number> {
+    const now = new Date();
     if (startAfter) {
-      return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}], accepted: true, status: {$ne: 'CANCELED'}, start: {$gte: startAfter}}).count();
+      return TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}], accepted: true, status: {$ne: 'CANCELED'}, start: {$gte: startAfter, $lte: now}}).count();
     } else {
-      return await TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}], accepted: true, status: {$ne: 'CANCELED'}}).count();
+      return await TimeBlockModel.find({$or: [{owner: userId}, {requester: userId}], accepted: true, status: {$ne: 'CANCELED'}, start: {$lte: now}}).count();
     }
   }
 
@@ -169,6 +170,7 @@ class TimeBlockCollection {
         {requester: userId, status: {$in: ['REQUESTER_MET', 'MET', 'NO_RESPONSE']}},
       ],
       accepted: true,
+      start: {$lte: new Date()},
     }).count();
   }
 
