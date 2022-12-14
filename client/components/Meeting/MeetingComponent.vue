@@ -13,7 +13,7 @@
       <p v-if="(type=='past' && user._id==meeting.requester._id)">Past meeting with <router-link class="link" :to="('/profile/' + meeting.owner._id)">{{owner.name}}</router-link> </p>
       <p class="time">{{day}} at {{hour}}:{{minute}} {{pm}}</p>
 
-      <div v-if="type=='incoming'">
+      <div>
         <div class="message">Message: {{meeting.message}}</div> 
       </div>      
 
@@ -84,13 +84,22 @@ export default {
   watch: {
       meeting: function() {
         this.getDate();
+        this.getInfo();
       }
     },
   mounted () {
     this.getDate();
+    this.getInfo();
     this.getOtherParty();
   },
   methods: {
+    getInfo () {
+      this.link = this.meeting.owner.meetingLink;
+      this.owner.name = `${this.meeting.owner.firstName} ${this.meeting.owner.lastName}`;
+      this.owner.email = this.meeting.owner.email;
+      this.requester.name = `${this.meeting.requester.firstName} ${this.meeting.requester.lastName}`;
+      this.requester.email = this.meeting.requester.email;
+    },
     getOtherParty() {
       if (this.user._id == this.meeting.owner._id) {
         this.otherParty = this.requester.name;
@@ -162,7 +171,6 @@ export default {
         setTimeout(() => this.$delete(this.alerts, e), 3000);
       }
 
-      this.key = 'reset';
       this.$emit('refreshMeetings');
       this.$store.commit('updateLastActive');
     },
@@ -274,6 +282,7 @@ section, p {
 .timeBlock {
     border: 0.5px solid black;
     padding: 5% 10%;
+    overflow: wrap;
 }
 
 .time {
